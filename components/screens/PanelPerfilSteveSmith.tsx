@@ -6,14 +6,28 @@ import { useState } from "react"
 import { UserButton, SignOutButton } from "@clerk/nextjs"
 
 // ---------------------------------------------------------------------------
-// Types
+// Types & Defaults
 // ---------------------------------------------------------------------------
 
-interface Attribute {
-  label: string
+interface UserAttributeData {
   value: number
-  color: string
-  glow: string
+  attribute: {
+    label: string
+    color: string
+    side: string
+  }
+}
+
+interface UserData {
+  clerkUserId: string
+  name: string
+  title: string | null
+  level: number
+  xp: number
+  xpToNextLevel: number
+  trophies: number
+  kredits: number
+  attributes: UserAttributeData[]
 }
 
 interface RecentMission {
@@ -25,23 +39,17 @@ interface RecentMission {
   iconBg: string
 }
 
-// ---------------------------------------------------------------------------
-// Data
-// ---------------------------------------------------------------------------
 
-const LEFT_ATTRS: Attribute[] = [
-  { label: "Lógica",       value: 85, color: "bg-primary",              glow: "shadow-[0_0_10px_rgba(233,196,0,0.5)]",   },
-  { label: "Creatividad",  value: 92, color: "bg-tertiary",             glow: "shadow-[0_0_10px_rgba(158,202,255,0.5)]", },
-  { label: "Liderazgo",    value: 78, color: "bg-secondary",            glow: "shadow-[0_0_10px_rgba(120,220,119,0.5)]", },
-  { label: "Negociación",  value: 65, color: "bg-on-tertiary-container", glow: "shadow-[0_0_10px_rgba(52,160,254,0.5)]",  },
-]
-
-const RIGHT_ATTRS: Attribute[] = [
-  { label: "Estrategia",    value: 89, color: "bg-primary",              glow: "shadow-[0_0_10px_rgba(233,196,0,0.5)]",   },
-  { label: "Análisis",      value: 74, color: "bg-tertiary",             glow: "shadow-[0_0_10px_rgba(158,202,255,0.5)]", },
-  { label: "Comunicación",  value: 81, color: "bg-secondary",            glow: "shadow-[0_0_10px_rgba(120,220,119,0.5)]", },
-  { label: "Adaptabilidad", value: 95, color: "bg-on-tertiary-container", glow: "shadow-[0_0_10px_rgba(52,160,254,0.5)]",  },
-]
+const ATTR_GLOW: Record<string, string> = {
+  "#FF3B30": "shadow-[0_0_10px_rgba(255,59,48,0.5)]", // red
+  "#FF9500": "shadow-[0_0_10px_rgba(255,149,0,0.5)]", // orange
+  "#4CD964": "shadow-[0_0_10px_rgba(76,217,100,0.5)]", // green
+  "#5AC8FA": "shadow-[0_0_10px_rgba(90,200,250,0.5)]", // blue/tertiary
+  "#007AFF": "shadow-[0_0_10px_rgba(0,122,255,0.5)]", // primary
+  "#5856D6": "shadow-[0_0_10px_rgba(88,86,214,0.5)]", // purple
+  "#FF2D55": "shadow-[0_0_10px_rgba(255,45,85,0.5)]", // pink
+  "#E5E5EA": "shadow-[0_0_10px_rgba(229,229,234,0.5)]", // gray
+}
 
 const ATTR_VALUE_COLOR: Record<string, string> = {
   "bg-primary":               "text-primary",
@@ -89,9 +97,17 @@ const SIDEBAR_NAV = [
 // Component
 // ---------------------------------------------------------------------------
 
-export default function PanelPerfilSteveSmith() {
+export default function PanelPerfilSteveSmith({ user }: { user?: UserData }) {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
+
+  // Map user dynamic attributes
+  const leftAttrs = user?.attributes.filter(a => a.attribute.side === "LEFT") || []
+  const rightAttrs = user?.attributes.filter(a => a.attribute.side === "RIGHT") || []
+
+  // Progress logic
+  const progressPercent = user ? Math.round((user.xp / user.xpToNextLevel) * 100) : 0
+  const dashOffset = 283 - (283 * progressPercent) / 100
 
   return (
     <div className="bg-surface font-body text-on-surface overflow-hidden">
@@ -118,8 +134,8 @@ export default function PanelPerfilSteveSmith() {
             />
           </div>
           <div className="overflow-hidden">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-on-surface truncate">Steve Smith</h2>
-            <p className="text-[10px] text-primary mt-1 truncate">Level 42 Architect</p>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-on-surface truncate">{user?.name || "Steve Smith"}</h2>
+            <p className="text-[10px] text-primary mt-1 truncate">Level {user?.level || 1} {user?.title?.split(" ")[0] || "Architect"}</p>
           </div>
         </div>
 
@@ -177,16 +193,16 @@ export default function PanelPerfilSteveSmith() {
 
               {/* Left attributes */}
               <div className="col-span-12 lg:col-span-4 space-y-6">
-                {LEFT_ATTRS.map((attr) => (
+                {leftAttrs.map(({ value, attribute: attr }) => (
                   <div key={attr.label} className="space-y-2">
                     <div className="flex justify-between text-[0.65rem] font-bold uppercase tracking-wider text-outline">
                       {attr.label}
-                      <span className={ATTR_VALUE_COLOR[attr.color]}>{attr.value}%</span>
+                      <span className={ATTR_VALUE_COLOR[attr.color] || "text-on-surface"}>{value}%</span>
                     </div>
                     <div className="h-3 bg-surface-container-high rounded-full overflow-hidden p-0.5">
                       <div
-                        className={`h-full ${attr.color} ${attr.glow} rounded-full`}
-                        style={{ width: `${attr.value}%` }}
+                        className={`h-full ${attr.color} rounded-full`}
+                        style={{ width: `${value}%`, boxShadow: ATTR_GLOW[attr.color] || "0 0 10px rgba(255,255,255,0.5)", backgroundColor: attr.color.startsWith('#') ? attr.color : undefined }}
                       />
                     </div>
                   </div>
@@ -200,47 +216,47 @@ export default function PanelPerfilSteveSmith() {
                   <div className="absolute inset-0 bg-primary opacity-20 blur-2xl group-hover:opacity-40 transition-opacity" />
                   <div className="w-32 h-32 rounded-full wood-bezel flex items-center justify-center relative z-10 border border-primary/30 glow-gold">
                     <div className="text-center">
-                      <div className="text-primary font-headline font-extrabold text-2xl tracking-tighter">NIVEL</div>
-                      <div className="text-on-surface font-headline font-black text-4xl leading-tight">42</div>
+                        <div className="text-primary font-headline font-extrabold text-2xl tracking-tighter">NIVEL</div>
+                        <div className="text-on-surface font-headline font-black text-4xl leading-tight">{user?.level || 42}</div>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Avatar */}
-                <div className="relative">
-                  <div className="w-48 h-48 rounded-full p-3 wood-bezel">
-                    <div className="w-full h-full rounded-full overflow-hidden border-2 border-outline-variant/30 shadow-2xl">
-                      <img
-                        alt="Steve Smith Portrait"
-                        className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6afDuJK0tqLx-JlGI9-bGPaw5r2_dGo58ajvCyO3grdhUz6QWnclFutaGPSDdDSYI88KcJdnHy_hurugXmtejiLbUrzYF7B37G-2TJtLPVj0WMKe0qE3QCvl1UzRNqB1xgRgmlwY0wQf0WdNpVJs-zMO0gIX8YWoKoqcBl9-S3akG_WhYQPSpQIrvJrIlpvbS-SWF4REdoRcifz67v8xjA-Ci5zyOq3xQ5zqucdbf7PS752YIJqCVEAAxfeIt8PypIot8T3jUGso"
-                      />
+                  {/* Avatar */}
+                  <div className="relative">
+                    <div className="w-48 h-48 rounded-full p-3 wood-bezel">
+                      <div className="w-full h-full rounded-full overflow-hidden border-2 border-outline-variant/30 shadow-2xl">
+                        <img
+                          alt="User Portrait"
+                          className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6afDuJK0tqLx-JlGI9-bGPaw5r2_dGo58ajvCyO3grdhUz6QWnclFutaGPSDdDSYI88KcJdnHy_hurugXmtejiLbUrzYF7B37G-2TJtLPVj0WMKe0qE3QCvl1UzRNqB1xgRgmlwY0wQf0WdNpVJs-zMO0gIX8YWoKoqcBl9-S3akG_WhYQPSpQIrvJrIlpvbS-SWF4REdoRcifz67v8xjA-Ci5zyOq3xQ5zqucdbf7PS752YIJqCVEAAxfeIt8PypIot8T3jUGso"
+                        />
+                      </div>
+                    </div>
+                    <div className="absolute -bottom-2 -right-2 bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center shadow-lg">
+                      <span className="material-symbols-outlined">verified</span>
                     </div>
                   </div>
-                  <div className="absolute -bottom-2 -right-2 bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center shadow-lg">
-                    <span className="material-symbols-outlined">verified</span>
-                  </div>
-                </div>
 
-                {/* Name + title */}
-                <div className="text-center">
-                  <h1 className="text-4xl font-headline font-black tracking-tight text-on-surface uppercase">Steve Smith</h1>
-                  <p className="text-primary font-body font-medium tracking-[0.2em] text-xs mt-2 uppercase">Architect of the Atelier</p>
-                </div>
+                  {/* Name + title */}
+                  <div className="text-center">
+                    <h1 className="text-4xl font-headline font-black tracking-tight text-on-surface uppercase">{user?.name || "Steve Smith"}</h1>
+                    <p className="text-primary font-body font-medium tracking-[0.2em] text-xs mt-2 uppercase">{user?.title || "Architect of the Atelier"}</p>
+                  </div>
               </div>
 
               {/* Right attributes */}
               <div className="col-span-12 lg:col-span-4 space-y-6">
-                {RIGHT_ATTRS.map((attr) => (
+                {rightAttrs.map(({ value, attribute: attr }) => (
                   <div key={attr.label} className="space-y-2">
                     <div className="flex justify-between text-[0.65rem] font-bold uppercase tracking-wider text-outline">
                       {attr.label}
-                      <span className={ATTR_VALUE_COLOR[attr.color]}>{attr.value}%</span>
+                      <span className={ATTR_VALUE_COLOR[attr.color] || "text-on-surface"}>{value}%</span>
                     </div>
                     <div className="h-3 bg-surface-container-high rounded-full overflow-hidden p-0.5">
                       <div
-                        className={`h-full ${attr.color} ${attr.glow} rounded-full`}
-                        style={{ width: `${attr.value}%` }}
+                        className={`h-full ${attr.color} rounded-full`}
+                        style={{ width: `${value}%`, boxShadow: ATTR_GLOW[attr.color] || "0 0 10px rgba(255,255,255,0.5)", backgroundColor: attr.color.startsWith('#') ? attr.color : undefined }}
                       />
                     </div>
                   </div>
@@ -316,24 +332,25 @@ export default function PanelPerfilSteveSmith() {
                         stroke="currentColor"
                         strokeWidth="8"
                         strokeDasharray="283"
-                        strokeDashoffset="79"
+                        strokeDashoffset={dashOffset}
                         strokeLinecap="round"
+                        style={{ transition: "stroke-dashoffset 1s ease-in-out" }}
                       />
                     </svg>
                     <div className="absolute flex flex-col items-center">
-                      <span className="text-4xl font-headline font-black text-on-surface">72%</span>
-                      <span className="text-[0.6rem] text-outline uppercase tracking-[0.3em]">Hacia Nivel 43</span>
+                      <span className="text-4xl font-headline font-black text-on-surface">{progressPercent}%</span>
+                      <span className="text-[0.6rem] text-outline uppercase tracking-[0.3em]">Hacia Nivel {(user?.level || 42) + 1}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-surface-container-lowest p-4 rounded-lg text-center border border-outline-variant/10">
-                    <div className="text-primary font-black text-xl leading-none">14</div>
+                    <div className="text-primary font-black text-xl leading-none">{user?.trophies || 0}</div>
                     <div className="text-[0.5rem] text-outline uppercase mt-1">Trofeos</div>
                   </div>
                   <div className="bg-surface-container-lowest p-4 rounded-lg text-center border border-outline-variant/10">
-                    <div className="text-secondary font-black text-xl leading-none">8.4k</div>
+                    <div className="text-secondary font-black text-xl leading-none">{user?.kredits ? (user.kredits / 1000).toFixed(1) + "k" : "0"}</div>
                     <div className="text-[0.5rem] text-outline uppercase mt-1">Kredits</div>
                   </div>
                 </div>
