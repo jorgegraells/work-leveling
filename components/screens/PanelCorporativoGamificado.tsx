@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { UserButton, SignOutButton } from "@clerk/nextjs"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -190,15 +191,20 @@ export default function PanelCorporativoGamificado({
           })}
         </nav>
 
-        <div className="mt-auto space-y-2">
+        <div className="mt-auto space-y-1 pt-4 border-t border-surface-container-highest/15">
           <a href="#" className="flex items-center gap-3 px-4 py-2 text-outline hover:text-on-surface transition-colors">
             <span className="material-symbols-outlined flex-shrink-0">settings</span>
-            <span className="text-[10px] font-bold uppercase">Settings</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest">Settings</span>
           </a>
-          <a href="#" className="flex items-center gap-3 px-4 py-2 text-outline hover:text-error transition-colors">
-            <span className="material-symbols-outlined flex-shrink-0">logout</span>
-            <span className="text-[10px] font-bold uppercase">Logout</span>
-          </a>
+          <SignOutButton>
+            <button className="w-full flex items-center gap-3 px-4 py-2 text-outline hover:text-error transition-colors focus:outline-none text-left">
+              <span className="material-symbols-outlined flex-shrink-0">logout</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest">Logout</span>
+            </button>
+          </SignOutButton>
+          <div className="px-4 py-2 mt-2 flex justify-center">
+            <UserButton appearance={{ elements: { userButtonAvatarBox: "w-10 h-10 border border-outline-variant/30" } }} />
+          </div>
         </div>
       </aside>
 
