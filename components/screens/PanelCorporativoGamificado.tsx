@@ -2,8 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { UserButton, SignOutButton } from "@clerk/nextjs"
+import SidebarLayout from "@/components/layout/SidebarLayout"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -93,21 +92,7 @@ const ACCENT_TEXT: Record<AccentColor, string> = {
   "on-tertiary-container":"text-on-tertiary-container",
 }
 
-const MOBILE_NAV = [
-  { icon: "trending_up",  label: "Ventas",   active: false, filled: false },
-  { icon: "account_tree", label: "Proyectos", active: false, filled: false },
-  { icon: "handshake",    label: "Misiones",  active: true,  filled: true  },
-  { icon: "description",  label: "Informes",  active: false, filled: false },
-  { icon: "settings",     label: "Config",    active: false, filled: false },
-]
-
-const SIDEBAR_NAV = [
-  { icon: "person",        label: "Perfil",     href: "/perfil"   },
-  { icon: "account_tree",  label: "Proyectos",  href: "/misiones" },
-  { icon: "description",   label: "Informes",   href: "#"         },
-  { icon: "insights",      label: "Estrategia", href: "#"         },
-  { icon: "military_tech", label: "Misiones",   href: "/misiones" },
-]
+// Desktop and Mobile nav removed as they are now handled by SidebarLayout
 
 // ---------------------------------------------------------------------------
 // Component
@@ -119,8 +104,6 @@ export default function PanelCorporativoGamificado({
   currentMission = DEFAULT_MISSION,
   missions = DEFAULT_MISSIONS,
 }: PanelCorporativoGamificadoProps) {
-  const pathname = usePathname()
-  const [collapsed, setCollapsed] = useState(false)
   const carouselRef = useRef<HTMLDivElement>(null)
   const [canLeft, setCanLeft] = useState(false)
   const [canRight, setCanRight] = useState(true)
@@ -146,77 +129,19 @@ export default function PanelCorporativoGamificado({
     if (el) el.scrollLeft += dir === "right" ? el.clientWidth : -el.clientWidth
   }
 
+  const headerUser = {
+    name: "Steve Smith",
+    level: userLevel,
+    title: userTitle,
+  }
+
   return (
-    <div className="bg-surface font-body text-on-surface overflow-hidden">
-      {/* Sidebar toggle button */}
-      <button
-        onClick={() => setCollapsed((c) => !c)}
-        className="fixed top-8 left-6 z-50 p-2 bg-surface-container-highest rounded-lg border border-primary/20 text-primary hover:bg-surface-variant transition-all active:scale-95 flex items-center justify-center"
-      >
-        <span className="material-symbols-outlined">menu</span>
-      </button>
-
-      {/* Sidebar */}
-      <aside
-        className="fixed left-0 top-0 h-full flex flex-col p-6 z-40 bg-surface w-64 rounded-r-2xl border-r border-surface-container-highest/15 sidebar-transition"
-        style={{ transform: collapsed ? "translateX(-100%)" : "translateX(0)" }}
-      >
-        <div className="mb-8 px-2 flex items-center gap-4 h-10">
-          <div className="w-10 flex-shrink-0" />
-          <div>
-            <h2 className="text-xs font-bold uppercase tracking-widest text-outline truncate">
-              WORK LEVELING
-            </h2>
-            <p className="text-[10px] text-primary mt-1 truncate">{userTitle}</p>
-          </div>
-        </div>
-
-        <nav className="flex-1 space-y-1">
-          {SIDEBAR_NAV.map((item) => {
-            const active = pathname === item.href
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 transition-transform hover:translate-x-1 rounded-lg ${
-                  active
-                    ? "bg-surface-bright text-primary shadow-inner"
-                    : "text-outline hover:bg-surface-variant"
-                }`}
-              >
-                <span className="material-symbols-outlined flex-shrink-0">{item.icon}</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest">{item.label}</span>
-              </Link>
-            )
-          })}
-        </nav>
-
-        <div className="mt-auto space-y-1 pt-4 border-t border-surface-container-highest/15">
-          <a href="#" className="flex items-center gap-3 px-4 py-2 text-outline hover:text-on-surface transition-colors">
-            <span className="material-symbols-outlined flex-shrink-0">settings</span>
-            <span className="text-[10px] font-bold uppercase tracking-widest">Settings</span>
-          </a>
-          <SignOutButton>
-            <button className="w-full flex items-center gap-3 px-4 py-2 text-outline hover:text-error transition-colors focus:outline-none text-left">
-              <span className="material-symbols-outlined flex-shrink-0">logout</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest">Logout</span>
-            </button>
-          </SignOutButton>
-          <div className="px-4 py-2 mt-2 flex justify-center">
-            <UserButton appearance={{ elements: { userButtonAvatarBox: "w-10 h-10 border border-outline-variant/30" } }} />
-          </div>
-        </div>
-      </aside>
-
-      {/* Main content */}
-      <main
-        className="min-h-screen flex flex-col relative overflow-hidden pb-20 md:pb-0 sidebar-content-transition"
-        style={{ marginLeft: collapsed ? 0 : 256 }}
-      >
+    <SidebarLayout user={headerUser}>
+      <div className="flex-1 flex flex-col w-full relative">
         {/* Top wood bezel */}
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50" />
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
 
-        <div className="flex-1 bg-surface px-4 sm:px-8 py-6 flex flex-col max-w-[1600px] mx-auto w-full">
+        <div className="flex-1 bg-surface px-4 sm:px-8 py-6 flex flex-col max-w-[1600px] mx-auto w-full overflow-y-auto overflow-x-hidden">
           {/* Level badge */}
           <div className="flex justify-center mb-8">
             <div className="bg-surface-container-lowest px-8 py-3 rounded-full border-2 border-primary/30 shadow-[0_0_20px_rgba(233,196,0,0.1)]">
@@ -350,30 +275,8 @@ export default function PanelCorporativoGamificado({
         </div>
 
         {/* Bottom wood bezel */}
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50" />
-      </main>
-
-      {/* Mobile bottom nav */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-surface-container-highest rounded-t-xl z-50 px-4 md:px-12 py-4 flex justify-between items-center xl:hidden border-t border-outline-variant">
-        {MOBILE_NAV.map((item) => (
-          <button
-            key={item.label}
-            className={`flex flex-col items-center gap-1.5 min-w-[64px] transition-colors active:text-on-surface ${
-              item.active ? "text-primary scale-110" : "text-outline"
-            }`}
-          >
-            <span
-              className="material-symbols-outlined !text-2xl md:!text-3xl"
-              style={item.filled ? { fontVariationSettings: "'FILL' 1" } : undefined}
-            >
-              {item.icon}
-            </span>
-            <span className="text-[8px] md:text-[10px] font-bold uppercase tracking-tight">
-              {item.label}
-            </span>
-          </button>
-        ))}
-      </nav>
-    </div>
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
+      </div>
+    </SidebarLayout>
   )
 }

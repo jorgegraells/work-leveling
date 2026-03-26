@@ -1,9 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useState } from "react"
-import { UserButton, SignOutButton } from "@clerk/nextjs"
+import SidebarLayout from "@/components/layout/SidebarLayout"
 
 // ---------------------------------------------------------------------------
 // Types & Defaults
@@ -98,9 +96,6 @@ const SIDEBAR_NAV = [
 // ---------------------------------------------------------------------------
 
 export default function PanelPerfilSteveSmith({ user }: { user?: UserData }) {
-  const pathname = usePathname()
-  const [collapsed, setCollapsed] = useState(false)
-
   // Map user dynamic attributes
   const leftAttrs = user?.attributes.filter(a => a.attribute.side === "LEFT") || []
   const rightAttrs = user?.attributes.filter(a => a.attribute.side === "RIGHT") || []
@@ -109,84 +104,19 @@ export default function PanelPerfilSteveSmith({ user }: { user?: UserData }) {
   const progressPercent = user ? Math.round((user.xp / user.xpToNextLevel) * 100) : 0
   const dashOffset = 283 - (283 * progressPercent) / 100
 
+  const headerUser = user ? {
+    name: user.name,
+    level: user.level,
+    title: user.title || "",
+  } : undefined
+
   return (
-    <div className="bg-surface font-body text-on-surface overflow-hidden">
-      {/* Sidebar toggle */}
-      <button
-        onClick={() => setCollapsed((c) => !c)}
-        className="fixed top-8 left-6 z-50 p-2 bg-surface-container-highest rounded-lg border border-primary/20 text-primary hover:bg-surface-variant transition-all active:scale-95 flex items-center justify-center"
-      >
-        <span className="material-symbols-outlined">menu</span>
-      </button>
-
-      {/* Sidebar */}
-      <aside
-        className="fixed left-0 top-0 h-full flex flex-col p-6 z-40 bg-surface w-64 rounded-r-2xl border-r border-surface-container-highest/15 sidebar-transition"
-        style={{ transform: collapsed ? "translateX(-100%)" : "translateX(0)" }}
-      >
-        {/* Header */}
-        <div className="mb-8 px-2 flex items-center gap-4 h-10">
-          <div className="w-12 h-12 rounded-lg border border-primary/30 overflow-hidden shadow-lg flex-shrink-0">
-            <img
-              alt="Steve Smith Avatar"
-              className="w-full h-full object-cover"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWTPaWsIeWia-JKJSuCcDSh-LBqkHHtOXUtLQpn8Bg3SHeaKf9QrgFmQ1Yjv1Uvlu8wdkRSkzBi_HykCKAvUxhyMwaRUc0URBp-ALkv_uV_L3H4JpZEv8MhaiQJIwn8_zTfxy1xsK8658Av4uq57j2ZISzG9n3E3XvbwDjcTf13adXIcyht0y6f6ujfinv-6cib3inqcVxaCNh0MUKg1lMkfxN2rHcy-jUjb47mpoZ4mvs1l7IJTnYpO6Z5vcNfkN6RXAXJgv4euY"
-            />
-          </div>
-          <div className="overflow-hidden">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-on-surface truncate">{user?.name || "Steve Smith"}</h2>
-            <p className="text-[10px] text-primary mt-1 truncate">Level {user?.level || 1} {user?.title?.split(" ")[0] || "Architect"}</p>
-          </div>
-        </div>
-
-        {/* Nav */}
-        <nav className="flex-1 space-y-1">
-          {SIDEBAR_NAV.map((item) => {
-            const active = pathname === item.href
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 transition-transform hover:translate-x-1 rounded-lg ${
-                  active
-                    ? "bg-surface-bright text-primary shadow-inner"
-                    : "text-outline hover:bg-surface-variant"
-                }`}
-              >
-                <span className="material-symbols-outlined flex-shrink-0">{item.icon}</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest">{item.label}</span>
-              </Link>
-            )
-          })}
-        </nav>
-
-        {/* Footer */}
-        <div className="mt-auto space-y-1 pt-4 border-t border-surface-container-highest/15">
-          <a href="#" className="flex items-center gap-3 px-4 py-2 text-outline hover:text-on-surface transition-colors">
-            <span className="material-symbols-outlined flex-shrink-0">settings</span>
-            <span className="text-[10px] font-bold uppercase tracking-widest">Settings</span>
-          </a>
-          <SignOutButton>
-            <button className="w-full flex items-center gap-3 px-4 py-2 text-outline hover:text-error transition-colors focus:outline-none text-left">
-              <span className="material-symbols-outlined flex-shrink-0">logout</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest">Logout</span>
-            </button>
-          </SignOutButton>
-          <div className="px-4 py-2 mt-2 flex justify-center">
-            <UserButton appearance={{ elements: { userButtonAvatarBox: "w-10 h-10 border border-outline-variant/30" } }} />
-          </div>
-        </div>
-      </aside>
-
-      {/* Main content */}
-      <main
-        className="min-h-screen relative flex flex-col sidebar-content-transition"
-        style={{ marginLeft: collapsed ? 0 : 256 }}
-      >
+    <SidebarLayout user={headerUser}>
+      <div className="flex-1 flex flex-col w-full relative">
         {/* Top bezel */}
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50" />
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
 
-        <div className="flex-1 px-8 lg:px-12 py-12 max-w-6xl mx-auto w-full space-y-12">
+        <div className="flex-1 px-4 md:px-8 lg:px-12 py-8 max-w-6xl mx-auto w-full space-y-12 overflow-y-auto overflow-x-hidden">
           {/* --- Central Profile Section --- */}
           <section className="relative">
             <div className="grid grid-cols-12 gap-8 items-center">
@@ -358,10 +288,10 @@ export default function PanelPerfilSteveSmith({ user }: { user?: UserData }) {
             </div>
           </section>
         </div>
-
+        
         {/* Bottom bezel */}
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50" />
-      </main>
-    </div>
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
+      </div>
+    </SidebarLayout>
   )
 }

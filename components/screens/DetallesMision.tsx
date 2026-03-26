@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import SidebarLayout from "@/components/layout/SidebarLayout"
 
 // ---------------------------------------------------------------------------
 // Types & data
@@ -137,9 +138,10 @@ export default function DetallesMision({ moduleSlug = "ventas-leads" }: Detalles
   const meta = MODULE_META[moduleSlug] ?? MODULE_META["ventas-leads"]
 
   return (
-    <div className="bg-surface font-body text-on-surface min-h-screen">
-      <main className="min-h-screen p-8 bg-surface">
-        <div className="max-w-5xl mx-auto">
+    <SidebarLayout>
+      <div className="bg-surface font-body text-on-surface min-h-screen flex flex-col w-full relative">
+        <main className="flex-1 p-4 md:p-8 overflow-y-auto overflow-x-hidden">
+          <div className="max-w-5xl mx-auto">
 
           {/* Breadcrumb & Back */}
           <div className="mb-10 flex justify-between items-center flex-wrap gap-4">
@@ -260,9 +262,10 @@ export default function DetallesMision({ moduleSlug = "ventas-leads" }: Detalles
                 </button>
               </div>
             </div>
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </SidebarLayout>
   )
 }
