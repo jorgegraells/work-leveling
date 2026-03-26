@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WORK LEVELING - Misiones Diarias</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed-variant": "#005313",
+              "on-primary-container": "#b69900",
+              "tertiary-container": "#00355d",
+              "surface-variant": "#353535",
+              "surface-container-high": "#2a2a2a",
+              "surface": "#131313",
+              "surface-container": "#1f2020",
+              "secondary-container": "#00761f",
+              "error-container": "#93000a",
+              "inverse-surface": "#e4e2e1",
+              "background": "#131313",
+              "on-tertiary-fixed": "#001d36",
+              "on-primary": "#3a3000",
+              "outline-variant": "#444748",
+              "inverse-primary": "#705d00",
+              "primary-fixed-dim": "#e9c400",
+              "outline": "#8e9192",
+              "on-secondary": "#00390a",
+              "on-primary-fixed": "#221b00",
+              "inverse-on-surface": "#303030",
+              "surface-container-low": "#1b1c1c",
+              "primary": "#e9c400",
+              "on-surface": "#e4e2e1",
+              "on-primary-fixed-variant": "#544600",
+              "on-tertiary-container": "#34a0fe",
+              "on-error": "#690005",
+              "tertiary-fixed-dim": "#9ecaff",
+              "tertiary-fixed": "#d1e4ff",
+              "surface-tint": "#e9c400",
+              "on-background": "#e4e2e1",
+              "surface-dim": "#131313",
+              "surface-container-highest": "#353535",
+              "on-surface-variant": "#c4c7c7",
+              "secondary": "#78dc77",
+              "tertiary": "#9ecaff",
+              "on-error-container": "#ffdad6",
+              "on-tertiary": "#003258",
+              "primary-fixed": "#ffe16d",
+              "on-secondary-container": "#95fb92",
+              "error": "#ffb4ab",
+              "surface-container-lowest": "#0e0e0e",
+              "on-secondary-fixed": "#002204",
+              "secondary-fixed": "#94f990",
+              "on-tertiary-fixed-variant": "#00497d",
+              "primary-container": "#3d3200",
+              "secondary-fixed-dim": "#78dc77",
+              "surface-bright": "#393939"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .wood-bezel-shadow {
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.8), 0 5px 20px rgba(0,0,0,0.5);
+        }
+        .glossy-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Sidebar transition styles */
+        #sidebar {
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #main-content {
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .nav-label {
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+        .sidebar-collapsed .nav-label {
+            opacity: 0;
+            visibility: hidden;
+            width: 0;
+            margin: 0;
+        }
+        .sidebar-collapsed .sidebar-header-text {
+            opacity: 0;
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary selection:text-on-primary overflow-hidden">
+<!-- Hamburger Toggle Button (Top Left) -->
+<button class="fixed top-8 left-6 z-50 p-2 bg-surface-container-highest rounded-lg border border-primary/20 text-primary hover:bg-surface-variant transition-all active:scale-95 hidden xl:flex items-center justify-center" id="sidebarToggle">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<!-- Main Side Navigation -->
+<aside class="fixed left-0 top-0 h-full flex flex-col p-6 z-40 bg-[#131313] w-64 rounded-r-2xl border-r border-[#353535]/15 hidden xl:flex" id="sidebar">
+<div class="mb-8 px-2 flex items-center gap-4 h-10">
+<!-- Spacer for the fixed toggle button position -->
+<div class="w-10 flex-shrink-0"></div>
+<div class="sidebar-header-text transition-all duration-300">
+<h2 class="text-xs font-bold uppercase tracking-widest text-outline truncate">WORK LEVELING</h2>
+<p class="text-[10px] text-primary mt-1 truncate">Level 42 Architect</p>
+</div>
+</div>
+<nav class="flex-1 space-y-8">
+<div class="space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-[#8e9192] hover:bg-[#353535] transition-transform hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined flex-shrink-0">person</span>
+<span class="text-[10px] font-bold uppercase Inter nav-label">Perfil</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 hover:bg-[#353535] transition-transform hover:translate-x-1 rounded-lg bg-[#393939] text-[#e9c400] shadow-inner" href="#">
+<span class="material-symbols-outlined flex-shrink-0">account_tree</span>
+<span class="text-[10px] font-bold uppercase Inter nav-label">Proyectos</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#8e9192] hover:bg-[#353535] transition-transform hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined flex-shrink-0">description</span>
+<span class="text-[10px] font-bold uppercase Inter nav-label">Informes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#8e9192] hover:bg-[#353535] transition-transform hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined flex-shrink-0">insights</span>
+<span class="text-[10px] font-bold uppercase Inter nav-label">Estrategia</span>
+</a>
+</div>
+</nav>
+<div class="mt-auto space-y-2">
+<a class="flex items-center gap-3 px-4 py-2 text-[#8e9192] hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined flex-shrink-0">settings</span>
+<span class="text-[10px] font-bold uppercase nav-label">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-[#8e9192] hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined flex-shrink-0">logout</span>
+<span class="text-[10px] font-bold uppercase nav-label">Logout</span>
+</a>
+</div>
+</aside>
+<!-- App Shell Wrapper -->
+<main class="xl:ml-64 min-h-screen flex flex-col relative overflow-hidden pb-20 md:pb-0" id="main-content">
+<!-- Top "Wood" Bezel -->
+<div class="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50"></div>
+<!-- Central Body Container -->
+<div class="flex-1 bg-[#131313] px-4 sm:px-8 py-6 flex flex-col max-w-[1600px] mx-auto w-full">
+<!-- Header Bar (Gris Carbón) -->
+<div class="flex justify-center mb-6">
+<div class="bg-surface-container-lowest px-6 py-2 rounded-full border border-primary/20">
+<span class="text-xs font-bold text-primary tracking-widest uppercase">Nivel 42</span>
+</div>
+</div>
+<header class="flex flex-col md:flex-row justify-between items-center w-full px-6 py-8 md:py-10 bg-surface-container-highest rounded-xl shadow-[0px_20px_40px_rgba(0,0,0,0.4)] mb-8 md:mb-10 relative overflow-hidden">
+<div class="absolute top-3 left-6"><span class="text-[10px] font-bold text-secondary uppercase tracking-widest">Misiones diarias</span></div>
+<div class="flex items-center gap-4 mt-4 md:mt-0">
+<h1 class="text-lg md:text-xl font-headline font-medium tracking-wide text-on-surface text-center md:text-left">Configurar la base de datos</h1>
+<span class="material-symbols-outlined text-primary text-2xl">database</span>
+</div>
+<div class="flex gap-2">
+<button class="p-3 bg-surface-variant/30 rounded-full hover:bg-surface-variant/50 transition-all active:scale-90 flex items-center justify-center min-h-[48px] min-w-[48px]">
+<span class="material-symbols-outlined text-outline">settings</span>
+</button>
+<button class="p-3 bg-surface-variant/30 rounded-full hover:bg-surface-variant/50 transition-all active:scale-90 flex items-center justify-center min-h-[48px] min-w-[48px]">
+<span class="material-symbols-outlined text-outline">arrow_forward</span>
+</button>
+</div>
+</header>
+<!-- Carousel Container with Navigation Arrows -->
+<div class="relative group flex items-center flex-1">
+<!-- Left Arrow -->
+<button class="absolute -left-4 md:-left-12 z-30 p-4 bg-surface-container-highest border border-primary/20 rounded-full text-primary shadow-xl hover:bg-primary hover:text-on-primary transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0" id="scrollLeft">
+<span class="material-symbols-outlined text-3xl">chevron_left</span>
+</button>
+<!-- Mission Cards Grid -->
+<div class="flex-1 flex gap-6 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory px-2 py-4" id="cardContainer">
+<!-- Card 1: Ventas & Leads -->
+<div class="min-w-full sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.33%-16px)] xl:min-w-[calc(25%-18px)] snap-start group relative rounded-xl bg-surface-container-highest p-1 transition-all duration-300 hover:scale-[1.02]">
+<div class="h-full w-full rounded-lg bg-surface-bright p-6 md:p-8 flex flex-col items-center text-center glossy-card">
+<p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-6 md:mb-8">Ventas &amp; Leads</p>
+<div class="mb-6 md:mb-8 text-secondary">
+<span class="material-symbols-outlined !text-5xl md:!text-6xl" style="font-variation-settings: 'FILL' 1;">filter_alt</span>
+</div>
+<h3 class="text-sm font-semibold text-on-surface mb-auto px-2">GENERAR 3 NUEVOS LEADS CUALIFICADOS</h3>
+<div class="w-full mt-6 md:mt-8 mb-4">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-bold text-outline uppercase">PROGRESO</span>
+<span class="text-[10px] font-bold text-primary">1/3 (33%)</span>
+</div>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 33%"></div>
+</div>
+</div>
+<button class="w-full min-h-[52px] bg-primary text-on-primary font-bold py-3 rounded-md transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest">PENDIENTE</button>
+</div>
+</div>
+<!-- Card 2: Proyectos & Cronograma -->
+<div class="min-w-full sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.33%-16px)] xl:min-w-[calc(25%-18px)] snap-start group relative rounded-xl bg-surface-container-highest p-1 transition-all duration-300 hover:scale-[1.02]">
+<div class="h-full w-full rounded-lg bg-surface-bright p-6 md:p-8 flex flex-col items-center text-center glossy-card">
+<p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-6 md:mb-8">Proyectos &amp; Cronograma</p>
+<div class="mb-6 md:mb-8 text-tertiary">
+<span class="material-symbols-outlined !text-5xl md:!text-6xl" style="font-variation-settings: 'FILL' 1;">stacked_bar_chart</span>
+</div>
+<h3 class="text-sm font-semibold text-on-surface mb-auto px-2">REVISAR EL CRONOGRAMA DE PROYECTOS DEL Q4</h3>
+<div class="w-full mt-6 md:mt-8 mb-4">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-bold text-outline uppercase">PROGRESO</span>
+<span class="text-[10px] font-bold text-primary">80%</span>
+</div>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 80%"></div>
+</div>
+</div>
+<button class="w-full min-h-[52px] bg-primary text-on-primary font-bold py-3 rounded-md transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest">PENDIENTE</button>
+</div>
+</div>
+<!-- Card 3: Alianzas & Contratos -->
+<div class="min-w-full sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.33%-16px)] xl:min-w-[calc(25%-18px)] snap-start group relative rounded-xl bg-surface-container-highest p-1 transition-all duration-300 hover:scale-[1.02]">
+<div class="h-full w-full rounded-lg bg-surface-bright p-6 md:p-8 flex flex-col items-center text-center glossy-card">
+<p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-6 md:mb-8">Alianzas &amp; Contratos</p>
+<div class="mb-6 md:mb-8 text-primary">
+<span class="material-symbols-outlined !text-5xl md:!text-6xl" style="font-variation-settings: 'FILL' 1;">handshake</span>
+</div>
+<h3 class="text-sm font-semibold text-on-surface mb-auto px-2">FIRMAR EL CONTRATO CON EL SOCIO B2B</h3>
+<div class="w-full mt-6 md:mt-8 mb-4">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-bold text-outline uppercase">PROGRESO</span>
+<span class="text-[10px] font-bold text-primary">0%</span>
+</div>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 0%"></div>
+</div>
+</div>
+<button class="w-full min-h-[52px] bg-primary text-on-primary font-bold py-3 rounded-md transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest">PENDIENTE</button>
+</div>
+</div>
+<!-- Card 4: Informes & Cumplimiento -->
+<div class="min-w-full sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.33%-16px)] xl:min-w-[calc(25%-18px)] snap-start group relative rounded-xl bg-surface-container-highest p-1 transition-all duration-300 hover:scale-[1.02]">
+<div class="h-full w-full rounded-lg bg-surface-bright p-6 md:p-8 flex flex-col items-center text-center glossy-card">
+<p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-6 md:mb-8">Informes &amp; Cumplimiento</p>
+<div class="mb-6 md:mb-8 text-on-tertiary-container">
+<span class="material-symbols-outlined !text-5xl md:!text-6xl" style="font-variation-settings: 'FILL' 1;">assignment_turned_in</span>
+</div>
+<h3 class="text-sm font-semibold text-on-surface mb-auto px-2">COMPLETAR EL INFORME TRIMESTRAL DE VENTAS</h3>
+<div class="w-full mt-6 md:mt-8 mb-4">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-bold text-outline uppercase">PROGRESO</span>
+<span class="text-[10px] font-bold text-primary">100%</span>
+</div>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 100%"></div>
+</div>
+</div>
+<button class="w-full min-h-[52px] bg-secondary text-on-secondary-fixed font-bold py-3 rounded-md shadow-lg shadow-secondary/20 hover:opacity-90 transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest">COMPLETAR</button>
+</div>
+</div>
+<!-- Card 5: Estrategia & Expansión (Locked) -->
+<div class="min-w-full sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.33%-16px)] xl:min-w-[calc(25%-18px)] snap-start group relative rounded-xl bg-surface-container-highest p-1 transition-all duration-300">
+<div class="h-full w-full rounded-lg bg-surface-container-lowest p-6 md:p-8 flex flex-col items-center text-center opacity-60 grayscale">
+<p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-6 md:mb-8">Estrategia &amp; Expansión</p>
+<div class="mb-6 md:mb-8 text-outline">
+<span class="material-symbols-outlined !text-5xl md:!text-6xl" style="font-variation-settings: 'FILL' 1;">language</span>
+</div>
+<h3 class="text-sm font-semibold text-outline mb-auto px-2">INICIATIVA DE EXPANSIÓN DE MERCADO</h3>
+<div class="w-full mt-6 md:mt-8 mb-4">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-bold text-outline/50 uppercase">Bloqueado</span>
+<span class="text-[10px] font-bold text-outline/50">0%</span>
+</div>
+<div class="w-full bg-surface-variant/30 h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary/20 h-full rounded-full" style="width: 0%"></div>
+</div>
+</div>
+<button class="w-full min-h-[52px] bg-surface-variant text-outline font-bold py-3 rounded-md cursor-not-allowed uppercase text-[10px] tracking-widest">LOCKED (Niv. 50)</button>
+</div>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<span class="material-symbols-outlined text-4xl text-on-surface/20">lock</span>
+</div>
+</div>
+</div>
+<!-- Right Arrow -->
+<button class="absolute -right-4 md:-right-12 z-30 p-4 bg-surface-container-highest border border-primary/20 rounded-full text-primary shadow-xl hover:bg-primary hover:text-on-primary transition-all opacity-0 group-hover:opacity-100" id="scrollRight">
+<span class="material-symbols-outlined text-3xl">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Bottom "Wood" Bezel -->
+<div class="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50"></div>
+</main>
+<!-- Navigation Bar (Mobile only) -->
+<nav class="fixed bottom-0 left-0 right-0 bg-[#353535] rounded-t-xl z-50 px-4 md:px-12 py-4 flex justify-between items-center xl:hidden border-t border-[#444748]">
+<button class="flex flex-col items-center gap-1.5 text-[#8e9192] min-w-[64px] transition-colors active:text-on-surface">
+<span class="material-symbols-outlined !text-2xl md:!text-3xl">trending_up</span>
+<span class="text-[8px] md:text-[10px] font-bold uppercase tracking-tight">Ventas</span>
+</button>
+<button class="flex flex-col items-center gap-1.5 text-[#8e9192] min-w-[64px] transition-colors active:text-on-surface">
+<span class="material-symbols-outlined !text-2xl md:!text-3xl">account_tree</span>
+<span class="text-[8px] md:text-[10px] font-bold uppercase tracking-tight">Proyectos</span>
+</button>
+<button class="flex flex-col items-center gap-1.5 text-[#e9c400] scale-110 min-w-[64px]">
+<span class="material-symbols-outlined !text-2xl md:!text-3xl" style="font-variation-settings: 'FILL' 1;">handshake</span>
+<span class="text-[8px] md:text-[10px] font-bold uppercase tracking-tight">Misiones</span>
+</button>
+<button class="flex flex-col items-center gap-1.5 text-[#8e9192] min-w-[64px] transition-colors active:text-on-surface">
+<span class="material-symbols-outlined !text-2xl md:!text-3xl">description</span>
+<span class="text-[8px] md:text-[10px] font-bold uppercase tracking-tight">Informes</span>
+</button>
+<button class="flex flex-col items-center gap-1.5 text-[#8e9192] min-w-[64px] transition-colors active:text-on-surface">
+<span class="material-symbols-outlined !text-2xl md:!text-3xl">settings</span>
+<span class="text-[8px] md:text-[10px] font-bold uppercase tracking-tight">Config</span>
+</button>
+</nav>
+<script>
+    // Sidebar Toggle Logic
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    let isSidebarCollapsed = false;
+
+    sidebarToggle.addEventListener('click', () => {
+        isSidebarCollapsed = !isSidebarCollapsed;
+        
+        if (isSidebarCollapsed) {
+            sidebar.style.width = '88px';
+            mainContent.style.marginLeft = '88px';
+            sidebar.classList.add('sidebar-collapsed');
+        } else {
+            sidebar.style.width = '256px';
+            mainContent.style.marginLeft = '256px';
+            sidebar.classList.remove('sidebar-collapsed');
+        }
+    });
+
+    // Carousel Logic
+    const container = document.getElementById('cardContainer');
+    const btnLeft = document.getElementById('scrollLeft');
+    const btnRight = document.getElementById('scrollRight');
+
+    const updateButtons = () => {
+        btnLeft.disabled = container.scrollLeft <= 0;
+        btnLeft.style.opacity = container.scrollLeft <= 0 ? "0" : "1";
+        
+        const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 10;
+        btnRight.disabled = isAtEnd;
+        btnRight.style.opacity = isAtEnd ? "0" : "1";
+    };
+
+    btnRight.addEventListener('click', () => {
+        container.scrollLeft += container.clientWidth;
+    });
+
+    btnLeft.addEventListener('click', () => {
+        container.scrollLeft -= container.clientWidth;
+    });
+
+    container.addEventListener('scroll', updateButtons);
+    window.addEventListener('resize', updateButtons);
+    
+    // Initial call
+    updateButtons();
+</script>
+</body></html>

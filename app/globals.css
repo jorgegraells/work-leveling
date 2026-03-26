@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-surface text-on-surface;
+  }
+
+  ::selection {
+    @apply bg-primary text-on-primary;
+  }
+}
+
+@layer utilities {
+  /* Material Symbols default variation */
+  .material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    font-family: "Material Symbols Outlined";
+    font-style: normal;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Dark-wood horizontal bezel strip */
+  .wood-bezel-shadow {
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8),
+                0 5px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Module frame background (used on level badge, mission detail quick-action) */
+  .wood-bezel {
+    background: linear-gradient(145deg, #353535, #1b1c1c);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5),
+                0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Subtle glass sheen on mission cards */
+  .glossy-card {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.01) 100%
+    );
+  }
+
+  /* Gold ambient glow used on level badge and FAB */
+  .glow-gold {
+    box-shadow: 0 0 25px rgba(233, 196, 0, 0.3);
+  }
+
+  /* Hide scrollbar while keeping scroll behaviour */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Sidebar slide transition */
+  .sidebar-transition {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Main content margin transition when sidebar collapses */
+  .sidebar-content-transition {
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Nav labels fade when sidebar is in icon-only mode */
+  .sidebar-label-transition {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+}

@@ -1,0 +1,16 @@
+node_modules
+/.next/
+/out/
+/build
+
+# env — NUNCA subir a git
+.env
+.env.local
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

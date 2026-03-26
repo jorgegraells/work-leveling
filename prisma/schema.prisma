@@ -1,0 +1,268 @@
+// ============================================================
+// Work Leveling — Prisma Schema
+// Datasource: PostgreSQL en Supabase
+// Auth: Clerk (clerkOrgId / clerkUserId como foreign keys)
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // requerido por Supabase connection pooler
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum Plan {
+  FREE
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+enum MissionModule {
+  VENTAS_LEADS
+  PROYECTOS_CRONOGRAMA
+  ALIANZAS_CONTRATOS
+  INFORMES_CUMPLIMIENTO
+  ESTRATEGIA_EXPANSION
+}
+
+enum MissionStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  ARCHIVED
+}
+
+enum ObjectiveStatus {
+  LOCKED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  PAUSED
+}
+
+// ============================================================
+// ORGANIZATION (empresa / tenant)
+// ============================================================
+
+model Organization {
+  id         String @id @default(cuid())
+  clerkOrgId String @unique // ID de Clerk Organizations
+  name       String
+  slug       String @unique // workleveling.app/org/acme
+  logoUrl    String?
+
+  plan  Plan @default(FREE)
+  seats Int  @default(5) // trabajadores incluidos en el plan
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  users        User[]
+  missions     Mission[]         // misiones propias de la empresa
+  subscription Subscription?
+}
+
+// ============================================================
+// USER (empleado)
+// ============================================================
+
+model User {
+  id          String  @id @default(cuid())
+  clerkUserId String  @unique // ID de Clerk Users
+  email       String  @unique
+  name        String
+  avatarUrl   String?
+  title       String? // "Architect of the Atelier"
+
+  // Gamificación
+  level         Int @default(1)
+  xp            Int @default(0)
+  xpToNextLevel Int @default(1000)
+  trophies      Int @default(0)
+  kredits       Int @default(0)
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  attributes   UserAttribute[]
+  userMissions UserMission[]
+  xpEvents     XpEvent[]
+
+  @@index([organizationId])
+}
+
+// ============================================================
+// ATTRIBUTES (habilidades ejecutivas)
+// ============================================================
+
+// Definición global de atributos (Lógica, Creatividad, etc.)
+model Attribute {
+  id    String @id @default(cuid())
+  key   String @unique // "logica", "creatividad"
+  label String          // "Lógica"
+  color String          // token: "primary", "tertiary", "secondary", "on-tertiary-container"
+  side  String          // "left" | "right" — para layout del perfil
+
+  userAttributes UserAttribute[]
+}
+
+// Valor de cada atributo por usuario (0-100)
+model UserAttribute {
+  id    String @id @default(cuid())
+  value Int    @default(0) // 0-100
+
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attributeId String
+  attribute   Attribute @relation(fields: [attributeId], references: [id])
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, attributeId])
+  @@index([userId])
+}
+
+// ============================================================
+// MISSIONS (plantillas de misión)
+// ============================================================
+
+// Plantilla de misión — puede ser global o de una organización concreta
+model Mission {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  module      MissionModule
+  icon        String         // nombre de Material Symbol, ej: "filter_alt"
+  xpReward    Int            @default(500)
+  priority    String         @default("NORMAL") // "ALTA", "NORMAL", "BAJA"
+  isGlobal    Boolean        @default(false)   // true = disponible para todas las orgs
+
+  organizationId String?      // null si isGlobal = true
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  objectives   MissionObjective[]
+  userMissions UserMission[]
+
+  @@index([organizationId])
+  @@index([module])
+}
+
+// Objetivos de una misión (Completada / En Progreso / Bloqueada)
+model MissionObjective {
+  id       String @id @default(cuid())
+  title    String
+  xpReward Int    @default(100)
+  order    Int    // orden de desbloqueo (0 primero)
+  icon     String // Material Symbol
+
+  missionId String
+  mission   Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  userObjectives UserMissionObjective[]
+
+  @@index([missionId])
+}
+
+// ============================================================
+// USER MISSIONS (progreso del empleado en cada misión)
+// ============================================================
+
+model UserMission {
+  id       String        @id @default(cuid())
+  status   MissionStatus @default(PENDING)
+  progress Int           @default(0) // 0-100
+
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  missionId String
+  mission   Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  objectives UserMissionObjective[]
+
+  @@unique([userId, missionId])
+  @@index([userId])
+  @@index([missionId])
+}
+
+// Progreso por objetivo individual
+model UserMissionObjective {
+  id     String          @id @default(cuid())
+  status ObjectiveStatus @default(LOCKED)
+
+  userMissionId String
+  userMission   UserMission @relation(fields: [userMissionId], references: [id], onDelete: Cascade)
+  objectiveId   String
+  objective     MissionObjective @relation(fields: [objectiveId], references: [id], onDelete: Cascade)
+
+  completedAt DateTime?
+
+  @@unique([userMissionId, objectiveId])
+}
+
+// ============================================================
+// XP EVENTS (log de puntos de experiencia)
+// ============================================================
+
+model XpEvent {
+  id     String @id @default(cuid())
+  amount Int    // positivo = ganado, negativo = penalización
+  reason String // "Misión completada", "Objetivo desbloqueado", etc.
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ============================================================
+// SUBSCRIPTION (Stripe per-seat)
+// ============================================================
+
+model Subscription {
+  id String @id @default(cuid())
+
+  // Stripe IDs
+  stripeCustomerId     String @unique
+  stripeSubscriptionId String @unique
+  stripePriceId        String
+
+  status           SubscriptionStatus @default(TRIALING)
+  currentPeriodEnd DateTime
+  cancelAtPeriodEnd Boolean           @default(false)
+
+  // Facturación por asiento
+  quantity Int @default(1) // nº de seats activos
+
+  organizationId String       @unique
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

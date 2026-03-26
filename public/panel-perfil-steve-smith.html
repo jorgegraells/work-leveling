@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Executive Quest - Steve Smith</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error-container": "#ffdad6",
+                        "tertiary": "#9ecaff",
+                        "secondary": "#78dc77",
+                        "surface-container-highest": "#353535",
+                        "on-surface-variant": "#c4c7c7",
+                        "on-background": "#e4e2e1",
+                        "surface-dim": "#131313",
+                        "on-secondary-container": "#95fb92",
+                        "primary-fixed": "#ffe16d",
+                        "on-tertiary": "#003258",
+                        "on-secondary-fixed": "#002204",
+                        "secondary-fixed": "#94f990",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-bright": "#393939",
+                        "secondary-fixed-dim": "#78dc77",
+                        "primary-container": "#3d3200",
+                        "on-tertiary-fixed-variant": "#00497d",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-variant": "#353535",
+                        "on-secondary-fixed-variant": "#005313",
+                        "on-primary-container": "#b69900",
+                        "tertiary-container": "#00355d",
+                        "on-tertiary-fixed": "#001d36",
+                        "on-primary": "#3a3000",
+                        "inverse-surface": "#e4e2e1",
+                        "background": "#131313",
+                        "secondary-container": "#00761f",
+                        "error-container": "#93000a",
+                        "surface-container": "#1f2020",
+                        "surface": "#131313",
+                        "surface-container-low": "#1b1c1c",
+                        "primary": "#e9c400",
+                        "inverse-on-surface": "#303030",
+                        "on-surface": "#e4e2e1",
+                        "on-secondary": "#00390a",
+                        "on-primary-fixed": "#221b00",
+                        "primary-fixed-dim": "#e9c400",
+                        "outline": "#8e9192",
+                        "outline-variant": "#444748",
+                        "inverse-primary": "#705d00",
+                        "tertiary-fixed": "#d1e4ff",
+                        "surface-tint": "#e9c400",
+                        "tertiary-fixed-dim": "#9ecaff",
+                        "on-error": "#690005",
+                        "on-primary-fixed-variant": "#544600",
+                        "on-tertiary-container": "#34a0fe"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .wood-bezel {
+            background: linear-gradient(145deg, #353535, #1b1c1c);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .glow-gold {
+            box-shadow: 0 0 25px rgba(233, 196, 0, 0.3);
+        }
+        .wood-bezel-shadow {
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.8), 0 5px 20px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary selection:text-on-primary overflow-x-hidden">
+<!-- Main Side Navigation (Optimized) -->
+<aside class="fixed left-0 top-0 h-full flex flex-col p-6 z-40 bg-[#131313] w-64 rounded-r-2xl border-r border-[#353535]/15" id="sidebar">
+<div class="mb-8 px-2 flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg border border-primary/30 overflow-hidden shadow-lg flex-shrink-0">
+<img alt="Steve Smith Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWTPaWsIeWia-JKJSuCcDSh-LBqkHHtOXUtLQpn8Bg3SHeaKf9QrgFmQ1Yjv1Uvlu8wdkRSkzBi_HykCKAvUxhyMwaRUc0URBp-ALkv_uV_L3H4JpZEv8MhaiQJIwn8_zTfxy1xsK8658Av4uq57j2ZISzG9n3E3XvbwDjcTf13adXIcyht0y6f6ujfinv-6cib3inqcVxaCNh0MUKg1lMkfxN2rHcy-jUjb47mpoZ4mvs1l7IJTnYpO6Z5vcNfkN6RXAXJgv4euY"/>
+</div>
+<div class="sidebar-header-text overflow-hidden">
+<h2 class="text-xs font-bold uppercase tracking-widest text-[#e4e2e1] truncate">Steve Smith</h2>
+<p class="text-[10px] text-primary mt-1 truncate">Level 42 Architect</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 bg-[#393939] text-[#e9c400] shadow-inner transition-transform rounded-lg" href="#">
+<span class="material-symbols-outlined flex-shrink-0">person</span>
+<span class="text-[10px] font-bold uppercase tracking-widest Inter">Perfil</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#8e9192] hover:bg-[#353535] transition-transform hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined flex-shrink-0">account_tree</span>
+<span class="text-[10px] font-bold uppercase tracking-widest Inter">Proyectos</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#8e9192] hover:bg-[#353535] transition-transform hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined flex-shrink-0">description</span>
+<span class="text-[10px] font-bold uppercase tracking-widest Inter">Informes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#8e9192] hover:bg-[#353535] transition-transform hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined flex-shrink-0">insights</span>
+<span class="text-[10px] font-bold uppercase tracking-widest Inter">Estrategia</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#8e9192] hover:bg-[#353535] transition-transform hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined flex-shrink-0">military_tech</span>
+<span class="text-[10px] font-bold uppercase tracking-widest Inter">Misiones</span>
+</a>
+</nav>
+<div class="mt-auto space-y-1 pt-4 border-t border-[#353535]/15">
+<a class="flex items-center gap-3 px-4 py-2 text-[#8e9192] hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined flex-shrink-0">settings</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-[#8e9192] hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined flex-shrink-0">logout</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen relative flex flex-col">
+<!-- Top Decorative Bezel -->
+<div class="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50"></div>
+<div class="flex-1 px-12 py-12 max-w-6xl mx-auto w-full space-y-12">
+<!-- Central Profile Section -->
+<section class="relative">
+<!-- Attributes Layout -->
+<div class="grid grid-cols-12 gap-8 items-center">
+<!-- Left Attributes -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between text-[0.65rem] font-bold uppercase tracking-wider text-outline">Lógica <span class="text-primary">85%</span></div>
+<div class="h-3 bg-surface-container-high rounded-full overflow-hidden flex gap-1 p-0.5">
+<div class="h-full bg-primary rounded-full shadow-[0_0_10px_rgba(233,196,0,0.5)]" style="width: 85%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[0.65rem] font-bold uppercase tracking-wider text-outline">Creatividad <span class="text-tertiary">92%</span></div>
+<div class="h-3 bg-surface-container-high rounded-full overflow-hidden flex gap-1 p-0.5">
+<div class="h-full bg-tertiary rounded-full shadow-[0_0_10px_rgba(158,202,255,0.5)]" style="width: 92%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[0.65rem] font-bold uppercase tracking-wider text-outline">Liderazgo <span class="text-secondary">78%</span></div>
+<div class="h-3 bg-surface-container-high rounded-full overflow-hidden flex gap-1 p-0.5">
+<div class="h-full bg-secondary rounded-full shadow-[0_0_10px_rgba(120,220,119,0.5)]" style="width: 78%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[0.65rem] font-bold uppercase tracking-wider text-outline">Negociación <span class="text-on-tertiary-container">65%</span></div>
+<div class="h-3 bg-surface-container-high rounded-full overflow-hidden flex gap-1 p-0.5">
+<div class="h-full bg-on-tertiary-container rounded-full shadow-[0_0_10px_rgba(52,160,254,0.5)]" style="width: 65%"></div>
+</div>
+</div>
+</div>
+<!-- Center Avatar & Level -->
+<div class="col-span-12 lg:col-span-4 flex flex-col items-center justify-center space-y-8">
+<!-- Level Badge -->
+<div class="relative group">
+<div class="absolute inset-0 bg-primary opacity-20 blur-2xl group-hover:opacity-40 transition-opacity"></div>
+<div class="w-32 h-32 rounded-full wood-bezel flex items-center justify-center relative z-10 border border-primary/30 glow-gold">
+<div class="text-center">
+<div class="text-primary font-headline font-extrabold text-2xl tracking-tighter">NIVEL</div>
+<div class="text-on-surface font-headline font-black text-4xl leading-tight">42</div>
+</div>
+</div>
+</div>
+<!-- Main Profile Avatar -->
+<div class="relative">
+<div class="w-56 h-56 rounded-full p-3 wood-bezel">
+<div class="w-full h-full rounded-full overflow-hidden border-2 border-outline-variant/30 shadow-2xl">
+<img alt="Steve Smith Portrait" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6afDuJK0tqLx-JlGI9-bGPaw5r2_dGo58ajvCyO3grdhUz6QWnclFutaGPSDdDSYI88KcJdnHy_hurugXmtejiLbUrzYF7B37G-2TJtLPVj0WMKe0qE3QCvl1UzRNqB1xgRgmlwY0wQf0WdNpVJs-zMO0gIX8YWoKoqcBl9-S3akG_WhYQPSpQIrvJrIlpvbS-SWF4REdoRcifz67v8xjA-Ci5zyOq3xQ5zqucdbf7PS752YIJqCVEAAxfeIt8PypIot8T3jUGso"/>
+</div>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined">verified</span>
+</div>
+</div>
+<div class="text-center">
+<h1 class="text-4xl font-headline font-black tracking-tight text-on-surface uppercase">Steve Smith</h1>
+<p class="text-primary font-body font-medium tracking-[0.2em] text-xs mt-2 uppercase">Architect of the Atelier</p>
+</div>
+</div>
+<!-- Right Attributes -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between text-[0.65rem] font-bold uppercase tracking-wider text-outline">Estrategia <span class="text-primary">89%</span></div>
+<div class="h-3 bg-surface-container-high rounded-full overflow-hidden flex gap-1 p-0.5">
+<div class="h-full bg-primary rounded-full shadow-[0_0_10px_rgba(233,196,0,0.5)]" style="width: 89%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[0.65rem] font-bold uppercase tracking-wider text-outline">Análisis <span class="text-tertiary">74%</span></div>
+<div class="h-3 bg-surface-container-high rounded-full overflow-hidden flex gap-1 p-0.5">
+<div class="h-full bg-tertiary rounded-full shadow-[0_0_10px_rgba(158,202,255,0.5)]" style="width: 74%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[0.65rem] font-bold uppercase tracking-wider text-outline">Comunicación <span class="text-secondary">81%</span></div>
+<div class="h-3 bg-surface-container-high rounded-full overflow-hidden flex gap-1 p-0.5">
+<div class="h-full bg-secondary rounded-full shadow-[0_0_10px_rgba(120,220,119,0.5)]" style="width: 81%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[0.65rem] font-bold uppercase tracking-wider text-outline">Adaptabilidad <span class="text-on-tertiary-container">95%</span></div>
+<div class="h-3 bg-surface-container-high rounded-full overflow-hidden flex gap-1 p-0.5">
+<div class="h-full bg-on-tertiary-container rounded-full shadow-[0_0_10px_rgba(52,160,254,0.5)]" style="width: 95%"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Experience & Achievements Grid -->
+<section class="grid grid-cols-12 gap-6">
+<!-- Experience Card -->
+<div class="col-span-12 md:col-span-8 bg-surface-container-highest p-1 rounded-xl shadow-2xl">
+<div class="bg-surface-bright rounded-lg h-full p-8 border border-outline-variant/10">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h3 class="text-2xl font-headline font-bold text-on-surface">Misiones Recientes</h3>
+<p class="text-outline text-xs uppercase tracking-widest mt-1">Historial Operativo</p>
+</div>
+<button class="px-6 py-2 bg-primary/10 text-primary border border-primary/20 rounded hover:bg-primary hover:text-on-primary transition-all duration-300 font-headline font-bold text-xs uppercase tracking-tighter">Ver Todas</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg group hover:bg-surface-container-high transition-colors cursor-pointer border-l-4 border-primary">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 rounded bg-primary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">rocket_launch</span>
+</div>
+<div>
+<div class="text-sm font-bold text-on-surface">Operación Horizonte Dorado</div>
+<div class="text-[0.65rem] text-outline uppercase tracking-wider">Estrategia de Mercado A1</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-secondary font-bold text-sm">+2,400 XP</div>
+<div class="text-[0.6rem] text-outline uppercase">Completado</div>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg group hover:bg-surface-container-high transition-colors cursor-pointer border-l-4 border-tertiary">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 rounded bg-tertiary-container flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">hub</span>
+</div>
+<div>
+<div class="text-sm font-bold text-on-surface">Sincronización de Nodos</div>
+<div class="text-[0.65rem] text-outline uppercase tracking-wider">Análisis de Alianzas</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-secondary font-bold text-sm">+1,150 XP</div>
+<div class="text-[0.6rem] text-outline uppercase">Completado</div>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg group hover:bg-surface-container-high transition-colors cursor-pointer border-l-4 border-secondary">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 rounded bg-secondary-container/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">shield</span>
+</div>
+<div>
+<div class="text-sm font-bold text-on-surface">Protocolo de Resiliencia</div>
+<div class="text-[0.65rem] text-outline uppercase tracking-wider">Gestión de Riesgos</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-secondary font-bold text-sm">+3,800 XP</div>
+<div class="text-[0.6rem] text-outline uppercase">Completado</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Stats/Level Progress Card -->
+<div class="col-span-12 md:col-span-4 bg-surface-container-highest p-1 rounded-xl shadow-2xl">
+<div class="bg-surface-bright rounded-lg h-full p-8 flex flex-col justify-between border border-outline-variant/10">
+<div>
+<h3 class="text-xl font-headline font-bold text-on-surface mb-2">Progreso de Rango</h3>
+<p class="text-outline text-xs uppercase tracking-widest mb-6">Próximo: Grand Master</p>
+<div class="relative w-full aspect-square flex items-center justify-center mb-8">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-surface-container-lowest" cx="50%" cy="50%" fill="transparent" r="45%" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary" cx="50%" cy="50%" fill="transparent" r="45%" stroke="currentColor" stroke-dasharray="283" stroke-dashoffset="80" stroke-width="8"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-4xl font-headline font-black text-on-surface">72%</span>
+<span class="text-[0.6rem] text-outline uppercase tracking-[0.3em]">Hacia Nivel 43</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-lg text-center border border-outline-variant/10">
+<div class="text-primary font-black text-xl leading-none">14</div>
+<div class="text-[0.5rem] text-outline uppercase mt-1">Trofeos</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-lg text-center border border-outline-variant/10">
+<div class="text-secondary font-black text-xl leading-none">8.4k</div>
+<div class="text-[0.5rem] text-outline uppercase mt-1">Kredits</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Bottom Decorative Bezel -->
+<div class="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50"></div>
+</main>
+<!-- Contextual Footer (Mobile only fallback) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-[#131313] py-3 px-6 flex justify-around items-center border-t border-outline-variant/10 z-50">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="material-symbols-outlined text-outline">account_tree</span>
+<div class="bg-primary rounded-full p-3 -mt-10 shadow-lg glow-gold">
+<span class="material-symbols-outlined text-on-primary">add</span>
+</div>
+<span class="material-symbols-outlined text-outline">insights</span>
+<span class="material-symbols-outlined text-outline">military_tech</span>
+</nav>
+</body></html>
