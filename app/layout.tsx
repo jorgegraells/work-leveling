@@ -1,7 +1,10 @@
 import type { Metadata } from "next"
-import { Manrope, Inter } from "next/font/google"
+import { Manrope, Inter, Geist } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
 import "./globals.css"
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -29,7 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="es" className="dark">
+      <html lang="es" className={cn("dark", "font-sans", geist.variable)}>
         <head>
           {/* Material Symbols variable font — required by all screen components */}
           <link
