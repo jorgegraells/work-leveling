@@ -20,6 +20,7 @@ interface UserData {
   clerkUserId: string
   name: string
   title: string | null
+  avatarUrl: string | null
   level: number
   xp: number
   xpToNextLevel: number
@@ -108,6 +109,7 @@ export default function PanelPerfilSteveSmith({ user }: { user?: UserData }) {
     name: user.name,
     level: user.level,
     title: user.title || "",
+    avatarUrl: user.avatarUrl,
   } : undefined
 
   return (

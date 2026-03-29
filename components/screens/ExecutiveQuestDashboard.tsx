@@ -25,6 +25,7 @@ export interface ExecutiveQuestDashboardProps {
   userName?: string
   userTitle?: string
   userLevel?: number
+  userAvatarUrl?: string | null
   rankProgress?: number
   rankNextLabel?: string
   trophies?: number
@@ -119,6 +120,7 @@ export default function ExecutiveQuestDashboard({
   userName = "Steve Smith",
   userTitle = "Architect of the Atelier",
   userLevel = 42,
+  userAvatarUrl,
   rankProgress = 72,
   rankNextLabel = "Grand Master",
   trophies = 14,
@@ -129,7 +131,7 @@ export default function ExecutiveQuestDashboard({
 }: ExecutiveQuestDashboardProps) {
   const dashOffset = Math.round(RING_CIRCUMFERENCE * (1 - rankProgress / 100))
 
-  const headerUser = { name: userName, level: userLevel, title: userTitle }
+  const headerUser = { name: userName, level: userLevel, title: userTitle, avatarUrl: userAvatarUrl }
 
   return (
     <SidebarLayout user={headerUser}>

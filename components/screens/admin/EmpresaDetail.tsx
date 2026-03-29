@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import type { Plan, SubscriptionStatus } from "@prisma/client"
+import DepartamentosList from "./DepartamentosList"
 
 interface DeptInfo {
   id: string
@@ -31,8 +32,22 @@ interface OrgData {
   createdAt: string
 }
 
+interface DepartmentDetailData {
+  id: string
+  name: string
+  manager: { id: string; name: string } | null
+  members: { id: string; user: { id: string; name: string }; role: string }[]
+}
+
+interface UserBasic {
+  id: string
+  name: string
+}
+
 interface EmpresaDetailProps {
   org: OrgData
+  departments?: DepartmentDetailData[]
+  users?: UserBasic[]
 }
 
 const PLAN_BADGE: Record<Plan, { label: string; classes: string }> = {
@@ -50,7 +65,7 @@ const SUB_STATUS: Record<SubscriptionStatus, { label: string; classes: string }>
   PAUSED:   { label: "Pausada",   classes: "bg-primary/20 text-primary" },
 }
 
-export default function EmpresaDetail({ org }: EmpresaDetailProps) {
+export default function EmpresaDetail({ org, departments, users }: EmpresaDetailProps) {
   const router = useRouter()
   const [deleting, setDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
@@ -211,6 +226,14 @@ export default function EmpresaDetail({ org }: EmpresaDetailProps) {
           </div>
         </div>
       </div>
+
+      {/* Departamentos */}
+      {departments && users && (
+        <div className="mt-8">
+          <h2 className="text-xl font-headline font-bold text-on-surface mb-4">Departamentos</h2>
+          <DepartamentosList departments={departments} orgId={org.id} users={users} />
+        </div>
+      )}
 
       {/* Delete confirm modal */}
       {showDeleteConfirm && (

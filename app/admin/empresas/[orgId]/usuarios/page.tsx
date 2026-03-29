@@ -63,7 +63,7 @@ export default async function UsuariosOrgPage({
   }))
 
   return (
-    <SidebarLayout user={{ name: user.name, level: user.level, title: user.title ?? "Super Admin" }}>
+    <SidebarLayout user={{ name: user.name, level: user.level, title: user.title ?? "Super Admin", avatarUrl: user.avatarUrl }}>
       <UsuariosOrg
         orgId={orgId}
         orgName={org.name}

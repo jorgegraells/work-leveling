@@ -15,6 +15,7 @@ interface SettingsProps {
 export default function Settings({ user }: SettingsProps) {
   const [name, setName] = useState(user.name)
   const [title, setTitle] = useState(user.title ?? "")
+  const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl ?? "")
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -28,7 +29,7 @@ export default function Settings({ user }: SettingsProps) {
       const res = await fetch("/api/me/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, title }),
+        body: JSON.stringify({ name, title, avatarUrl: avatarUrl.trim() || null }),
       })
 
       if (!res.ok) {
@@ -53,27 +54,33 @@ export default function Settings({ user }: SettingsProps) {
       <div className="rounded-xl bg-surface-container-highest p-1 max-w-2xl shadow-card">
         <div className="rounded-lg bg-surface-bright p-6 space-y-6">
           {/* Avatar section */}
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-surface-container-lowest flex items-center justify-center overflow-hidden border border-outline-variant/15">
-              {user.avatarUrl ? (
-                <img
-                  src={user.avatarUrl}
-                  alt="Avatar"
-                  className="w-full h-full object-cover"
+          <div className="space-y-3">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-surface-container-lowest flex items-center justify-center overflow-hidden border border-outline-variant/15 flex-shrink-0">
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt="Avatar"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="material-symbols-outlined text-3xl text-outline">
+                    person
+                  </span>
+                )}
+              </div>
+              <div className="flex-1 space-y-2">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                  Avatar URL
+                </label>
+                <input
+                  type="url"
+                  value={avatarUrl}
+                  onChange={(e) => setAvatarUrl(e.target.value)}
+                  placeholder="https://ejemplo.com/foto.jpg"
+                  className="w-full bg-surface-container-lowest text-on-surface rounded-md px-4 py-2.5 text-sm font-body focus:outline-none focus:ring-1 focus:ring-primary/50 border border-outline-variant/15 placeholder:text-outline/50"
                 />
-              ) : (
-                <span className="material-symbols-outlined text-3xl text-outline">
-                  person
-                </span>
-              )}
-            </div>
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                Avatar
-              </p>
-              <p className="text-xs text-on-surface-variant mt-1">
-                Cambiar avatar proximamente
-              </p>
+              </div>
             </div>
           </div>
 

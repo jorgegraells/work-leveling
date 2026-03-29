@@ -12,6 +12,7 @@ export interface UserDataHeader {
   name: string
   level: number
   title: string
+  avatarUrl?: string | null
 }
 
 const SIDEBAR_NAV = [
@@ -72,12 +73,16 @@ export default function SidebarLayout({
       >
         <div className="mb-8 flex justify-between items-center h-10 w-full">
           <div className="px-2 flex items-center gap-4 flex-1 overflow-hidden">
-            <div className="w-10 h-10 rounded-lg border border-primary/30 overflow-hidden shadow-lg flex-shrink-0">
-              <img
-                alt="Avatar"
-                className="w-full h-full object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWTPaWsIeWia-JKJSuCcDSh-LBqkHHtOXUtLQpn8Bg3SHeaKf9QrgFmQ1Yjv1Uvlu8wdkRSkzBi_HykCKAvUxhyMwaRUc0URBp-ALkv_uV_L3H4JpZEv8MhaiQJIwn8_zTfxy1xsK8658Av4uq57j2ZISzG9n3E3XvbwDjcTf13adXIcyht0y6f6ujfinv-6cib3inqcVxaCNh0MUKg1lMkfxN2rHcy-jUjb47mpoZ4mvs1l7IJTnYpO6Z5vcNfkN6RXAXJgv4euY"
-              />
+            <div className="w-10 h-10 rounded-lg border border-primary/30 overflow-hidden shadow-lg flex-shrink-0 flex items-center justify-center bg-surface-container-lowest">
+              {user?.avatarUrl ? (
+                <img
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                  src={user.avatarUrl}
+                />
+              ) : (
+                <span className="material-symbols-outlined text-xl text-outline">person</span>
+              )}
             </div>
             <div className="overflow-hidden">
               <h2 className="text-[11px] font-bold uppercase tracking-widest text-on-surface truncate">

@@ -22,7 +22,7 @@ export default async function EmpresasPage() {
 
   return (
     <SidebarLayout
-      user={{ name: user.name, level: user.level, title: user.title ?? "Executive" }}
+      user={{ name: user.name, level: user.level, title: user.title ?? "Executive", avatarUrl: user.avatarUrl }}
       breadcrumbs={[{ label: "Empresas" }]}
     >
       <EmpresasSwitcher orgs={orgs} currentOrgId={user.organizationId} />

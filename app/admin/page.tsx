@@ -18,7 +18,7 @@ export default async function AdminPage() {
   ])
 
   return (
-    <SidebarLayout user={{ name: user.name, level: user.level, title: user.title ?? "Super Admin" }}>
+    <SidebarLayout user={{ name: user.name, level: user.level, title: user.title ?? "Super Admin", avatarUrl: user.avatarUrl }}>
       <AdminDashboard
         totalOrgs={totalOrgs}
         totalUsers={totalUsers}

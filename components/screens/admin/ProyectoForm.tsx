@@ -19,19 +19,66 @@ interface ProyectoFormProps {
   orgId: string
 }
 
-const MODULE_OPTIONS: { value: MissionModule; label: string }[] = [
-  { value: "VENTAS_LEADS", label: "Ventas & Leads" },
-  { value: "PROYECTOS_CRONOGRAMA", label: "Proyectos & Cronograma" },
-  { value: "ALIANZAS_CONTRATOS", label: "Alianzas & Contratos" },
-  { value: "INFORMES_CUMPLIMIENTO", label: "Informes & Cumplimiento" },
-  { value: "ESTRATEGIA_EXPANSION", label: "Estrategia & Expansión" },
+const AVAILABLE_ICONS = [
+  { name: "filter_alt", label: "Filtro" },
+  { name: "stacked_bar_chart", label: "Grafico" },
+  { name: "handshake", label: "Alianza" },
+  { name: "assignment_turned_in", label: "Informe" },
+  { name: "language", label: "Global" },
+  { name: "rocket_launch", label: "Lanzamiento" },
+  { name: "hub", label: "Red" },
+  { name: "shield", label: "Seguridad" },
+  { name: "database", label: "Base Datos" },
+  { name: "trending_up", label: "Ventas" },
+  { name: "account_tree", label: "Proyecto" },
+  { name: "description", label: "Documento" },
+  { name: "insights", label: "Insight" },
+  { name: "military_tech", label: "Logro" },
+  { name: "groups", label: "Equipo" },
+  { name: "code", label: "Codigo" },
+  { name: "build", label: "Herramienta" },
+  { name: "campaign", label: "Campana" },
+  { name: "psychology", label: "Estrategia" },
+  { name: "support_agent", label: "Soporte" },
+  { name: "inventory", label: "Inventario" },
+  { name: "payments", label: "Pago" },
+  { name: "analytics", label: "Analitica" },
+  { name: "calendar_month", label: "Calendario" },
+  { name: "target", label: "Objetivo" },
+  { name: "school", label: "Formacion" },
+  { name: "star", label: "Destacado" },
+  { name: "flag", label: "Hito" },
+  { name: "emoji_events", label: "Trofeo" },
+  { name: "speed", label: "Velocidad" },
+] as const
+
+const MODULE_OPTIONS: { value: MissionModule; label: string; colorClass: string }[] = [
+  { value: "VENTAS_LEADS", label: "Ventas & Leads", colorClass: "text-secondary" },
+  { value: "PROYECTOS_CRONOGRAMA", label: "Proyectos & Cronograma", colorClass: "text-tertiary" },
+  { value: "ALIANZAS_CONTRATOS", label: "Alianzas & Contratos", colorClass: "text-primary" },
+  { value: "INFORMES_CUMPLIMIENTO", label: "Informes & Cumplimiento", colorClass: "text-on-tertiary-container" },
+  { value: "ESTRATEGIA_EXPANSION", label: "Estrategia & Expansion", colorClass: "text-outline" },
 ]
 
+const MODULE_COLOR_CLASS: Record<MissionModule, string> = {
+  VENTAS_LEADS: "text-secondary",
+  PROYECTOS_CRONOGRAMA: "text-tertiary",
+  ALIANZAS_CONTRATOS: "text-primary",
+  INFORMES_CUMPLIMIENTO: "text-on-tertiary-container",
+  ESTRATEGIA_EXPANSION: "text-outline",
+}
+
 const PRIORITY_OPTIONS = [
-  { value: "ALTA", label: "Alta" },
-  { value: "NORMAL", label: "Normal" },
-  { value: "BAJA", label: "Baja" },
+  { value: "ALTA", label: "Alta", colorClass: "text-error" },
+  { value: "NORMAL", label: "Normal", colorClass: "text-primary" },
+  { value: "BAJA", label: "Baja", colorClass: "text-outline" },
 ]
+
+const PRIORITY_COLOR_CLASS: Record<string, string> = {
+  ALTA: "text-error",
+  NORMAL: "text-primary",
+  BAJA: "text-outline",
+}
 
 export default function ProyectoForm({ mission, orgId }: ProyectoFormProps) {
   const router = useRouter()
@@ -121,18 +168,21 @@ export default function ProyectoForm({ mission, orgId }: ProyectoFormProps) {
 
       if (!res.ok) {
         const data = await res.json()
-        setError(data.error ?? "Error al guardar la misión")
+        setError(data.error ?? "Error al guardar el proyecto")
         return
       }
 
       router.push("/admin/proyectos")
       router.refresh()
     } catch {
-      setError("Error de conexión")
+      setError("Error de conexion")
     } finally {
       setLoading(false)
     }
   }
+
+  const selectedModuleColor = MODULE_COLOR_CLASS[module]
+  const selectedPriorityColor = PRIORITY_COLOR_CLASS[priority] ?? "text-primary"
 
   return (
     <div className="p-6 md:p-10 max-w-3xl mx-auto space-y-8">
@@ -150,158 +200,224 @@ export default function ProyectoForm({ mission, orgId }: ProyectoFormProps) {
             Admin / Proyectos
           </p>
           <h1 className="font-headline text-2xl font-bold text-on-surface mt-0.5">
-            {isEdit ? "Editar Misión" : "Nueva Misión"}
+            {isEdit ? "Editar Proyecto" : "Nuevo Proyecto"}
           </h1>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Main card */}
-        <div className="rounded-xl bg-surface-container-highest p-1">
+        <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
           <div className="rounded-lg bg-surface-bright p-6 space-y-5">
             <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-              Información General
+              Informacion General
             </p>
 
             {/* Title */}
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">
-                Título
+              <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                Titulo del Proyecto
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
-                placeholder="Nombre de la misión"
-                className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/20 focus:outline-none focus:border-primary/50 placeholder:text-outline"
+                placeholder="Nombre del proyecto"
+                className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary placeholder:text-outline"
               />
             </div>
 
             {/* Description */}
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">
-                Descripción
+              <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                Descripcion
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                placeholder="Descripción de la misión (opcional)"
-                className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/20 focus:outline-none focus:border-primary/50 placeholder:text-outline resize-none"
+                placeholder="Descripcion del proyecto (opcional)"
+                className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary placeholder:text-outline resize-none"
               />
             </div>
 
             {/* Module + Priority row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">
-                  Módulo
+                <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                  Modulo
                 </label>
-                <select
-                  value={module}
-                  onChange={(e) => setModule(e.target.value as MissionModule)}
-                  className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/20 focus:outline-none focus:border-primary/50"
-                >
-                  {MODULE_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">
-                  Prioridad
-                </label>
-                <select
-                  value={priority}
-                  onChange={(e) => setPriority(e.target.value)}
-                  className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/20 focus:outline-none focus:border-primary/50"
-                >
-                  {PRIORITY_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Icon + XP row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">
-                  Icono (Material Symbol)
-                </label>
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-primary text-2xl w-8 text-center flex-shrink-0">
-                    {icon || "circle"}
+                <div className="relative">
+                  <select
+                    value={module}
+                    onChange={(e) => setModule(e.target.value as MissionModule)}
+                    className={`w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm border border-outline-variant/30 focus:outline-none focus:border-primary appearance-none ${selectedModuleColor}`}
+                  >
+                    {MODULE_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-base pointer-events-none">
+                    expand_more
                   </span>
-                  <input
-                    type="text"
-                    value={icon}
-                    onChange={(e) => setIcon(e.target.value)}
-                    placeholder="task_alt"
-                    className="flex-1 bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/20 focus:outline-none focus:border-primary/50 placeholder:text-outline"
-                  />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">
-                  XP Reward
+                <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                  Prioridad
                 </label>
+                <div className="relative">
+                  <select
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                    className={`w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm border border-outline-variant/30 focus:outline-none focus:border-primary appearance-none ${selectedPriorityColor}`}
+                  >
+                    {PRIORITY_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-base pointer-events-none">
+                    expand_more
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* XP Reward */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                XP Reward
+              </label>
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary text-lg">military_tech</span>
                 <input
                   type="number"
                   value={xpReward}
                   onChange={(e) => setXpReward(parseInt(e.target.value) || 0)}
                   min={0}
-                  className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-primary border border-outline-variant/20 focus:outline-none focus:border-primary/50"
+                  className="w-32 bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-primary font-bold border border-outline-variant/30 focus:outline-none focus:border-primary"
                 />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-outline">puntos</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Objectives section */}
-        <div className="rounded-xl bg-surface-container-highest p-1">
+        {/* Icon Picker card */}
+        <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
           <div className="rounded-lg bg-surface-bright p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                Objetivos
-              </p>
+              <div className="flex items-center gap-3">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                  Icono del Proyecto
+                </p>
+                {icon && (
+                  <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-surface-container-lowest">
+                    <span className={`material-symbols-outlined text-lg ${selectedModuleColor}`}>
+                      {icon}
+                    </span>
+                    <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+                      {icon}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-6 gap-2">
+              {AVAILABLE_ICONS.map((ic) => {
+                const isSelected = icon === ic.name
+                return (
+                  <button
+                    key={ic.name}
+                    type="button"
+                    onClick={() => setIcon(ic.name)}
+                    className={`flex flex-col items-center justify-center gap-1 p-2.5 rounded-lg transition-all active:scale-95 ${
+                      isSelected
+                        ? "bg-surface-container-high border-2 border-primary"
+                        : "bg-surface-container-lowest border-2 border-transparent hover:border-outline-variant"
+                    }`}
+                  >
+                    <span
+                      className={`material-symbols-outlined text-xl ${
+                        isSelected ? "text-primary" : "text-on-surface-variant"
+                      }`}
+                    >
+                      {ic.name}
+                    </span>
+                    <span
+                      className={`text-[8px] uppercase font-bold tracking-widest leading-none ${
+                        isSelected ? "text-primary" : "text-outline"
+                      }`}
+                    >
+                      {ic.label}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Objectives section */}
+        <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
+          <div className="rounded-lg bg-surface-bright p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                  Misiones Diarias
+                </p>
+                <p className="text-[11px] text-on-surface-variant mt-0.5">
+                  Tareas que el empleado completa dentro de este proyecto
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={addObjective}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform"
               >
                 <span className="material-symbols-outlined text-base">add</span>
-                Añadir Objetivo
+                Anadir Mision
               </button>
             </div>
 
             {objectives.length === 0 ? (
-              <div className="py-8 text-center text-outline text-sm">
-                <span className="material-symbols-outlined text-3xl block mb-2 opacity-40">
-                  list_alt
-                </span>
-                Sin objetivos. Añade al menos uno.
+              <div className="py-8 text-center space-y-2">
+                <div className="w-14 h-14 rounded-xl bg-surface-container-lowest flex items-center justify-center mx-auto">
+                  <span className="material-symbols-outlined text-3xl text-outline opacity-40">
+                    list_alt
+                  </span>
+                </div>
+                <p className="text-outline text-sm">Sin misiones diarias.</p>
+                <p className="text-outline text-[11px]">Anade al menos una mision para este proyecto.</p>
               </div>
             ) : (
               <div className="space-y-2">
                 {objectives.map((obj, i) => (
-                  <ObjetivoRow
-                    key={i}
-                    objetivo={obj}
-                    isFirst={i === 0}
-                    isLast={i === objectives.length - 1}
-                    onMoveUp={() => moveObjective(i, "up")}
-                    onMoveDown={() => moveObjective(i, "down")}
-                    onDelete={() => deleteObjective(i)}
-                    onChange={(field, value) => updateObjective(i, field, value)}
-                  />
+                  <div key={i} className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-surface-container-lowest flex items-center justify-center flex-shrink-0">
+                      <span className="text-[10px] font-bold text-on-surface-variant">
+                        {i + 1}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <ObjetivoRow
+                        objetivo={obj}
+                        isFirst={i === 0}
+                        isLast={i === objectives.length - 1}
+                        onMoveUp={() => moveObjective(i, "up")}
+                        onMoveDown={() => moveObjective(i, "down")}
+                        onDelete={() => deleteObjective(i)}
+                        onChange={(field, value) => updateObjective(i, field, value)}
+                      />
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
@@ -321,21 +437,21 @@ export default function ProyectoForm({ mission, orgId }: ProyectoFormProps) {
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-4 py-2 rounded-md text-outline hover:bg-surface-container-high text-[10px] font-bold uppercase tracking-widest transition-colors active:scale-95"
+            className="px-4 py-2.5 rounded-md text-outline hover:bg-surface-container-high text-[10px] font-bold uppercase tracking-widest transition-colors active:scale-95"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center gap-2 px-6 py-2 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-[0.98] transition-transform disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-[0.98] transition-transform disabled:opacity-50 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]"
           >
             {loading && (
               <span className="material-symbols-outlined text-sm animate-spin">
                 progress_activity
               </span>
             )}
-            {isEdit ? "Guardar Cambios" : "Crear Misión"}
+            {isEdit ? "Guardar Cambios" : "Crear Proyecto"}
           </button>
         </div>
       </form>

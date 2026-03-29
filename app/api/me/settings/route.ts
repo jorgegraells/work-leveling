@@ -17,12 +17,17 @@ export async function PATCH(req: NextRequest) {
   const user = await requireCurrentUser()
   const body = await req.json()
 
-  const data: { name?: string; title?: string } = {}
+  const data: { name?: string; title?: string; avatarUrl?: string | null } = {}
   if (typeof body.name === "string" && body.name.trim()) {
     data.name = body.name.trim()
   }
   if (typeof body.title === "string") {
     data.title = body.title.trim() || null
+  }
+  if (body.avatarUrl === null || (typeof body.avatarUrl === "string")) {
+    data.avatarUrl = typeof body.avatarUrl === "string" && body.avatarUrl.trim()
+      ? body.avatarUrl.trim()
+      : null
   }
 
   if (Object.keys(data).length === 0) {

@@ -14,7 +14,7 @@ export default async function NotificacionesPage() {
 
   return (
     <SidebarLayout
-      user={{ name: user.name, level: user.level, title: user.title ?? "Executive" }}
+      user={{ name: user.name, level: user.level, title: user.title ?? "Executive", avatarUrl: user.avatarUrl }}
       breadcrumbs={[{ label: "Notificaciones" }]}
     >
       <div className="flex-1 flex flex-col w-full relative">

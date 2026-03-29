@@ -75,6 +75,7 @@ export default async function DashboardPage() {
       userName={user.name}
       userTitle={user.title ?? "Executive"}
       userLevel={user.level}
+      userAvatarUrl={user.avatarUrl}
       rankProgress={rankProgress}
       trophies={user.trophies}
       kredits={formatKredits(user.kredits)}

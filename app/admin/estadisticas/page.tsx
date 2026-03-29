@@ -88,7 +88,7 @@ export default async function AdminEstadisticasPage() {
 
   return (
     <SidebarLayout
-      user={{ name: user.name, level: user.level, title: user.title ?? "Admin" }}
+      user={{ name: user.name, level: user.level, title: user.title ?? "Admin", avatarUrl: user.avatarUrl }}
       breadcrumbs={[
         { label: "Admin", href: "/admin" },
         { label: "Estadisticas" },

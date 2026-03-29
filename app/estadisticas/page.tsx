@@ -21,6 +21,7 @@ export default async function EstadisticasPage() {
     prisma.userAttribute.findMany({
       where: { userId: user.id },
       include: { attribute: true },
+      distinct: ["attributeId"],
     }),
   ])
 
@@ -62,7 +63,7 @@ export default async function EstadisticasPage() {
 
   return (
     <SidebarLayout
-      user={{ name: user.name, level: user.level, title: user.title ?? "Executive" }}
+      user={{ name: user.name, level: user.level, title: user.title ?? "Executive", avatarUrl: user.avatarUrl }}
       breadcrumbs={[{ label: "Estadisticas" }]}
     >
       <Estadisticas

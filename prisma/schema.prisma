@@ -11,7 +11,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING") // requerido por Supabase connection pooler
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 // ============================================================
