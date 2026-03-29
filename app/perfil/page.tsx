@@ -21,7 +21,6 @@ const MODULE_ACCENT: Record<string, "primary" | "tertiary" | "secondary" | "on-t
 
 export default async function PerfilPage() {
   const { userId } = await auth()
-
   if (!userId) return redirect("/sign-in")
 
   const user = await prisma.user.findUnique({
@@ -29,31 +28,81 @@ export default async function PerfilPage() {
     include: {
       attributes: { include: { attribute: true } },
       userMissions: {
-        where: {
-          status: "COMPLETED",
-          approval: { status: "APPROVED" },
+        where: { status: "COMPLETED" },
+        include: {
+          mission: {
+            include: {
+              objectives: { orderBy: { order: "asc" } },
+            },
+          },
+          objectives: {
+            include: { objective: true },
+          },
+          approval: {
+            include: {
+              approver: { select: { name: true } },
+            },
+          },
         },
-        include: { mission: true },
         orderBy: { completedAt: "desc" },
-        take: 3,
       },
     },
   })
 
   if (!user) return redirect("/sign-in")
 
-  const recentMissions = user.userMissions.map((um) => ({
-    title: um.mission.title,
-    subtitle: MODULE_LABEL[um.mission.module] || um.mission.module,
-    xp: um.mission.xpReward,
-    icon: um.mission.icon,
-    accentColor: MODULE_ACCENT[um.mission.module] || "primary" as const,
-  }))
+  const completedProjects = user.userMissions
+    .filter((um) => um.approval?.status === "APPROVED")
+    .map((um) => ({
+      id: um.id,
+      missionId: um.missionId,
+      title: um.mission.title,
+      icon: um.mission.icon,
+      module: MODULE_LABEL[um.mission.module] || um.mission.module,
+      accentColor: MODULE_ACCENT[um.mission.module] || "primary" as const,
+      xpReward: um.mission.xpReward,
+      completedAt: um.completedAt?.toISOString() ?? null,
+      approval: um.approval ? {
+        note: um.approval.note,
+        approverName: um.approval.approver.name,
+        reviewedAt: um.approval.reviewedAt?.toISOString() ?? null,
+        scores: {
+          logica: um.approval.scoreLogica,
+          creatividad: um.approval.scoreCreatividad,
+          liderazgo: um.approval.scoreLiderazgo,
+          negociacion: um.approval.scoreNegociacion,
+          estrategia: um.approval.scoreEstrategia,
+          analisis: um.approval.scoreAnalisis,
+          comunicacion: um.approval.scoreComunicacion,
+          adaptabilidad: um.approval.scoreAdaptabilidad,
+        },
+      } : null,
+      objectives: um.mission.objectives.map((obj) => {
+        const userObj = um.objectives.find((uo) => uo.objectiveId === obj.id)
+        return {
+          title: obj.title,
+          icon: obj.icon,
+          xpReward: obj.xpReward,
+          status: userObj?.status ?? "LOCKED",
+        }
+      }),
+    }))
+
+  const pendingReview = user.userMissions
+    .filter((um) => um.approval?.status === "PENDING")
+    .map((um) => ({
+      id: um.id,
+      title: um.mission.title,
+      icon: um.mission.icon,
+      module: MODULE_LABEL[um.mission.module] || um.mission.module,
+      accentColor: MODULE_ACCENT[um.mission.module] || "primary" as const,
+    }))
 
   return (
     <PanelPerfilSteveSmith
       user={JSON.parse(JSON.stringify(user))}
-      recentMissions={recentMissions}
+      completedProjects={completedProjects}
+      pendingReview={pendingReview}
     />
   )
 }
