@@ -2,81 +2,126 @@ import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
+// Attributes must match DEFAULT_ATTRIBUTES in /api/webhooks/clerk/route.ts
+// color = design token name, side = "left" | "right" (lowercase)
+const ATTRIBUTES = [
+  { key: "logica",        label: "Lógica",        color: "primary",               side: "left"  },
+  { key: "creatividad",   label: "Creatividad",    color: "tertiary",              side: "left"  },
+  { key: "liderazgo",     label: "Liderazgo",      color: "secondary",             side: "left"  },
+  { key: "negociacion",   label: "Negociación",    color: "on-tertiary-container", side: "left"  },
+  { key: "estrategia",    label: "Estrategia",     color: "primary",               side: "right" },
+  { key: "analisis",      label: "Análisis",       color: "tertiary",              side: "right" },
+  { key: "comunicacion",  label: "Comunicación",   color: "secondary",             side: "right" },
+  { key: "adaptabilidad", label: "Adaptabilidad",  color: "on-tertiary-container", side: "right" },
+]
+
+// Demo values matching the Stitch screens
+const STEVE_VALUES: Record<string, number> = {
+  logica:        85,
+  creatividad:   92,
+  liderazgo:     78,
+  negociacion:   65,
+  estrategia:    89,
+  analisis:      74,
+  comunicacion:  81,
+  adaptabilidad: 95,
+}
+
 async function main() {
   console.log("Start seeding...")
 
-  // 1. Create Organization
+  // 1. Organization
   const org = await prisma.organization.upsert({
-    where: { slug: "tech-corp" },
+    where:  { slug: "tech-corp" },
     update: {},
     create: {
-      name: "Tech Corp",
-      slug: "tech-corp",
-      clerkOrgId: "org_sample_123", // Dummy ID
+      name:       "Tech Corp",
+      slug:       "tech-corp",
+      clerkOrgId: "org_sample_123",
     },
   })
 
-  // 2. Create User "Steve Smith"
+  // 2. User Steve Smith (demo — clerkUserId gets updated on first real login)
   const user = await prisma.user.upsert({
-    where: { email: "steve.smith@example.com" },
+    where:  { email: "steve.smith@example.com" },
     update: {},
     create: {
-      email: "steve.smith@example.com",
-      clerkUserId: "user_sample_123", // Dummy string, real log in will create another logic later or update this
-      name: "Steve Smith",
-      title: "Senior QA Engineer",
-      level: 42,
-      kredits: 2500,
+      email:          "steve.smith@example.com",
+      clerkUserId:    "user_sample_123",
+      name:           "Steve Smith",
+      title:          "Architect of the Atelier",
+      level:          42,
+      xp:             720,
+      xpToNextLevel:  1000,
+      trophies:       14,
+      kredits:        8400,
       organizationId: org.id,
     },
   })
 
-  // 3. Create Attributes
-  const attributesData = [
-    { key: "logic", label: "Lógica", color: "#FF3B30", side: "LEFT" },
-    { key: "memory", label: "Memoria", color: "#FF9500", side: "LEFT" },
-    { key: "focus", label: "Enfoque", color: "#4CD964", side: "LEFT" },
-    { key: "creativity", label: "Creatividad", color: "#5AC8FA", side: "LEFT" },
-    { key: "leadership", label: "Liderazgo", color: "#007AFF", side: "RIGHT" },
-    { key: "teamwork", label: "Trabajo en Eq.", color: "#5856D6", side: "RIGHT" },
-    { key: "communication", label: "Comunicación", color: "#FF2D55", side: "RIGHT" },
-    { key: "problem_solving", label: "Resolución", color: "#E5E5EA", side: "RIGHT" },
-  ]
-
-  for (const attr of attributesData) {
+  // 3. Attributes + UserAttributes
+  for (const attr of ATTRIBUTES) {
     const attribute = await prisma.attribute.upsert({
-      where: { key: attr.key },
-      update: {},
+      where:  { key: attr.key },
+      update: { label: attr.label, color: attr.color, side: attr.side },
       create: attr,
     })
 
-    // Assign to Steve Smith with values replicating the mockup
-    const mockupValues: Record<string, number> = {
-      "logic": 85,
-      "memory": 60,
-      "focus": 40,
-      "creativity": 30,
-      "leadership": 50,
-      "teamwork": 75,
-      "communication": 65,
-      "problem_solving": 90,
-    }
-    
     await prisma.userAttribute.upsert({
-      where: {
-        userId_attributeId: {
-          userId: user.id,
-          attributeId: attribute.id,
-        }
-      },
-      update: {
-        value: mockupValues[attr.key]
-      },
+      where: { userId_attributeId: { userId: user.id, attributeId: attribute.id } },
+      update: { value: STEVE_VALUES[attr.key] },
+      create: { userId: user.id, attributeId: attribute.id, value: STEVE_VALUES[attr.key] },
+    })
+  }
+
+  // 4. Sample completed missions for "Misiones Recientes" on the dashboard
+  const missions = [
+    {
+      title:       "Operación Horizonte Dorado",
+      description: "Estrategia de mercado expansiva para el segmento A1",
+      module:      "ALIANZAS_CONTRATOS" as const,
+      icon:        "rocket_launch",
+      xpReward:    2400,
+      priority:    "ALTA",
+      isGlobal:    true,
+    },
+    {
+      title:       "Sincronización de Nodos",
+      description: "Análisis y alineación de alianzas estratégicas",
+      module:      "PROYECTOS_CRONOGRAMA" as const,
+      icon:        "hub",
+      xpReward:    1150,
+      priority:    "NORMAL",
+      isGlobal:    true,
+    },
+    {
+      title:       "Protocolo de Resiliencia",
+      description: "Gestión integral de riesgos operativos",
+      module:      "INFORMES_CUMPLIMIENTO" as const,
+      icon:        "shield",
+      xpReward:    3800,
+      priority:    "ALTA",
+      isGlobal:    true,
+    },
+  ]
+
+  for (const m of missions) {
+    const mission = await prisma.mission.upsert({
+      where:  { id: `seed-${m.module.toLowerCase()}` },
+      update: {},
+      create: { id: `seed-${m.module.toLowerCase()}`, ...m },
+    })
+
+    await prisma.userMission.upsert({
+      where:  { userId_missionId: { userId: user.id, missionId: mission.id } },
+      update: {},
       create: {
-        userId: user.id,
-        attributeId: attribute.id,
-        value: mockupValues[attr.key],
-      }
+        userId:      user.id,
+        missionId:   mission.id,
+        status:      "COMPLETED",
+        progress:    100,
+        completedAt: new Date(),
+      },
     })
   }
 

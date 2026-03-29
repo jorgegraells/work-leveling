@@ -12,19 +12,19 @@ export interface UserDataHeader {
 }
 
 const SIDEBAR_NAV = [
-  { icon: "person",        label: "Perfil",     href: "/perfil"   },
-  { icon: "account_tree",  label: "Proyectos",  href: "/misiones" },
-  { icon: "description",   label: "Informes",   href: "#"         },
-  { icon: "insights",      label: "Estrategia", href: "#"         },
-  { icon: "military_tech", label: "Misiones",   href: "/misiones" },
+  { icon: "person",        label: "Perfil",     href: "/perfil"    },
+  { icon: "military_tech", label: "Misiones",   href: "/misiones"  },
+  { icon: "account_tree",  label: "Proyectos",  href: "/dashboard" },
+  { icon: "description",   label: "Informes",   href: "/dashboard" },
+  { icon: "insights",      label: "Estrategia", href: "/dashboard" },
 ]
 
 const MOBILE_NAV = [
-  { icon: "trending_up",  label: "Ventas",    href: "#" },
-  { icon: "account_tree", label: "Proyectos", href: "/misiones" },
-  { icon: "handshake",    label: "Misiones",  href: "/misiones" },
-  { icon: "description",  label: "Informes",  href: "#" },
-  { icon: "settings",     label: "Config",    href: "#" },
+  { icon: "person",       label: "Perfil",    href: "/perfil"    },
+  { icon: "military_tech",label: "Misiones",  href: "/misiones"  },
+  { icon: "home",         label: "Dashboard", href: "/dashboard" },
+  { icon: "account_tree", label: "Proyectos", href: "/dashboard" },
+  { icon: "description",  label: "Informes",  href: "/dashboard" },
 ]
 
 export default function SidebarLayout({

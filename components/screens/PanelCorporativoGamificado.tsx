@@ -8,7 +8,7 @@ import SidebarLayout from "@/components/layout/SidebarLayout"
 // Types
 // ---------------------------------------------------------------------------
 
-type MissionStatus = "PENDIENTE" | "COMPLETADO"
+type MissionStatus = "PENDIENTE" | "COMPLETADO" | "LOCKED"
 type AccentColor = "secondary" | "tertiary" | "primary" | "on-tertiary-container"
 
 export interface MissionCard {
@@ -82,6 +82,15 @@ const DEFAULT_MISSIONS: MissionCard[] = [
     progress: 100,
     status: "COMPLETADO",
     accentColor: "on-tertiary-container",
+  },
+  {
+    module: "Estrategia & Expansión",
+    icon: "language",
+    task: "INICIATIVA DE EXPANSIÓN DE MERCADO",
+    progressLabel: "0%",
+    progress: 0,
+    status: "LOCKED",
+    accentColor: "secondary",
   },
 ]
 
@@ -215,6 +224,46 @@ export default function PanelCorporativoGamificado({
                     .replace(/ /g, "-")
                     .normalize("NFD")
                     .replace(/[\u0300-\u036f]/g, "")
+
+                  if (m.status === "LOCKED") {
+                    return (
+                      <div
+                        key={m.module}
+                        className="min-w-full sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.33%-16px)] xl:min-w-[calc(25%-18px)] snap-start relative rounded-xl bg-surface-container-highest p-1"
+                      >
+                        <div className="h-full w-full rounded-lg bg-surface-container-lowest p-6 md:p-8 flex flex-col items-center text-center opacity-60 grayscale">
+                          <p className="text-[10px] font-bold text-outline uppercase tracking-widest mb-6 md:mb-8">
+                            {m.module}
+                          </p>
+                          <div className="mb-6 md:mb-8 text-outline">
+                            <span className="material-symbols-outlined !text-5xl md:!text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                              {m.icon}
+                            </span>
+                          </div>
+                          <h3 className="text-sm font-semibold text-outline mb-auto px-2">{m.task}</h3>
+                          <div className="w-full mt-6 md:mt-8 mb-4">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-[10px] font-bold text-outline/50 uppercase">Bloqueado</span>
+                              <span className="text-[10px] font-bold text-outline/50">0%</span>
+                            </div>
+                            <div className="w-full bg-surface-variant/30 h-1.5 rounded-full overflow-hidden">
+                              <div className="bg-primary/20 h-full rounded-full" style={{ width: "0%" }} />
+                            </div>
+                          </div>
+                          <button
+                            disabled
+                            className="w-full min-h-[52px] bg-surface-variant text-outline font-bold py-3 rounded-md cursor-not-allowed uppercase text-[10px] tracking-widest"
+                          >
+                            LOCKED (Niv. 50)
+                          </button>
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <span className="material-symbols-outlined text-4xl text-on-surface/20">lock</span>
+                        </div>
+                      </div>
+                    )
+                  }
+
                   return (
                   <Link
                     key={m.module}
