@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import SidebarLayout from "@/components/layout/SidebarLayout"
 
@@ -8,114 +9,59 @@ import SidebarLayout from "@/components/layout/SidebarLayout"
 // Types
 // ---------------------------------------------------------------------------
 
-type MissionStatus = "PENDIENTE" | "COMPLETADO" | "LOCKED"
-type AccentColor = "secondary" | "tertiary" | "primary" | "on-tertiary-container"
-
-export interface MissionCard {
-  module: string
-  icon: string
-  task: string
-  progressLabel: string
-  progress: number
-  status: MissionStatus
-  accentColor: AccentColor
-}
-
-export interface DailyMission {
+export interface ProjectCard {
+  id: string
+  missionId: string
   title: string
+  module: string
+  moduleKey: string
+  accentColor: string
   icon: string
+  xpReward: number
   priority: string
-  xp: number
+  progress: number
+  status: string // PENDING, IN_PROGRESS, COMPLETED, ARCHIVED
+  objectivesTotal: number
+  objectivesCompleted: number
 }
 
 export interface PanelCorporativoGamificadoProps {
-  userLevel?: number
-  userTitle?: string
-  currentMission?: DailyMission
-  missions?: MissionCard[]
+  userName: string
+  userLevel: number
+  userTitle: string
+  userAvatarUrl?: string | null
+  projects: ProjectCard[]
+  currentProject?: ProjectCard
 }
 
 // ---------------------------------------------------------------------------
-// Defaults (matching the original Stitch HTML)
+// Accent helpers
 // ---------------------------------------------------------------------------
 
-const DEFAULT_MISSION: DailyMission = {
-  title: "Configurar la base de datos",
-  icon: "database",
-  priority: "Prioridad Alta",
-  xp: 50,
+const ACCENT_TEXT: Record<string, string> = {
+  secondary: "text-secondary",
+  tertiary: "text-tertiary",
+  primary: "text-primary",
+  "on-tertiary-container": "text-on-tertiary-container",
 }
-
-const DEFAULT_MISSIONS: MissionCard[] = [
-  {
-    module: "Ventas & Leads",
-    icon: "filter_alt",
-    task: "GENERAR 3 NUEVOS LEADS CUALIFICADOS",
-    progressLabel: "1/3 (33%)",
-    progress: 33,
-    status: "PENDIENTE",
-    accentColor: "secondary",
-  },
-  {
-    module: "Proyectos & Cronograma",
-    icon: "stacked_bar_chart",
-    task: "REVISAR EL CRONOGRAMA DE PROYECTOS DEL Q4",
-    progressLabel: "80%",
-    progress: 80,
-    status: "PENDIENTE",
-    accentColor: "tertiary",
-  },
-  {
-    module: "Alianzas & Contratos",
-    icon: "handshake",
-    task: "FIRMAR EL CONTRATO CON EL SOCIO B2B",
-    progressLabel: "0%",
-    progress: 0,
-    status: "PENDIENTE",
-    accentColor: "primary",
-  },
-  {
-    module: "Informes & Cumplimiento",
-    icon: "assignment_turned_in",
-    task: "COMPLETAR EL INFORME TRIMESTRAL DE VENTAS",
-    progressLabel: "100%",
-    progress: 100,
-    status: "COMPLETADO",
-    accentColor: "on-tertiary-container",
-  },
-  {
-    module: "Estrategia & Expansión",
-    icon: "language",
-    task: "INICIATIVA DE EXPANSIÓN DE MERCADO",
-    progressLabel: "0%",
-    progress: 0,
-    status: "LOCKED",
-    accentColor: "secondary",
-  },
-]
-
-const ACCENT_TEXT: Record<AccentColor, string> = {
-  secondary:              "text-secondary",
-  tertiary:               "text-tertiary",
-  primary:                "text-primary",
-  "on-tertiary-container":"text-on-tertiary-container",
-}
-
-// Desktop and Mobile nav removed as they are now handled by SidebarLayout
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
 export default function PanelCorporativoGamificado({
-  userLevel = 42,
-  userTitle = "Level 42 Architect",
-  currentMission = DEFAULT_MISSION,
-  missions = DEFAULT_MISSIONS,
+  userName,
+  userLevel,
+  userTitle,
+  userAvatarUrl,
+  projects,
+  currentProject,
 }: PanelCorporativoGamificadoProps) {
+  const router = useRouter()
   const carouselRef = useRef<HTMLDivElement>(null)
   const [canLeft, setCanLeft] = useState(false)
   const [canRight, setCanRight] = useState(true)
+  const [completing, setCompleting] = useState(false)
 
   useEffect(() => {
     const el = carouselRef.current
@@ -138,11 +84,30 @@ export default function PanelCorporativoGamificado({
     if (el) el.scrollLeft += dir === "right" ? el.clientWidth : -el.clientWidth
   }
 
+  const handleComplete = async () => {
+    if (!currentProject || completing) return
+    setCompleting(true)
+    try {
+      const res = await fetch(
+        `/api/misiones/${currentProject.missionId}/completar`,
+        { method: "POST" }
+      )
+      if (res.ok) {
+        router.refresh()
+      }
+    } finally {
+      setCompleting(false)
+    }
+  }
+
   const headerUser = {
-    name: "Steve Smith",
+    name: userName,
     level: userLevel,
     title: userTitle,
+    avatarUrl: userAvatarUrl,
   }
+
+  const isEmpty = projects.length === 0
 
   return (
     <SidebarLayout user={headerUser}>
@@ -160,167 +125,233 @@ export default function PanelCorporativoGamificado({
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col justify-center gap-12">
-            {/* Daily mission header */}
-            <header className="flex flex-col md:flex-row justify-between items-center w-full px-8 py-10 bg-surface-container-highest rounded-xl shadow-card-lg relative overflow-hidden">
-              <div className="absolute top-3 left-8">
-                <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">
-                  Misiones diarias
-                </span>
-              </div>
+          {isEmpty ? (
+            /* Empty state */
+            <div className="flex-1 flex flex-col items-center justify-center gap-6">
+              <span className="material-symbols-outlined text-outline !text-7xl">
+                assignment
+              </span>
+              <h2 className="font-headline font-bold text-2xl text-on-surface">
+                No tienes proyectos asignados
+              </h2>
+              <p className="text-outline text-sm max-w-md text-center">
+                Cuando un administrador te asigne proyectos, aparecerán aquí
+                como misiones que puedes completar.
+              </p>
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col justify-center gap-12">
+              {/* Current project header */}
+              {currentProject && (
+                <header className="flex flex-col md:flex-row justify-between items-center w-full px-8 py-10 bg-surface-container-highest rounded-xl shadow-card-lg relative overflow-hidden">
+                  <div className="absolute top-3 left-8">
+                    <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">
+                      Proyecto Actual
+                    </span>
+                  </div>
 
-              <div className="flex flex-col md:flex-row items-center gap-6 mt-4 md:mt-0 w-full md:w-auto">
-                <button className="p-2 hover:bg-surface-variant/30 rounded-full transition-colors text-outline">
-                  <span className="material-symbols-outlined text-2xl">chevron_left</span>
-                </button>
-                <div className="flex items-center gap-4">
-                  <div className="flex flex-col items-center md:items-start">
-                    <div className="flex items-center gap-3">
-                      <h1 className="text-xl md:text-2xl font-headline font-semibold tracking-wide text-on-surface">
-                        {currentMission.title}
-                      </h1>
-                      <span className="bg-primary/20 text-primary px-2 py-0.5 rounded text-[10px] font-bold">
-                        +{currentMission.xp} XP
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 mt-2 text-primary/80">
-                      <span className="material-symbols-outlined text-xl">{currentMission.icon}</span>
-                      <span className="text-[10px] font-bold uppercase tracking-widest">
-                        {currentMission.priority}
-                      </span>
+                  <div className="flex flex-col md:flex-row items-center gap-6 mt-4 md:mt-0 w-full md:w-auto">
+                    <div className="flex items-center gap-4">
+                      <div className="flex flex-col items-center md:items-start">
+                        <div className="flex items-center gap-3">
+                          <span
+                            className={`material-symbols-outlined text-2xl ${ACCENT_TEXT[currentProject.accentColor] ?? "text-primary"}`}
+                            style={{
+                              fontVariationSettings: "'FILL' 1",
+                            }}
+                          >
+                            {currentProject.icon}
+                          </span>
+                          <h1 className="text-xl md:text-2xl font-headline font-semibold tracking-wide text-on-surface">
+                            {currentProject.title}
+                          </h1>
+                          <span className="bg-primary/20 text-primary px-2 py-0.5 rounded text-[10px] font-bold">
+                            +{currentProject.xpReward} XP
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-2 text-primary/80">
+                          <span className="text-[10px] font-bold uppercase tracking-widest">
+                            {currentProject.priority}
+                          </span>
+                          <span className="w-1 h-1 bg-outline-variant rounded-full" />
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                            {currentProject.objectivesCompleted}/
+                            {currentProject.objectivesTotal} misiones
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
 
-              <div className="flex items-center gap-6 mt-8 md:mt-0">
-                <button className="px-8 py-3 bg-secondary text-on-secondary-fixed font-bold rounded-lg shadow-lg shadow-secondary/10 hover:brightness-110 transition-all active:scale-95 uppercase text-xs tracking-widest">
-                  COMPLETAR
-                </button>
-                <button className="p-4 bg-surface-variant/30 rounded-full hover:bg-surface-variant/50 transition-all active:scale-90 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-primary">chevron_right</span>
-                </button>
-              </div>
-            </header>
-
-            {/* Mission cards carousel */}
-            <div className="relative group flex items-center">
-              <button
-                onClick={() => slide("left")}
-                disabled={!canLeft}
-                className="absolute -left-4 md:-left-12 z-30 p-4 bg-surface-container-highest border border-primary/20 rounded-full text-primary shadow-xl hover:bg-primary hover:text-on-primary transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0 disabled:pointer-events-none"
-              >
-                <span className="material-symbols-outlined text-3xl">chevron_left</span>
-              </button>
-
-              <div
-                ref={carouselRef}
-                className="flex-1 flex gap-6 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory px-2 py-4"
-              >
-                {missions.map((m) => {
-                  const slug = m.module
-                    .toLowerCase()
-                    .replace(/ & /g, "-")
-                    .replace(/ /g, "-")
-                    .normalize("NFD")
-                    .replace(/[\u0300-\u036f]/g, "")
-
-                  if (m.status === "LOCKED") {
-                    return (
-                      <div
-                        key={m.module}
-                        className="min-w-full sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.33%-16px)] xl:min-w-[calc(25%-18px)] snap-start relative rounded-xl bg-surface-container-highest p-1"
+                  <div className="flex items-center gap-6 mt-8 md:mt-0">
+                    {currentProject.status === "COMPLETED" ? (
+                      <span className="px-8 py-3 bg-secondary/20 text-secondary font-bold rounded-lg uppercase text-xs tracking-widest">
+                        COMPLETADO
+                      </span>
+                    ) : currentProject.objectivesCompleted >=
+                      currentProject.objectivesTotal &&
+                      currentProject.objectivesTotal > 0 ? (
+                      <button
+                        onClick={handleComplete}
+                        disabled={completing}
+                        className="px-8 py-3 bg-secondary text-on-secondary-fixed font-bold rounded-lg shadow-lg shadow-secondary/10 hover:brightness-110 transition-all active:scale-95 uppercase text-xs tracking-widest disabled:opacity-50"
                       >
-                        <div className="h-full w-full rounded-lg bg-surface-container-lowest p-6 md:p-8 flex flex-col items-center text-center opacity-60 grayscale">
+                        {completing ? "ENVIANDO..." : "COMPLETAR"}
+                      </button>
+                    ) : (
+                      <Link
+                        href={`/misiones/${currentProject.missionId}`}
+                        className="px-8 py-3 bg-primary text-on-primary font-bold rounded-lg shadow-lg shadow-primary/10 hover:brightness-110 transition-all active:scale-95 uppercase text-xs tracking-widest"
+                      >
+                        VER MISIONES
+                      </Link>
+                    )}
+                  </div>
+                </header>
+              )}
+
+              {/* Project cards carousel */}
+              <div className="relative group flex items-center">
+                <button
+                  onClick={() => slide("left")}
+                  disabled={!canLeft}
+                  className="absolute -left-4 md:-left-12 z-30 p-4 bg-surface-container-highest border border-primary/20 rounded-full text-primary shadow-xl hover:bg-primary hover:text-on-primary transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0 disabled:pointer-events-none"
+                >
+                  <span className="material-symbols-outlined text-3xl">
+                    chevron_left
+                  </span>
+                </button>
+
+                <div
+                  ref={carouselRef}
+                  className="flex-1 flex gap-6 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory px-2 py-4"
+                >
+                  {projects.map((p) => {
+                    const accentClass =
+                      ACCENT_TEXT[p.accentColor] ?? "text-primary"
+                    const progressLabel =
+                      p.objectivesTotal > 0
+                        ? `${p.objectivesCompleted}/${p.objectivesTotal} (${p.progress}%)`
+                        : `${p.progress}%`
+
+                    if (p.status === "ARCHIVED") {
+                      return (
+                        <div
+                          key={p.id}
+                          className="min-w-full sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.33%-16px)] xl:min-w-[calc(25%-18px)] snap-start relative rounded-xl bg-surface-container-highest p-1"
+                        >
+                          <div className="h-full w-full rounded-lg bg-surface-container-lowest p-6 md:p-8 flex flex-col items-center text-center opacity-60 grayscale">
+                            <p className="text-[10px] font-bold text-outline uppercase tracking-widest mb-6 md:mb-8">
+                              {p.module}
+                            </p>
+                            <div className="mb-6 md:mb-8 text-outline">
+                              <span
+                                className="material-symbols-outlined !text-5xl md:!text-6xl"
+                                style={{
+                                  fontVariationSettings: "'FILL' 1",
+                                }}
+                              >
+                                {p.icon}
+                              </span>
+                            </div>
+                            <h3 className="text-sm font-semibold text-outline mb-auto px-2">
+                              {p.title}
+                            </h3>
+                            <div className="w-full mt-6 md:mt-8 mb-4">
+                              <div className="flex justify-between items-center mb-2">
+                                <span className="text-[10px] font-bold text-outline/50 uppercase">
+                                  Archivado
+                                </span>
+                                <span className="text-[10px] font-bold text-outline/50">
+                                  {p.progress}%
+                                </span>
+                              </div>
+                              <div className="w-full bg-surface-variant/30 h-1.5 rounded-full overflow-hidden">
+                                <div
+                                  className="bg-primary/20 h-full rounded-full"
+                                  style={{ width: `${p.progress}%` }}
+                                />
+                              </div>
+                            </div>
+                            <button
+                              disabled
+                              className="w-full min-h-[52px] bg-surface-variant text-outline font-bold py-3 rounded-md cursor-not-allowed uppercase text-[10px] tracking-widest"
+                            >
+                              ARCHIVADO
+                            </button>
+                          </div>
+                        </div>
+                      )
+                    }
+
+                    return (
+                      <Link
+                        key={p.id}
+                        href={`/misiones/${p.missionId}`}
+                        className="min-w-full sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.33%-16px)] xl:min-w-[calc(25%-18px)] snap-start rounded-xl bg-surface-container-highest p-1 transition-all duration-300 hover:scale-[1.02] block"
+                      >
+                        <div className="h-full w-full rounded-lg bg-surface-bright p-6 md:p-8 flex flex-col items-center text-center glossy-card">
                           <p className="text-[10px] font-bold text-outline uppercase tracking-widest mb-6 md:mb-8">
-                            {m.module}
+                            {p.module}
                           </p>
-                          <div className="mb-6 md:mb-8 text-outline">
-                            <span className="material-symbols-outlined !text-5xl md:!text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                              {m.icon}
+                          <div className={`mb-6 md:mb-8 ${accentClass}`}>
+                            <span
+                              className="material-symbols-outlined !text-5xl md:!text-6xl"
+                              style={{
+                                fontVariationSettings: "'FILL' 1",
+                              }}
+                            >
+                              {p.icon}
                             </span>
                           </div>
-                          <h3 className="text-sm font-semibold text-outline mb-auto px-2">{m.task}</h3>
+                          <h3 className="text-sm font-semibold text-on-surface mb-auto px-2">
+                            {p.title}
+                          </h3>
                           <div className="w-full mt-6 md:mt-8 mb-4">
                             <div className="flex justify-between items-center mb-2">
-                              <span className="text-[10px] font-bold text-outline/50 uppercase">Bloqueado</span>
-                              <span className="text-[10px] font-bold text-outline/50">0%</span>
+                              <span className="text-[10px] font-bold text-outline uppercase">
+                                PROGRESO
+                              </span>
+                              <span className="text-[10px] font-bold text-primary">
+                                {progressLabel}
+                              </span>
                             </div>
-                            <div className="w-full bg-surface-variant/30 h-1.5 rounded-full overflow-hidden">
-                              <div className="bg-primary/20 h-full rounded-full" style={{ width: "0%" }} />
+                            <div className="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+                              <div
+                                className="bg-primary h-full rounded-full"
+                                style={{ width: `${p.progress}%` }}
+                              />
                             </div>
                           </div>
-                          <button
-                            disabled
-                            className="w-full min-h-[52px] bg-surface-variant text-outline font-bold py-3 rounded-md cursor-not-allowed uppercase text-[10px] tracking-widest"
-                          >
-                            LOCKED (Niv. 50)
-                          </button>
+                          {p.status === "COMPLETED" ? (
+                            <button className="w-full min-h-[52px] bg-secondary text-on-secondary-fixed font-bold py-3 rounded-md shadow-lg shadow-secondary/20 hover:opacity-90 transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest">
+                              COMPLETADO
+                            </button>
+                          ) : (
+                            <button className="w-full min-h-[52px] bg-primary text-on-primary font-bold py-3 rounded-md transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest">
+                              {p.status === "PENDING"
+                                ? "PENDIENTE"
+                                : "EN PROGRESO"}
+                            </button>
+                          )}
                         </div>
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <span className="material-symbols-outlined text-4xl text-on-surface/20">lock</span>
-                        </div>
-                      </div>
+                      </Link>
                     )
-                  }
+                  })}
+                </div>
 
-                  return (
-                  <Link
-                    key={m.module}
-                    href={`/misiones/${slug}`}
-                    className="min-w-full sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.33%-16px)] xl:min-w-[calc(25%-18px)] snap-start rounded-xl bg-surface-container-highest p-1 transition-all duration-300 hover:scale-[1.02] block"
-                  >
-                    <div className="h-full w-full rounded-lg bg-surface-bright p-6 md:p-8 flex flex-col items-center text-center glossy-card">
-                      <p className="text-[10px] font-bold text-outline uppercase tracking-widest mb-6 md:mb-8">
-                        {m.module}
-                      </p>
-                      <div className={`mb-6 md:mb-8 ${ACCENT_TEXT[m.accentColor]}`}>
-                        <span
-                          className="material-symbols-outlined !text-5xl md:!text-6xl"
-                          style={{ fontVariationSettings: "'FILL' 1" }}
-                        >
-                          {m.icon}
-                        </span>
-                      </div>
-                      <h3 className="text-sm font-semibold text-on-surface mb-auto px-2">
-                        {m.task}
-                      </h3>
-                      <div className="w-full mt-6 md:mt-8 mb-4">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-[10px] font-bold text-outline uppercase">PROGRESO</span>
-                          <span className="text-[10px] font-bold text-primary">{m.progressLabel}</span>
-                        </div>
-                        <div className="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
-                          <div
-                            className="bg-primary h-full rounded-full"
-                            style={{ width: `${m.progress}%` }}
-                          />
-                        </div>
-                      </div>
-                      {m.status === "COMPLETADO" ? (
-                        <button className="w-full min-h-[52px] bg-secondary text-on-secondary-fixed font-bold py-3 rounded-md shadow-lg shadow-secondary/20 hover:opacity-90 transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest">
-                          COMPLETADO
-                        </button>
-                      ) : (
-                        <button className="w-full min-h-[52px] bg-primary text-on-primary font-bold py-3 rounded-md transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest">
-                          PENDIENTE
-                        </button>
-                      )}
-                    </div>
-                  </Link>
-                  )
-                })}
+                <button
+                  onClick={() => slide("right")}
+                  disabled={!canRight}
+                  className="absolute -right-4 md:-right-12 z-30 p-4 bg-surface-container-highest border border-primary/20 rounded-full text-primary shadow-xl hover:bg-primary hover:text-on-primary transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0 disabled:pointer-events-none"
+                >
+                  <span className="material-symbols-outlined text-3xl">
+                    chevron_right
+                  </span>
+                </button>
               </div>
-
-              <button
-                onClick={() => slide("right")}
-                disabled={!canRight}
-                className="absolute -right-4 md:-right-12 z-30 p-4 bg-surface-container-highest border border-primary/20 rounded-full text-primary shadow-xl hover:bg-primary hover:text-on-primary transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0 disabled:pointer-events-none"
-              >
-                <span className="material-symbols-outlined text-3xl">chevron_right</span>
-              </button>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Bottom wood bezel */}

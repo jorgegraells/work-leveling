@@ -59,8 +59,8 @@ export default function SidebarLayout({
       {/* Sidebar toggle button (hidden when sidebar is open) */}
       <button
         onClick={() => setCollapsed(false)}
-        className={`fixed top-8 left-6 z-50 p-2 bg-surface-container-highest rounded-lg border border-primary/20 text-primary hover:bg-surface-variant transition-all active:scale-95 flex items-center justify-center ${
-          collapsed ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        className={`fixed top-8 left-6 z-50 p-2 bg-surface-container-highest rounded-lg border border-primary/20 text-primary hover:bg-surface-variant transition-all active:scale-95 hidden xl:flex items-center justify-center ${
+          collapsed ? "xl:opacity-100 xl:pointer-events-auto" : "xl:opacity-0 xl:pointer-events-none"
         }`}
       >
         <span className="material-symbols-outlined">menu</span>
@@ -68,7 +68,7 @@ export default function SidebarLayout({
 
       {/* Sidebar */}
       <aside
-        className="fixed left-0 top-0 h-full flex flex-col p-6 z-40 bg-surface w-64 rounded-r-2xl border-r border-surface-container-highest/15 sidebar-transition"
+        className="fixed left-0 top-0 h-full hidden xl:flex flex-col p-6 z-40 bg-surface w-64 rounded-r-2xl border-r border-surface-container-highest/15 sidebar-transition"
         style={{ transform: collapsed ? "translateX(-100%)" : "translateX(0)" }}
       >
         <div className="mb-8 flex justify-between items-center h-10 w-full">
@@ -145,8 +145,9 @@ export default function SidebarLayout({
 
       {/* Main content */}
       <main
-        className="flex-1 flex flex-col relative overflow-hidden min-h-screen sidebar-content-transition pb-20 xl:pb-0"
-        style={{ marginLeft: collapsed ? 0 : 256 }}
+        className={`flex-1 flex flex-col relative overflow-hidden min-h-screen sidebar-content-transition pb-20 xl:pb-0 ${
+          collapsed ? "xl:ml-0" : "xl:ml-64"
+        }`}
       >
         {breadcrumbs && breadcrumbs.length > 0 && (
           <div className="px-6 pt-4">
