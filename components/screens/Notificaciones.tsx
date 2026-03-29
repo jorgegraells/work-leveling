@@ -139,7 +139,7 @@ export default function Notificaciones({
                     <span className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
                   )}
                 </div>
-                <p className="text-xs text-on-surface-variant mt-1 line-clamp-2">
+                <p className="text-xs text-on-surface-variant mt-1 whitespace-pre-line">
                   {notif.body}
                 </p>
               </div>

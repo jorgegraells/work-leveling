@@ -162,13 +162,31 @@ export async function POST(
       },
     })
 
-    // 6. Notify employee
+    // 6. Notify employee with note and scores
+    const noteText = note ? `\n\nNota del revisor: "${note}"` : ""
     await tx.notification.create({
       data: {
         userId: employee.id,
         type: "MISSION_APPROVED",
         title: "Misión aprobada",
-        body: `Tu misión '${mission.title}' ha sido aprobada. +${xpGain} XP`,
+        body: `Tu misión '${mission.title}' ha sido aprobada por ${currentUser.name}. +${xpGain} XP${noteText}`,
+        data: {
+          missionId: mission.id,
+          approvalId: id,
+          approverName: currentUser.name,
+          note: note ?? "",
+          xpGain,
+          scores: {
+            logica: body.scoreLogica,
+            creatividad: body.scoreCreatividad,
+            liderazgo: body.scoreLiderazgo,
+            negociacion: body.scoreNegociacion,
+            estrategia: body.scoreEstrategia,
+            analisis: body.scoreAnalisis,
+            comunicacion: body.scoreComunicacion,
+            adaptabilidad: body.scoreAdaptabilidad,
+          },
+        },
       },
     })
 

@@ -68,13 +68,19 @@ export async function POST(
       },
     })
 
-    // 3. Notify employee
+    // 3. Notify employee with reviewer info
     await tx.notification.create({
       data: {
         userId: employee.id,
         type: "MISSION_REJECTED",
         title: "Misión rechazada",
-        body: `Tu misión '${approval.userMission.mission.title}' ha sido rechazada. Motivo: ${body.note.trim()}`,
+        body: `Tu misión '${approval.userMission.mission.title}' ha sido rechazada por ${currentUser.name}.\n\nMotivo: "${body.note.trim()}"`,
+        data: {
+          missionId: approval.userMission.mission.id,
+          approvalId: id,
+          reviewerName: currentUser.name,
+          note: body.note.trim(),
+        },
       },
     })
   })
