@@ -118,6 +118,27 @@ export default function AdminDashboard({
               <span className="material-symbols-outlined text-sm">add_business</span>
               Nueva Empresa
             </Link>
+            <Link
+              href="/admin/proyectos"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-surface-container-high text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-variant active:scale-95 transition-transform"
+            >
+              <span className="material-symbols-outlined text-sm text-tertiary">account_tree</span>
+              Proyectos
+            </Link>
+            <Link
+              href="/admin/aprobaciones"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-surface-container-high text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-variant active:scale-95 transition-transform"
+            >
+              <span className="material-symbols-outlined text-sm text-secondary">approval</span>
+              Aprobaciones
+            </Link>
+            <Link
+              href="/admin/estadisticas"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-surface-container-high text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-variant active:scale-95 transition-transform"
+            >
+              <span className="material-symbols-outlined text-sm text-on-tertiary-container">bar_chart</span>
+              Estadísticas
+            </Link>
           </div>
         </div>
       </div>

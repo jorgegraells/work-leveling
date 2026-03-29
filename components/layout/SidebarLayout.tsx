@@ -48,7 +48,10 @@ export default function SidebarLayout({
   const roleNavItems: { icon: string; label: string; href: string }[] = []
   if (isSuperAdmin) {
     roleNavItems.push({ icon: "admin_panel_settings", label: "Admin", href: "/admin" })
+    roleNavItems.push({ icon: "account_tree", label: "Proyectos", href: "/admin/proyectos" })
+    roleNavItems.push({ icon: "approval", label: "Aprobaciones", href: "/admin/aprobaciones" })
   } else if (role === "ORG_ADMIN" || role === "MANAGER") {
+    roleNavItems.push({ icon: "account_tree", label: "Proyectos", href: "/admin/proyectos" })
     roleNavItems.push({ icon: "approval", label: "Aprobaciones", href: "/admin/aprobaciones" })
   }
 

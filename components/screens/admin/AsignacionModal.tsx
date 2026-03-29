@@ -48,11 +48,23 @@ export default function AsignacionModal({
       setLoading(true)
       try {
         const [usersRes, deptsRes] = await Promise.all([
-          fetch(`/api/admin/orgs/${orgId}/usuarios`),
-          fetch(`/api/admin/orgs/${orgId}/departamentos`),
+          fetch(`/api/admin/empresas/${orgId}/usuarios`),
+          fetch(`/api/admin/empresas/${orgId}/departamentos`),
         ])
-        if (usersRes.ok) setUsers(await usersRes.json())
-        if (deptsRes.ok) setDepartments(await deptsRes.json())
+        if (usersRes.ok) {
+          const members = await usersRes.json()
+          // API returns UserOrganizationRole[] with nested user — flatten
+          const mapped = Array.isArray(members)
+            ? members.map((m: { user?: OrgUser } & OrgUser) =>
+                m.user ? { id: m.user.id, name: m.user.name, avatarUrl: m.user.avatarUrl, level: m.user.level } : m
+              )
+            : []
+          setUsers(mapped)
+        }
+        if (deptsRes.ok) {
+          const deps = await deptsRes.json()
+          setDepartments(Array.isArray(deps) ? deps : deps.departments ?? [])
+        }
       } finally {
         setLoading(false)
       }
