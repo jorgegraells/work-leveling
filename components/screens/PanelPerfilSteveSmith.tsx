@@ -183,12 +183,11 @@ function ProjectCard({ project }: { project: CompletedProject }) {
                             {[1, 2, 3, 4, 5].map((n) => (
                               <div
                                 key={n}
-                                className={`w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold ${
+                                className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold ${
                                   n <= score
-                                    ? `${SKILL_BAR[color] ? `bg-${color}` : "bg-primary"} text-on-primary`
+                                    ? "bg-secondary text-on-secondary"
                                     : "bg-surface-container-lowest text-outline/40"
                                 }`}
-                                style={n <= score ? { backgroundColor: `var(--${color})` } : undefined}
                               >
                                 {n}
                               </div>
