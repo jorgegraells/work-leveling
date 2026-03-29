@@ -1,27 +1,11 @@
 import ExecutiveQuestDashboard, {
-  type SkillBar,
-  type RecentMission,
+  type ActiveProject,
+  type PendingObjective,
+  type ActivityItem,
 } from "@/components/screens/ExecutiveQuestDashboard"
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
-import type { MissionModule } from "@prisma/client"
-
-const MODULE_COLOR: Record<MissionModule, RecentMission["accentColor"]> = {
-  VENTAS_LEADS:          "secondary",
-  PROYECTOS_CRONOGRAMA:  "tertiary",
-  ALIANZAS_CONTRATOS:    "primary",
-  INFORMES_CUMPLIMIENTO: "on-tertiary-container",
-  ESTRATEGIA_EXPANSION:  "primary",
-}
-
-const MODULE_LABEL: Record<MissionModule, string> = {
-  VENTAS_LEADS:          "Ventas & Leads",
-  PROYECTOS_CRONOGRAMA:  "Proyectos & Cronograma",
-  ALIANZAS_CONTRATOS:    "Alianzas & Contratos",
-  INFORMES_CUMPLIMIENTO: "Informes & Cumplimiento",
-  ESTRATEGIA_EXPANSION:  "Estrategia & Expansión",
-}
 
 function formatKredits(n: number): string {
   if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}k`
@@ -30,45 +14,86 @@ function formatKredits(n: number): string {
 
 export default async function DashboardPage() {
   const { userId } = await auth()
-
   if (!userId) return redirect("/sign-in")
 
   const user = await prisma.user.findUnique({
     where: { clerkUserId: userId },
     include: {
-      attributes: { include: { attribute: true } },
       userMissions: {
-        where:   { status: "COMPLETED" },
-        include: { mission: true },
-        orderBy: { completedAt: "desc" },
-        take:    3,
+        include: {
+          mission: { include: { objectives: { orderBy: { order: "asc" } } } },
+          objectives: { include: { objective: true } },
+        },
       },
     },
   })
 
   if (!user) return redirect("/sign-in")
 
-  const toSkillBar = (ua: (typeof user.attributes)[number]): SkillBar => ({
-    label: ua.attribute.label,
-    value: ua.value,
-    color: ua.attribute.color as SkillBar["color"],
+  // ── Active projects (not archived) ──
+  const activeProjects: ActiveProject[] = user.userMissions
+    .filter((um) => um.status !== "ARCHIVED")
+    .map((um) => {
+      const completedObjs = um.objectives.filter((o) => o.status === "COMPLETED").length
+      const totalObjs = um.mission.objectives.length
+      return {
+        id: um.id,
+        missionId: um.missionId,
+        title: um.mission.title,
+        icon: um.mission.icon,
+        module: um.mission.module,
+        progress: um.progress,
+        objectivesTotal: totalObjs,
+        objectivesCompleted: completedObjs,
+        status: um.status,
+      }
+    })
+    .sort((a, b) => {
+      const order = { IN_PROGRESS: 0, PENDING: 1, COMPLETED: 2 }
+      return (order[a.status as keyof typeof order] ?? 3) - (order[b.status as keyof typeof order] ?? 3)
+    })
+
+  // ── Pending objectives (IN_PROGRESS ones) ──
+  const pendingObjectives: PendingObjective[] = []
+  for (const um of user.userMissions) {
+    if (um.status === "COMPLETED" || um.status === "ARCHIVED") continue
+    for (const uo of um.objectives) {
+      if (uo.status === "IN_PROGRESS") {
+        pendingObjectives.push({
+          id: uo.id,
+          title: uo.objective.title,
+          icon: uo.objective.icon,
+          projectTitle: um.mission.title,
+          missionId: um.missionId,
+          xpReward: uo.objective.xpReward,
+        })
+      }
+    }
+  }
+
+  // ── Recent activity (notifications) ──
+  const notifications = await prisma.notification.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+    take: 8,
   })
 
-  const skillsLeft  = user.attributes.filter((ua) => ua.attribute.side === "left").map(toSkillBar)
-  const skillsRight = user.attributes.filter((ua) => ua.attribute.side === "right").map(toSkillBar)
-
-  const recentMissions: RecentMission[] = user.userMissions.map((um) => ({
-    icon:        um.mission.icon,
-    title:       um.mission.title,
-    subtitle:    MODULE_LABEL[um.mission.module],
-    xp:          um.mission.xpReward,
-    accentColor: MODULE_COLOR[um.mission.module],
+  const recentActivity: ActivityItem[] = notifications.map((n) => ({
+    id: n.id,
+    type: n.type,
+    title: n.title,
+    body: n.body,
+    createdAt: n.createdAt.toISOString(),
   }))
 
-  const rankProgress =
-    user.xpToNextLevel > 0
-      ? Math.min(100, Math.round((user.xp / user.xpToNextLevel) * 100))
-      : 0
+  // ── Counts ──
+  const completedCount = user.userMissions.filter((um) => um.status === "COMPLETED").length
+  const inProgressCount = user.userMissions.filter((um) => um.status === "IN_PROGRESS" || um.status === "PENDING").length
+
+  // ── Rank progress ──
+  const rankProgress = user.xpToNextLevel > 0
+    ? Math.min(100, Math.round((user.xp / user.xpToNextLevel) * 100))
+    : 0
 
   return (
     <ExecutiveQuestDashboard
@@ -77,11 +102,14 @@ export default async function DashboardPage() {
       userLevel={user.level}
       userAvatarUrl={user.avatarUrl}
       rankProgress={rankProgress}
+      totalXp={user.xp}
       trophies={user.trophies}
       kredits={formatKredits(user.kredits)}
-      skillsLeft={skillsLeft.length  > 0 ? skillsLeft  : undefined}
-      skillsRight={skillsRight.length > 0 ? skillsRight : undefined}
-      recentMissions={recentMissions.length > 0 ? recentMissions : undefined}
+      activeProjects={activeProjects}
+      pendingObjectives={pendingObjectives}
+      recentActivity={recentActivity}
+      completedCount={completedCount}
+      inProgressCount={inProgressCount}
     />
   )
 }
