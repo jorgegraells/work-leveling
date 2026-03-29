@@ -6,14 +6,15 @@ import { prisma } from "@/lib/prisma"
 export default async function AprobacionesPage() {
   const user = await requireCurrentUser()
 
+  // Super admin sees all pending approvals; org admins see only their org's
+  const orgFilter = user.isSuperAdmin
+    ? {}
+    : { userMission: { user: { organizationId: user.organizationId } } }
+
   const approvals = await prisma.missionApproval.findMany({
     where: {
       status: "PENDING",
-      userMission: {
-        user: {
-          organizationId: user.organizationId,
-        },
-      },
+      ...orgFilter,
     },
     include: {
       userMission: {
