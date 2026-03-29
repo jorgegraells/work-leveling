@@ -45,6 +45,7 @@ export default async function DetallesMisionPage({ params }: Props) {
           objective: true,
         },
       },
+      approval: { select: { status: true } },
     },
   })
 
@@ -84,6 +85,7 @@ export default async function DetallesMisionPage({ params }: Props) {
       priority={userMission.mission.priority}
       progress={userMission.progress}
       status={userMission.status}
+      approvalStatus={userMission.approval?.status ?? undefined}
       objectives={objectives}
       objectivesCompleted={completedCount}
       objectivesTotal={objectives.length}

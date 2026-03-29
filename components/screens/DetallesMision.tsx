@@ -31,6 +31,7 @@ export interface DetallesMisionProps {
   priority: string
   progress: number
   status: string // PENDING | IN_PROGRESS | COMPLETED | ARCHIVED
+  approvalStatus?: string // "PENDING" | "APPROVED" | "REJECTED" | undefined
   objectives: ObjectiveData[]
   objectivesCompleted: number
   objectivesTotal: number
@@ -192,6 +193,7 @@ export default function DetallesMision({
   priority,
   progress,
   status,
+  approvalStatus,
   objectives,
   objectivesCompleted,
   objectivesTotal,
@@ -255,13 +257,27 @@ export default function DetallesMision({
               </Link>
               <div className="flex gap-2 flex-wrap">
                 <span
-                  className={`px-3 py-1 text-[10px] font-bold uppercase rounded-full tracking-widest border ${accent.bg} ${accent.border} ${accent.text}`}
+                  className={`px-3 py-1 text-[10px] font-bold uppercase rounded-full tracking-widest border flex items-center gap-1.5 ${
+                    status === "COMPLETED" && approvalStatus === "APPROVED"
+                      ? "bg-secondary/20 border-secondary/20 text-secondary"
+                      : status === "COMPLETED"
+                        ? "bg-primary/20 border-primary/20 text-primary"
+                        : `${accent.bg} ${accent.border} ${accent.text}`
+                  }`}
                 >
-                  {status === "COMPLETED"
-                    ? "Completado"
-                    : status === "ARCHIVED"
-                      ? "Archivado"
-                      : "Activo"}
+                  {status === "COMPLETED" && approvalStatus === "APPROVED" ? (
+                    <>
+                      <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                      Completado
+                    </>
+                  ) : status === "COMPLETED" ? (
+                    <>
+                      <span className="material-symbols-outlined text-xs">hourglass_top</span>
+                      Pendiente de Revisión
+                    </>
+                  ) : status === "ARCHIVED"
+                    ? "Archivado"
+                    : "Activo"}
                 </span>
                 <span className="px-3 py-1 bg-surface-container-highest text-outline text-[10px] font-bold uppercase rounded-full tracking-widest border border-outline/10">
                   {priority}
@@ -306,11 +322,13 @@ export default function DetallesMision({
                           Status Actual
                         </p>
                         <h3 className="font-headline font-extrabold text-2xl text-on-surface">
-                          {status === "COMPLETED"
+                          {status === "COMPLETED" && approvalStatus === "APPROVED"
                             ? "Proyecto completado"
-                            : status === "ARCHIVED"
-                              ? "Archivado"
-                              : "En curso operativo"}
+                            : status === "COMPLETED"
+                              ? "Pendiente de revisión"
+                              : status === "ARCHIVED"
+                                ? "Archivado"
+                                : "En curso operativo"}
                         </h3>
                       </div>
                       <div className="text-right">
@@ -395,17 +413,29 @@ export default function DetallesMision({
                   <h4 className="text-xs font-bold uppercase tracking-widest text-outline">
                     {canCompleteProject
                       ? "Todas las misiones completadas"
-                      : status === "COMPLETED"
-                        ? "Proyecto enviado a aprobación"
-                        : "Completa todas las misiones"}
+                      : status === "COMPLETED" && approvalStatus === "APPROVED"
+                        ? "Proyecto aprobado"
+                        : status === "COMPLETED"
+                          ? "Proyecto enviado a aprobación"
+                          : "Completa todas las misiones"}
                   </h4>
                   <p className="text-sm font-medium text-on-surface leading-snug">
                     {canCompleteProject
                       ? "Puedes marcar este proyecto como completado y enviarlo para aprobación del administrador."
-                      : status === "COMPLETED"
-                        ? "Tu proyecto ha sido enviado para revisión. Recibirás una notificación cuando sea aprobado."
-                        : `Completa las ${objectivesTotal - objectivesCompleted} misiones restantes para poder finalizar el proyecto.`}
+                      : status === "COMPLETED" && approvalStatus === "APPROVED"
+                        ? "Tu proyecto ha sido aprobado. Las recompensas de XP fueron asignadas."
+                        : status === "COMPLETED"
+                          ? "Tu proyecto ha sido enviado para revisión. Recibirás una notificación cuando sea aprobado."
+                          : `Completa las ${objectivesTotal - objectivesCompleted} misiones restantes para poder finalizar el proyecto.`}
                   </p>
+                  {status === "COMPLETED" && approvalStatus !== "APPROVED" && (
+                    <div className="flex items-center gap-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                      <span className="material-symbols-outlined text-primary text-lg">hourglass_top</span>
+                      <p className="text-xs text-primary font-medium">
+                        Este proyecto está pendiente de revisión por tu administrador
+                      </p>
+                    </div>
+                  )}
                   {canCompleteProject ? (
                     <button
                       onClick={handleCompleteProject}
@@ -416,9 +446,15 @@ export default function DetallesMision({
                         ? "ENVIANDO..."
                         : "COMPLETAR PROYECTO"}
                     </button>
-                  ) : status === "COMPLETED" ? (
-                    <div className="mt-2 w-full py-4 bg-secondary/20 text-secondary font-black text-xs uppercase tracking-[0.2em] rounded-md text-center">
+                  ) : status === "COMPLETED" && approvalStatus === "APPROVED" ? (
+                    <div className="mt-2 w-full py-4 bg-secondary/20 text-secondary font-black text-xs uppercase tracking-[0.2em] rounded-md text-center flex items-center justify-center gap-2">
+                      <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                       COMPLETADO
+                    </div>
+                  ) : status === "COMPLETED" ? (
+                    <div className="mt-2 w-full py-4 bg-primary/20 text-primary font-black text-xs uppercase tracking-[0.2em] rounded-md text-center flex items-center justify-center gap-2">
+                      <span className="material-symbols-outlined text-sm">hourglass_top</span>
+                      PENDIENTE DE REVISIÓN
                     </div>
                   ) : (
                     <div className="mt-2 w-full py-4 bg-surface-variant text-outline font-black text-xs uppercase tracking-[0.2em] rounded-md text-center cursor-not-allowed">

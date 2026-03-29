@@ -29,7 +29,10 @@ export default async function PerfilPage() {
     include: {
       attributes: { include: { attribute: true } },
       userMissions: {
-        where: { status: "COMPLETED" },
+        where: {
+          status: "COMPLETED",
+          approval: { status: "APPROVED" },
+        },
         include: { mission: true },
         orderBy: { completedAt: "desc" },
         take: 3,

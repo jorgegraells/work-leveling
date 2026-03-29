@@ -20,6 +20,7 @@ interface ApprovalMission {
 
 interface ApprovalUserMission {
   id: string
+  completedAt: string | null
   user: ApprovalUser
   mission: ApprovalMission
 }
@@ -155,11 +156,21 @@ export default function AprobacionesList({
                     </div>
                   )}
                 </div>
-                <div className="min-w-0">
-                  <p className="text-xs font-body text-on-surface truncate">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-body font-semibold text-on-surface truncate">
                     {user.name}
                   </p>
-                  <p className="text-[10px] text-outline">Nivel {user.level}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-[10px] text-outline">Nivel {user.level}</p>
+                    {userMission.completedAt && (
+                      <>
+                        <span className="w-0.5 h-0.5 bg-outline-variant rounded-full" />
+                        <p className="text-[10px] text-outline">
+                          Completado {new Date(userMission.completedAt).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
+                        </p>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
 

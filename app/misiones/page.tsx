@@ -33,6 +33,7 @@ export default async function MisionesPage() {
         },
       },
       objectives: true,
+      approval: { select: { status: true } },
     },
     orderBy: { startedAt: "desc" },
   })
@@ -56,12 +57,14 @@ export default async function MisionesPage() {
       status: um.status,
       objectivesTotal: um.mission.objectives.length,
       objectivesCompleted: completedCount,
+      approvalStatus: um.approval?.status ?? undefined,
     }
   })
 
   const currentProject =
     projects.find((p) => p.status === "IN_PROGRESS") ??
     projects.find((p) => p.status === "PENDING") ??
+    projects.find((p) => p.status === "COMPLETED" && p.approvalStatus === "PENDING") ??
     undefined
 
   return (

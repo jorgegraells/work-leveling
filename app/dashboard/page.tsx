@@ -23,6 +23,7 @@ export default async function DashboardPage() {
         include: {
           mission: { include: { objectives: { orderBy: { order: "asc" } } } },
           objectives: { include: { objective: true } },
+          approval: { select: { status: true } },
         },
       },
     },
@@ -30,9 +31,14 @@ export default async function DashboardPage() {
 
   if (!user) return redirect("/sign-in")
 
-  // ── Active projects (not archived) ──
+  // ── Active projects (not archived, and include COMPLETED with pending approval) ──
   const activeProjects: ActiveProject[] = user.userMissions
-    .filter((um) => um.status !== "ARCHIVED")
+    .filter((um) => {
+      if (um.status === "ARCHIVED") return false
+      // Exclude fully approved completed missions from "active" list
+      if (um.status === "COMPLETED" && um.approval?.status === "APPROVED") return false
+      return true
+    })
     .map((um) => {
       const completedObjs = um.objectives.filter((o) => o.status === "COMPLETED").length
       const totalObjs = um.mission.objectives.length
@@ -46,6 +52,7 @@ export default async function DashboardPage() {
         objectivesTotal: totalObjs,
         objectivesCompleted: completedObjs,
         status: um.status,
+        approvalStatus: um.approval?.status ?? undefined,
       }
     })
     .sort((a, b) => {
@@ -87,8 +94,13 @@ export default async function DashboardPage() {
   }))
 
   // ── Counts ──
-  const completedCount = user.userMissions.filter((um) => um.status === "COMPLETED").length
-  const inProgressCount = user.userMissions.filter((um) => um.status === "IN_PROGRESS" || um.status === "PENDING").length
+  const completedCount = user.userMissions.filter(
+    (um) => um.status === "COMPLETED" && um.approval?.status === "APPROVED"
+  ).length
+  const inProgressCount = user.userMissions.filter(
+    (um) => um.status === "IN_PROGRESS" || um.status === "PENDING" ||
+    (um.status === "COMPLETED" && um.approval?.status !== "APPROVED")
+  ).length
 
   // ── Rank progress ──
   const rankProgress = user.xpToNextLevel > 0

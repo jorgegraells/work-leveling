@@ -16,7 +16,8 @@ interface ObjetivoLocal {
 
 interface ProyectoFormProps {
   mission?: MissionWithObjectives
-  orgId: string
+  orgs: { id: string; name: string }[]
+  defaultOrgId?: string
 }
 
 const AVAILABLE_ICONS = [
@@ -80,10 +81,13 @@ const PRIORITY_COLOR_CLASS: Record<string, string> = {
   BAJA: "text-outline",
 }
 
-export default function ProyectoForm({ mission, orgId }: ProyectoFormProps) {
+export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFormProps) {
   const router = useRouter()
   const isEdit = !!mission
 
+  const [selectedOrgId, setSelectedOrgId] = useState(
+    mission?.organizationId ?? defaultOrgId ?? orgs[0]?.id ?? ""
+  )
   const [title, setTitle] = useState(mission?.title ?? "")
   const [description, setDescription] = useState(mission?.description ?? "")
   const [module, setModule] = useState<MissionModule>(
@@ -150,7 +154,7 @@ export default function ProyectoForm({ mission, orgId }: ProyectoFormProps) {
       icon,
       xpReward,
       priority,
-      organizationId: orgId,
+      organizationId: selectedOrgId,
       objectives: objectives.map((o, i) => ({ ...o, order: i })),
     }
 
@@ -212,6 +216,31 @@ export default function ProyectoForm({ mission, orgId }: ProyectoFormProps) {
             <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
               Informacion General
             </p>
+
+            {/* Empresa */}
+            {orgs.length > 1 && (
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                  Empresa
+                </label>
+                <div className="relative">
+                  <select
+                    value={selectedOrgId}
+                    onChange={(e) => setSelectedOrgId(e.target.value)}
+                    className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary appearance-none"
+                  >
+                    {orgs.map((org) => (
+                      <option key={org.id} value={org.id}>
+                        {org.name}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-base pointer-events-none">
+                    expand_more
+                  </span>
+                </div>
+              </div>
+            )}
 
             {/* Title */}
             <div className="space-y-1.5">
@@ -371,10 +400,10 @@ export default function ProyectoForm({ mission, orgId }: ProyectoFormProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                  Misiones Diarias
+                  Misiones del Proyecto
                 </p>
                 <p className="text-[11px] text-on-surface-variant mt-0.5">
-                  Tareas que el empleado completa dentro de este proyecto
+                  Objetivos que el empleado debe completar
                 </p>
               </div>
               <button
@@ -394,8 +423,8 @@ export default function ProyectoForm({ mission, orgId }: ProyectoFormProps) {
                     list_alt
                   </span>
                 </div>
-                <p className="text-outline text-sm">Sin misiones diarias.</p>
-                <p className="text-outline text-[11px]">Anade al menos una mision para este proyecto.</p>
+                <p className="text-outline text-sm">Sin misiones.</p>
+                <p className="text-outline text-[11px]">Anade al menos una mision.</p>
               </div>
             ) : (
               <div className="space-y-2">

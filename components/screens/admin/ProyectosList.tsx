@@ -152,9 +152,9 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
                       <h3 className="font-headline font-bold text-on-surface leading-tight text-[15px] line-clamp-2">
                         {mission.title}
                       </h3>
-                      <p className="text-[10px] text-on-surface-variant mt-0.5 uppercase tracking-widest">
-                        Proyecto
-                      </p>
+                      <span className="text-[9px] text-outline">
+                        Creado por {mission.createdBy?.name ?? "Sistema"}
+                      </span>
                     </div>
                   </div>
 

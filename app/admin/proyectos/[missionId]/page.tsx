@@ -16,6 +16,7 @@ export default async function ProyectoDetailPage({ params }: Props) {
     where: { id: missionId },
     include: {
       objectives: { orderBy: { order: "asc" } },
+      createdBy: { select: { name: true } },
       userMissions: {
         include: {
           user: { select: { id: true, name: true, avatarUrl: true, level: true } },

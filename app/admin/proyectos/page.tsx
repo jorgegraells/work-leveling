@@ -13,6 +13,7 @@ export default async function ProyectosPage() {
       objectives: { orderBy: { order: "asc" } },
       _count: { select: { userMissions: true } },
       userMissions: { where: { status: "COMPLETED" }, select: { id: true } },
+      createdBy: { select: { name: true } },
     },
     orderBy: { createdAt: "desc" },
   })

@@ -94,6 +94,7 @@ export async function POST(req: NextRequest) {
       priority: priority ?? "NORMAL",
       isGlobal: false,
       organizationId,
+      createdById: user.id,
       objectives: {
         create: (objectives ?? []).map(
           (obj: { title: string; xpReward: number; order: number; icon: string }) => ({

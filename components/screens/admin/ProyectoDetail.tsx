@@ -82,6 +82,9 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
           <h1 className="font-headline text-2xl font-bold text-on-surface mt-0.5">
             {mission.title}
           </h1>
+          <span className="text-[9px] text-outline">
+            Creado por {mission.createdBy?.name ?? "Sistema"}
+          </span>
         </div>
         <div className="flex gap-2">
           <button

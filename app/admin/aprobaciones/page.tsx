@@ -17,7 +17,9 @@ export default async function AprobacionesPage() {
     },
     include: {
       userMission: {
-        include: {
+        select: {
+          id: true,
+          completedAt: true,
           user: {
             select: {
               id: true,

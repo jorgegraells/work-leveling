@@ -17,6 +17,7 @@ export interface ActiveProject {
   objectivesTotal: number
   objectivesCompleted: number
   status: string
+  approvalStatus?: string
 }
 
 export interface PendingObjective {
@@ -187,10 +188,24 @@ export default function ExecutiveQuestDashboard({
                           <div className="text-[9px] text-outline uppercase tracking-wider">{p.objectivesCompleted}/{p.objectivesTotal} misiones</div>
                         </div>
                         <div className="flex items-center gap-3 flex-shrink-0">
-                          <div className="w-20 bg-surface-container-high h-1.5 rounded-full overflow-hidden">
-                            <div className="bg-primary h-full rounded-full" style={{ width: `${p.progress}%` }} />
-                          </div>
-                          <span className="text-[10px] font-bold text-primary min-w-[35px] text-right">{p.progress}%</span>
+                          {p.status === "COMPLETED" && p.approvalStatus !== "APPROVED" ? (
+                            <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-primary/20 text-primary flex items-center gap-1">
+                              <span className="material-symbols-outlined text-xs">hourglass_top</span>
+                              EN REVISIÓN
+                            </span>
+                          ) : p.status === "COMPLETED" && p.approvalStatus === "APPROVED" ? (
+                            <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-secondary/20 text-secondary flex items-center gap-1">
+                              <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                              COMPLETADO
+                            </span>
+                          ) : (
+                            <>
+                              <div className="w-20 bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+                                <div className="bg-primary h-full rounded-full" style={{ width: `${p.progress}%` }} />
+                              </div>
+                              <span className="text-[10px] font-bold text-primary min-w-[35px] text-right">{p.progress}%</span>
+                            </>
+                          )}
                         </div>
                       </Link>
                     ))}

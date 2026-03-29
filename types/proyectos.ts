@@ -3,10 +3,12 @@ import type { Mission, MissionObjective, UserMission, MissionApproval } from "@p
 export type MissionWithStats = Mission & {
   _count: { userMissions: number }
   completedCount: number
+  createdBy?: { name: string } | null
 }
 
 export type MissionWithObjectives = Mission & {
   objectives: MissionObjective[]
+  createdBy?: { name: string } | null
 }
 
 export type UserMissionWithUser = UserMission & {

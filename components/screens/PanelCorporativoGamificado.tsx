@@ -23,6 +23,7 @@ export interface ProjectCard {
   status: string // PENDING, IN_PROGRESS, COMPLETED, ARCHIVED
   objectivesTotal: number
   objectivesCompleted: number
+  approvalStatus?: string // "PENDING" | "APPROVED" | "REJECTED" | undefined
 }
 
 export interface PanelCorporativoGamificadoProps {
@@ -184,9 +185,15 @@ export default function PanelCorporativoGamificado({
                   </div>
 
                   <div className="flex items-center gap-6 mt-8 md:mt-0">
-                    {currentProject.status === "COMPLETED" ? (
-                      <span className="px-8 py-3 bg-secondary/20 text-secondary font-bold rounded-lg uppercase text-xs tracking-widest">
+                    {currentProject.status === "COMPLETED" && currentProject.approvalStatus === "APPROVED" ? (
+                      <span className="px-8 py-3 bg-secondary/20 text-secondary font-bold rounded-lg uppercase text-xs tracking-widest flex items-center gap-2">
+                        <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                         COMPLETADO
+                      </span>
+                    ) : currentProject.status === "COMPLETED" ? (
+                      <span className="px-8 py-3 bg-primary/20 text-primary font-bold rounded-lg uppercase text-xs tracking-widest flex items-center gap-2">
+                        <span className="material-symbols-outlined text-base">hourglass_top</span>
+                        PENDIENTE DE REVISIÓN
                       </span>
                     ) : currentProject.objectivesCompleted >=
                       currentProject.objectivesTotal &&
@@ -323,9 +330,15 @@ export default function PanelCorporativoGamificado({
                               />
                             </div>
                           </div>
-                          {p.status === "COMPLETED" ? (
-                            <button className="w-full min-h-[52px] bg-secondary text-on-secondary-fixed font-bold py-3 rounded-md shadow-lg shadow-secondary/20 hover:opacity-90 transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest">
+                          {p.status === "COMPLETED" && p.approvalStatus === "APPROVED" ? (
+                            <button className="w-full min-h-[52px] bg-secondary text-on-secondary-fixed font-bold py-3 rounded-md shadow-lg shadow-secondary/20 hover:opacity-90 transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
+                              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                               COMPLETADO
+                            </button>
+                          ) : p.status === "COMPLETED" ? (
+                            <button className="w-full min-h-[52px] bg-primary/20 text-primary font-bold py-3 rounded-md transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
+                              <span className="material-symbols-outlined text-sm">hourglass_top</span>
+                              EN REVISIÓN
                             </button>
                           ) : (
                             <button className="w-full min-h-[52px] bg-primary text-on-primary font-bold py-3 rounded-md transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest">

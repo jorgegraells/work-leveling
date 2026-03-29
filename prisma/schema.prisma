@@ -134,6 +134,7 @@ model User {
   notifications Notification[]
   givenApprovals MissionApproval[]    @relation("ApprovalApprover")
   managedDepts  Department[]          @relation("DepartmentManager")
+  createdMissions Mission[]           @relation("MissionCreator")
 
   @@index([organizationId])
 }
@@ -186,6 +187,9 @@ model Mission {
 
   organizationId String?      // null si isGlobal = true
   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  createdById String?
+  createdBy   User?   @relation("MissionCreator", fields: [createdById], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -46,7 +46,7 @@ export default function ObjetivoRow({
         type="text"
         value={objetivo.title}
         onChange={(e) => onChange("title", e.target.value)}
-        placeholder="Nombre de la mision diaria"
+        placeholder="Nombre de la misión"
         className="flex-1 bg-surface-container-high rounded-md px-2 py-1.5 text-[12px] text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary placeholder:text-outline"
       />
 
