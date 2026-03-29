@@ -158,3 +158,13 @@
     transition: opacity 0.2s ease, visibility 0.2s ease;
   }
 }
+
+/* Page transitions */
+.page-transitioning {
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+.page-visible {
+  opacity: 1;
+  transition: opacity 150ms ease-in-out;
+}

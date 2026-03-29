@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 import { Manrope, Inter, Geist } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
 import "./globals.css"
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
+import PageTransitionWrapper from "@/components/layout/PageTransitionWrapper"
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -41,7 +42,7 @@ export default function RootLayout({
           />
         </head>
         <body className={`${manrope.variable} ${inter.variable} font-body`}>
-          {children}
+          <PageTransitionWrapper>{children}</PageTransitionWrapper>
         </body>
       </html>
     </ClerkProvider>

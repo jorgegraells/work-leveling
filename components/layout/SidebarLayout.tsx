@@ -4,6 +4,9 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { UserButton, SignOutButton } from "@clerk/nextjs"
+import { useCurrentUserRole } from "@/hooks/useCurrentUserRole"
+import NotificationBell from "@/components/layout/NotificationBell"
+import Breadcrumbs from "@/components/layout/Breadcrumbs"
 
 export interface UserDataHeader {
   name: string
@@ -12,32 +15,43 @@ export interface UserDataHeader {
 }
 
 const SIDEBAR_NAV = [
-  { icon: "person",        label: "Perfil",     href: "/perfil"    },
-  { icon: "military_tech", label: "Misiones",   href: "/misiones"  },
-  { icon: "account_tree",  label: "Proyectos",  href: "/dashboard" },
-  { icon: "description",   label: "Informes",   href: "/dashboard" },
-  { icon: "insights",      label: "Estrategia", href: "/dashboard" },
+  { icon: "home",          label: "Dashboard",    href: "/dashboard"    },
+  { icon: "person",        label: "Perfil",       href: "/perfil"       },
+  { icon: "military_tech", label: "Misiones",     href: "/misiones"     },
+  { icon: "bar_chart",     label: "Estadísticas", href: "/estadisticas" },
+  { icon: "business",      label: "Empresas",     href: "/empresas"     },
 ]
 
 const MOBILE_NAV = [
-  { icon: "person",       label: "Perfil",    href: "/perfil"    },
-  { icon: "military_tech",label: "Misiones",  href: "/misiones"  },
-  { icon: "home",         label: "Dashboard", href: "/dashboard" },
-  { icon: "account_tree", label: "Proyectos", href: "/dashboard" },
-  { icon: "description",  label: "Informes",  href: "/dashboard" },
+  { icon: "home",          label: "Dashboard", href: "/dashboard"    },
+  { icon: "military_tech", label: "Misiones",  href: "/misiones"     },
+  { icon: "person",        label: "Perfil",    href: "/perfil"       },
+  { icon: "bar_chart",     label: "Stats",     href: "/estadisticas" },
+  { icon: "settings",      label: "Config",    href: "/settings"     },
 ]
 
 export default function SidebarLayout({
   children,
   user,
+  breadcrumbs,
 }: {
   children: React.ReactNode
   user?: UserDataHeader
+  breadcrumbs?: { label: string; href?: string }[]
 }) {
   const pathname = usePathname()
-  // Responsive sidebar: default open on desktop, but user requested to default to closed or hide button.
-  // We will default to collapsed so the button is initially visible.
   const [collapsed, setCollapsed] = useState(true)
+  const { role, isSuperAdmin } = useCurrentUserRole()
+
+  // Build dynamic nav items based on role
+  const roleNavItems: { icon: string; label: string; href: string }[] = []
+  if (isSuperAdmin) {
+    roleNavItems.push({ icon: "admin_panel_settings", label: "Admin", href: "/admin" })
+  } else if (role === "ORG_ADMIN" || role === "MANAGER") {
+    roleNavItems.push({ icon: "approval", label: "Aprobaciones", href: "/admin/aprobaciones" })
+  }
+
+  const allNavItems = [...SIDEBAR_NAV, ...roleNavItems]
 
   return (
     <div className="bg-surface font-body text-on-surface overflow-hidden min-h-screen flex">
@@ -74,21 +88,25 @@ export default function SidebarLayout({
               </p>
             </div>
           </div>
-          {/* Close button inside sidebar */}
-          <button
-            onClick={() => setCollapsed(true)}
-            className="p-1.5 text-outline hover:text-primary transition-colors flex-shrink-0 bg-surface-container-high rounded-md active:scale-95"
-          >
-            <span className="material-symbols-outlined text-lg">close</span>
-          </button>
+          <div className="flex items-center gap-1 flex-shrink-0">
+            {/* Notification Bell */}
+            <NotificationBell />
+            {/* Close button inside sidebar */}
+            <button
+              onClick={() => setCollapsed(true)}
+              className="p-1.5 text-outline hover:text-primary transition-colors bg-surface-container-high rounded-md active:scale-95"
+            >
+              <span className="material-symbols-outlined text-lg">close</span>
+            </button>
+          </div>
         </div>
 
         <nav className="flex-1 space-y-1">
-          {SIDEBAR_NAV.map((item) => {
+          {allNavItems.map((item) => {
             const active = pathname === item.href
             return (
               <Link
-                key={item.label}
+                key={item.href}
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 transition-transform hover:translate-x-1 rounded-lg ${
                   active
@@ -104,10 +122,10 @@ export default function SidebarLayout({
         </nav>
 
         <div className="mt-auto space-y-1 pt-4 border-t border-surface-container-highest/15">
-          <a href="#" className="flex items-center gap-3 px-4 py-2 text-outline hover:text-on-surface transition-colors">
+          <Link href="/settings" className="flex items-center gap-3 px-4 py-2 text-outline hover:text-on-surface transition-colors">
             <span className="material-symbols-outlined flex-shrink-0">settings</span>
             <span className="text-[10px] font-bold uppercase tracking-widest">Config</span>
-          </a>
+          </Link>
           <SignOutButton>
             <button className="w-full flex items-center gap-3 px-4 py-2 text-outline hover:text-error transition-colors focus:outline-none text-left">
               <span className="material-symbols-outlined flex-shrink-0">logout</span>
@@ -125,14 +143,20 @@ export default function SidebarLayout({
         className="flex-1 flex flex-col relative overflow-hidden min-h-screen sidebar-content-transition pb-20 xl:pb-0"
         style={{ marginLeft: collapsed ? 0 : 256 }}
       >
+        {breadcrumbs && breadcrumbs.length > 0 && (
+          <div className="px-6 pt-4">
+            <Breadcrumbs items={breadcrumbs} />
+          </div>
+        )}
         {children}
       </main>
 
       {/* Mobile bottom nav */}
       <nav className="fixed bottom-0 left-0 right-0 bg-surface-container-highest rounded-t-xl z-50 px-4 md:px-12 py-4 flex justify-between items-center xl:hidden border-t border-outline-variant">
         {MOBILE_NAV.map((item) => {
-          // Si estamos en /misiones y el slug coincide, marcarlo como activo. Simplificación para el UX
-          const active = pathname === item.href || (item.href === "/misiones" && pathname.startsWith("/misiones"))
+          const active =
+            pathname === item.href ||
+            (item.href === "/misiones" && pathname.startsWith("/misiones"))
           return (
             <Link
               key={item.label}
