@@ -25,6 +25,27 @@ enum Plan {
   ENTERPRISE
 }
 
+enum Role {
+  SUPER_ADMIN
+  ORG_ADMIN
+  MANAGER
+  MEMBER
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum NotificationType {
+  MISSION_COMPLETED
+  MISSION_APPROVED
+  MISSION_REJECTED
+  MISSION_ASSIGNED
+  LEVEL_UP
+}
+
 enum MissionModule {
   VENTAS_LEADS
   PROYECTOS_CRONOGRAMA
@@ -75,6 +96,8 @@ model Organization {
   users        User[]
   missions     Mission[]         // misiones propias de la empresa
   subscription Subscription?
+  departments  Department[]
+  orgRoles     UserOrganizationRole[]
 }
 
 // ============================================================
@@ -90,11 +113,12 @@ model User {
   title       String? // "Architect of the Atelier"
 
   // Gamificación
-  level         Int @default(1)
-  xp            Int @default(0)
-  xpToNextLevel Int @default(1000)
-  trophies      Int @default(0)
-  kredits       Int @default(0)
+  level         Int     @default(1)
+  xp            Int     @default(0)
+  xpToNextLevel Int     @default(1000)
+  trophies      Int     @default(0)
+  kredits       Int     @default(0)
+  isSuperAdmin  Boolean @default(false)
 
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -103,9 +127,13 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relaciones
-  attributes   UserAttribute[]
-  userMissions UserMission[]
-  xpEvents     XpEvent[]
+  attributes    UserAttribute[]
+  userMissions  UserMission[]
+  xpEvents      XpEvent[]
+  orgRoles      UserOrganizationRole[]
+  notifications Notification[]
+  givenApprovals MissionApproval[]    @relation("ApprovalApprover")
+  managedDepts  Department[]          @relation("DepartmentManager")
 
   @@index([organizationId])
 }
@@ -203,6 +231,7 @@ model UserMission {
   completedAt DateTime?
 
   objectives UserMissionObjective[]
+  approval   MissionApproval?
 
   @@unique([userId, missionId])
   @@index([userId])
@@ -239,6 +268,103 @@ model XpEvent {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+// ============================================================
+// DEPARTMENT
+// ============================================================
+
+model Department {
+  id             String   @id @default(cuid())
+  name           String
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  managerId String?
+  manager   User?   @relation("DepartmentManager", fields: [managerId], references: [id], onDelete: SetNull)
+
+  members UserOrganizationRole[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+}
+
+// ============================================================
+// USER ORGANIZATION ROLE
+// ============================================================
+
+model UserOrganizationRole {
+  id   String @id @default(cuid())
+  role Role   @default(MEMBER)
+
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  departmentId   String?
+  department     Department?  @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, organizationId])
+  @@index([organizationId])
+  @@index([userId])
+}
+
+// ============================================================
+// MISSION APPROVAL
+// ============================================================
+
+model MissionApproval {
+  id     String         @id @default(cuid())
+  status ApprovalStatus @default(PENDING)
+  note   String?
+
+  scoreLogica        Int?
+  scoreCreatividad   Int?
+  scoreLiderazgo     Int?
+  scoreNegociacion   Int?
+  scoreEstrategia    Int?
+  scoreAnalisis      Int?
+  scoreComunicacion  Int?
+  scoreAdaptabilidad Int?
+
+  userMissionId String      @unique
+  userMission   UserMission @relation(fields: [userMissionId], references: [id], onDelete: Cascade)
+
+  approverId String
+  approver   User   @relation("ApprovalApprover", fields: [approverId], references: [id])
+
+  createdAt  DateTime  @default(now())
+  reviewedAt DateTime?
+
+  @@index([approverId])
+  @@index([status])
+}
+
+// ============================================================
+// NOTIFICATION
+// ============================================================
+
+model Notification {
+  id    String           @id @default(cuid())
+  type  NotificationType
+  title String
+  body  String
+  read  Boolean          @default(false)
+  data  Json?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([userId, read])
 }
 
 // ============================================================

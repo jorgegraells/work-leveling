@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(POSTGRES_URL_NON_POOLING=\"postgresql://postgres:Br0k3r21%4026070232p@db.nwodnnxjzeklsapzphfc.supabase.co:5432/postgres\" npx prisma migrate dev --name add-roles-approvals-notifications)",
+      "Bash(POSTGRES_URL_NON_POOLING=\"postgresql://postgres.nwodnnxjzeklsapzphfc:Br0k3r21%4026070232p@aws-0-eu-west-1.pooler.supabase.com:5432/postgres\" npx prisma migrate dev --name add-roles-approvals-notifications)",
+      "Bash(npx prisma:*)",
+      "Bash(npx tsc:*)"
+    ]
+  }
+}
