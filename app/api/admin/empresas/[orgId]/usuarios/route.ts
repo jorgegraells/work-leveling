@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireSuperAdmin } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
+import { createNotification } from "@/lib/notifications"
 import type { Role } from "@prisma/client"
 
 // GET /api/admin/empresas/[orgId]/usuarios
@@ -59,6 +60,9 @@ export async function POST(
     return NextResponse.json({ error: "User not found" }, { status: 404 })
   }
 
+  // Get org name for the notification
+  const org = await prisma.organization.findUnique({ where: { id: orgId }, select: { name: true } })
+
   // Upsert: if the user already has a role in this org, update it
   const orgRole = await prisma.userOrganizationRole.upsert({
     where: { userId_organizationId: { userId: user.id, organizationId: orgId } },
@@ -67,12 +71,21 @@ export async function POST(
       organizationId: orgId,
       role,
       departmentId: departmentId ?? null,
+      confirmed: false, // requires user confirmation
     },
     update: {
       role,
       departmentId: departmentId ?? null,
     },
   })
+
+  // Notify the user about the invitation
+  await createNotification(
+    user.id,
+    "MISSION_ASSIGNED", // reusing type for now
+    "Invitación a empresa",
+    `Has sido invitado a ${org?.name ?? "una empresa"} como ${role}. Ve a Empresas para aceptar.`
+  )
 
   return NextResponse.json(orgRole, { status: 201 })
 }

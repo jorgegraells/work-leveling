@@ -297,8 +297,9 @@ model Department {
 // ============================================================
 
 model UserOrganizationRole {
-  id   String @id @default(cuid())
-  role Role   @default(MEMBER)
+  id        String  @id @default(cuid())
+  role      Role    @default(MEMBER)
+  confirmed Boolean @default(false) // user must accept the invitation
 
   userId         String
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)

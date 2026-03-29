@@ -7,12 +7,13 @@ import type { Plan, Role } from "@prisma/client"
 export default async function EmpresasPage() {
   const user = await requireCurrentUser()
 
-  const orgRoles = await prisma.userOrganizationRole.findMany({
-    where: { userId: user.id },
+  // Confirmed org memberships
+  const confirmedRoles = await prisma.userOrganizationRole.findMany({
+    where: { userId: user.id, confirmed: true },
     include: { organization: true },
   })
 
-  const orgs = orgRoles.map((or) => ({
+  const orgs = confirmedRoles.map((or) => ({
     id: or.organization.id,
     name: or.organization.name,
     slug: or.organization.slug,
@@ -20,12 +21,36 @@ export default async function EmpresasPage() {
     role: or.role as Role,
   }))
 
+  // Pending invitations
+  const pendingRoles = await prisma.userOrganizationRole.findMany({
+    where: { userId: user.id, confirmed: false },
+    include: { organization: { select: { id: true, name: true, slug: true, plan: true } } },
+  })
+
+  const pendingInvitations = pendingRoles.map((pr) => ({
+    id: pr.id,
+    role: pr.role as Role,
+    organization: {
+      id: pr.organization.id,
+      name: pr.organization.name,
+      slug: pr.organization.slug,
+      plan: pr.organization.plan as Plan,
+    },
+  }))
+
   return (
     <SidebarLayout
       user={{ name: user.name, level: user.level, title: user.title ?? "Executive", avatarUrl: user.avatarUrl }}
       breadcrumbs={[{ label: "Empresas" }]}
     >
-      <EmpresasSwitcher orgs={orgs} currentOrgId={user.organizationId} />
+      <div className="px-4 sm:px-8 py-8 max-w-[1600px] mx-auto w-full">
+        <h1 className="font-headline text-2xl font-bold text-on-surface mb-8">Empresas</h1>
+        <EmpresasSwitcher
+          orgs={orgs}
+          currentOrgId={user.organizationId}
+          pendingInvitations={pendingInvitations}
+        />
+      </div>
     </SidebarLayout>
   )
 }

@@ -59,10 +59,28 @@ export async function POST(
       where: { userId_missionId: { userId: uid, missionId: id } },
     })
     if (!existing) {
-      await prisma.userMission.create({
+      // Fetch mission objectives to create user objectives
+      const objectives = await prisma.missionObjective.findMany({
+        where: { missionId: id },
+        orderBy: { order: "asc" },
+      })
+
+      const userMission = await prisma.userMission.create({
         data: { userId: uid, missionId: id, status: "PENDING", progress: 0 },
       })
-      // Notify user
+
+      // Create UserMissionObjective for each objective
+      // First one is IN_PROGRESS, rest are LOCKED
+      for (let i = 0; i < objectives.length; i++) {
+        await prisma.userMissionObjective.create({
+          data: {
+            userMissionId: userMission.id,
+            objectiveId: objectives[i].id,
+            status: i === 0 ? "IN_PROGRESS" : "LOCKED",
+          },
+        })
+      }
+
       await createNotification(
         uid,
         "MISSION_ASSIGNED",
