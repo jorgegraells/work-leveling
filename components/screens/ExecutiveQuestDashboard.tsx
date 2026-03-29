@@ -39,43 +39,7 @@ export interface ExecutiveQuestDashboardProps {
 // Defaults (matching the Stitch screen)
 // ---------------------------------------------------------------------------
 
-const DEFAULT_SKILLS_LEFT: SkillBar[] = [
-  { label: "Lógica",       value: 85, color: "primary" },
-  { label: "Creatividad",  value: 92, color: "tertiary" },
-  { label: "Liderazgo",    value: 78, color: "secondary" },
-  { label: "Negociación",  value: 65, color: "on-tertiary-container" },
-]
-
-const DEFAULT_SKILLS_RIGHT: SkillBar[] = [
-  { label: "Estrategia",    value: 89, color: "primary" },
-  { label: "Análisis",      value: 74, color: "tertiary" },
-  { label: "Comunicación",  value: 81, color: "secondary" },
-  { label: "Adaptabilidad", value: 95, color: "on-tertiary-container" },
-]
-
-const DEFAULT_MISSIONS: RecentMission[] = [
-  {
-    icon: "rocket_launch",
-    title: "Operación Horizonte Dorado",
-    subtitle: "Estrategia de Mercado A1",
-    xp: 2400,
-    accentColor: "primary",
-  },
-  {
-    icon: "hub",
-    title: "Sincronización de Nodos",
-    subtitle: "Análisis de Alianzas",
-    xp: 1150,
-    accentColor: "tertiary",
-  },
-  {
-    icon: "shield",
-    title: "Protocolo de Resiliencia",
-    subtitle: "Gestión de Riesgos",
-    xp: 3800,
-    accentColor: "secondary",
-  },
-]
+// No defaults — all data comes from the DB via props
 
 // ---------------------------------------------------------------------------
 // Skill color maps
@@ -117,17 +81,17 @@ const RING_CIRCUMFERENCE = 283
 // ---------------------------------------------------------------------------
 
 export default function ExecutiveQuestDashboard({
-  userName = "Steve Smith",
-  userTitle = "Architect of the Atelier",
-  userLevel = 42,
+  userName = "",
+  userTitle = "",
+  userLevel = 1,
   userAvatarUrl,
-  rankProgress = 72,
-  rankNextLabel = "Grand Master",
-  trophies = 14,
-  kredits = "8.4k",
-  skillsLeft = DEFAULT_SKILLS_LEFT,
-  skillsRight = DEFAULT_SKILLS_RIGHT,
-  recentMissions = DEFAULT_MISSIONS,
+  rankProgress = 0,
+  rankNextLabel = "Siguiente Nivel",
+  trophies = 0,
+  kredits = "0",
+  skillsLeft = [],
+  skillsRight = [],
+  recentMissions = [],
 }: ExecutiveQuestDashboardProps) {
   const dashOffset = Math.round(RING_CIRCUMFERENCE * (1 - rankProgress / 100))
 
@@ -180,11 +144,17 @@ export default function ExecutiveQuestDashboard({
                 <div className="relative">
                   <div className="w-56 h-56 rounded-full p-3 wood-bezel">
                     <div className="w-full h-full rounded-full overflow-hidden border-2 border-outline-variant/30 shadow-2xl">
-                      <img
-                        alt={`${userName} Portrait`}
-                        className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6afDuJK0tqLx-JlGI9-bGPaw5r2_dGo58ajvCyO3grdhUz6QWnclFutaGPSDdDSYI88KcJdnHy_hurugXmtejiLbUrzYF7B37G-2TJtLPVj0WMKe0qE3QCvl1UzRNqB1xgRgmlwY0wQf0WdNpVJs-zMO0gIX8YWoKoqcBl9-S3akG_WhYQPSpQIrvJrIlpvbS-SWF4REdoRcifz67v8xjA-Ci5zyOq3xQ5zqucdbf7PS752YIJqCVEAAxfeIt8PypIot8T3jUGso"
-                      />
+                      {userAvatarUrl ? (
+                        <img
+                          alt={`${userName} Portrait`}
+                          className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                          src={userAvatarUrl}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-surface-container-high">
+                          <span className="material-symbols-outlined text-7xl text-outline">person</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="absolute -bottom-2 -right-2 bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center shadow-lg">
@@ -243,7 +213,7 @@ export default function ExecutiveQuestDashboard({
                 </div>
 
                 <div className="space-y-4">
-                  {recentMissions.map((m) => (
+                  {recentMissions.length > 0 ? recentMissions.map((m) => (
                     <div
                       key={m.title}
                       className={`flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg hover:bg-surface-container-high transition-colors cursor-pointer border-l-4 ${MISSION_BORDER[m.accentColor]}`}
@@ -262,7 +232,13 @@ export default function ExecutiveQuestDashboard({
                         <div className="text-[0.6rem] text-outline uppercase">Completado</div>
                       </div>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="flex flex-col items-center justify-center py-8 text-center">
+                      <span className="material-symbols-outlined text-4xl text-outline/40 mb-3">military_tech</span>
+                      <p className="text-outline text-sm">Aún no has completado misiones</p>
+                      <Link href="/misiones" className="text-primary text-xs mt-2 hover:underline">Explorar Misiones</Link>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
