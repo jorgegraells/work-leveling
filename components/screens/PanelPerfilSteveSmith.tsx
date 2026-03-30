@@ -253,7 +253,7 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
   return (
     <SidebarLayout user={headerUser}>
       <div className="flex-1 flex flex-col w-full relative">
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />
 
         <div className="flex-1 px-4 md:px-8 lg:px-12 py-8 max-w-6xl mx-auto w-full space-y-12 overflow-y-auto overflow-x-hidden">
 
@@ -424,7 +424,7 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
           </section>
         </div>
 
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />
       </div>
     </SidebarLayout>
   )

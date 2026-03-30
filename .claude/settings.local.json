@@ -7,7 +7,10 @@
       "Bash(npx tsc:*)",
       "Bash(node -e \":*)",
       "Bash(npm run:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(xargs sed:*)"
     ]
   }
 }

@@ -114,7 +114,7 @@ export default function PanelCorporativoGamificado({
     <SidebarLayout user={headerUser}>
       <div className="flex-1 flex flex-col w-full relative">
         {/* Top wood bezel */}
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />
 
         <div className="flex-1 bg-surface px-4 sm:px-8 py-6 flex flex-col max-w-[1600px] mx-auto w-full overflow-y-auto overflow-x-hidden">
           {/* Level badge */}
@@ -368,7 +368,7 @@ export default function PanelCorporativoGamificado({
         </div>
 
         {/* Bottom wood bezel */}
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />
       </div>
     </SidebarLayout>
   )

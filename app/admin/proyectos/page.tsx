@@ -33,7 +33,7 @@ export default async function ProyectosPage() {
       ]}
     >
       <div className="flex-1 flex flex-col w-full relative">
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />
         <div className="flex-1 px-4 sm:px-8 py-8 max-w-[1600px] mx-auto w-full space-y-8 overflow-y-auto">
           <div className="flex justify-between items-center">
             <div>
@@ -49,7 +49,7 @@ export default async function ProyectosPage() {
           </div>
           <ProyectosList missions={JSON.parse(JSON.stringify(missionsWithStats))} />
         </div>
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />
       </div>
     </SidebarLayout>
   )

@@ -38,14 +38,14 @@ export default async function ProyectoDetailPage({ params }: Props) {
       ]}
     >
       <div className="flex-1 flex flex-col w-full relative">
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />
         <div className="flex-1 px-4 sm:px-8 py-8 max-w-[1600px] mx-auto w-full overflow-y-auto">
           <ProyectoDetail
             mission={JSON.parse(JSON.stringify(mission))}
             assignments={JSON.parse(JSON.stringify(mission.userMissions))}
           />
         </div>
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />
       </div>
     </SidebarLayout>
   )

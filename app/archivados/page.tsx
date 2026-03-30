@@ -36,7 +36,7 @@ export default async function ArchivadosPage() {
       breadcrumbs={[{ label: "Archivados" }]}
     >
       <div className="flex-1 flex flex-col w-full relative">
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />
         <div className="flex-1 px-4 sm:px-8 py-8 max-w-3xl mx-auto w-full overflow-y-auto">
           <div className="mb-6">
             <h1 className="text-2xl font-headline font-bold text-on-surface">{t("title")}</h1>
@@ -46,7 +46,7 @@ export default async function ArchivadosPage() {
           </div>
           <Archivados archivedMissions={JSON.parse(JSON.stringify(archived))} />
         </div>
-        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />
+        <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />
       </div>
     </SidebarLayout>
   )

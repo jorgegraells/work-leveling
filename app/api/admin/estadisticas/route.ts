@@ -10,7 +10,7 @@ export async function GET() {
     const orgRole = await prisma.userOrganizationRole.findFirst({
       where: {
         userId: user.id,
-        role: { in: ["ORG_ADMIN", "SUPER_ADMIN"] },
+        role: { in: ["ORG_ADMIN", "SUPER_ADMIN", "MANAGER"] },
       },
     })
     if (!orgRole) {

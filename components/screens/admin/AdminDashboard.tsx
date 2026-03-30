@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useState } from "react"
 
 interface AdminDashboardProps {
   totalOrgs: number
@@ -40,6 +41,22 @@ export default function AdminDashboard({
   totalUsers,
   pendingApprovals,
 }: AdminDashboardProps) {
+  const [resetting, setResetting] = useState(false)
+  const [resetDone, setResetDone] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
+
+  async function handleReset() {
+    setResetting(true)
+    try {
+      await fetch("/api/admin/reset", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scope: "gameplay" }) })
+      setResetDone(true)
+      setShowConfirm(false)
+      setTimeout(() => setResetDone(false), 4000)
+    } finally {
+      setResetting(false)
+    }
+  }
+
   const values: Record<(typeof STAT_CARDS)[number]["key"], number> = {
     orgs: totalOrgs,
     users: totalUsers,
@@ -140,6 +157,47 @@ export default function AdminDashboard({
               Estadísticas
             </Link>
           </div>
+        </div>
+      </div>
+
+      {/* Danger zone */}
+      <div className="rounded-xl bg-surface-container-highest p-1 shadow-card mb-10 border border-error/20">
+        <div className="rounded-lg bg-surface-bright p-6">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-error mb-1">
+            Zona de Peligro
+          </p>
+          <p className="text-[11px] text-outline mb-4">
+            Resetear todos los datos de juego (misiones, XP, aprobaciones). Los usuarios, empresas y plantillas de misiones se conservan.
+          </p>
+          {!showConfirm ? (
+            <button
+              onClick={() => setShowConfirm(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-error/10 text-error border border-error/20 text-[10px] font-bold uppercase tracking-widest hover:bg-error/20 active:scale-95 transition-transform"
+            >
+              <span className="material-symbols-outlined text-sm">restart_alt</span>
+              Resetear Base de Datos
+            </button>
+          ) : (
+            <div className="flex items-center gap-3">
+              <p className="text-sm text-error font-medium">¿Confirmas el reset? Esta acción no se puede deshacer.</p>
+              <button
+                onClick={handleReset}
+                disabled={resetting}
+                className="px-4 py-2 rounded-md bg-error text-white text-[10px] font-bold uppercase tracking-widest active:scale-95 disabled:opacity-50 transition-transform"
+              >
+                {resetting ? "Reseteando..." : "Confirmar Reset"}
+              </button>
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="px-4 py-2 rounded-md bg-surface-container-high text-outline text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform"
+              >
+                Cancelar
+              </button>
+            </div>
+          )}
+          {resetDone && (
+            <p className="text-secondary text-sm mt-2 font-medium">✓ Reset completado correctamente</p>
+          )}
         </div>
       </div>
 
