@@ -6,10 +6,12 @@ import { useState } from "react"
 import { UserButton, SignOutButton, useUser } from "@clerk/nextjs"
 import { useCurrentUserRole } from "@/hooks/useCurrentUserRole"
 import { usePendingApprovals } from "@/hooks/usePendingApprovals"
+import { useLevelUpCheck } from "@/hooks/useLevelUpCheck"
 import { useOrg } from "@/contexts/OrgContext"
 import { useTranslations } from "next-intl"
 import NotificationBell from "@/components/layout/NotificationBell"
 import Breadcrumbs from "@/components/layout/Breadcrumbs"
+import LevelUpModal from "@/components/ui/LevelUpModal"
 
 export interface UserDataHeader {
   name: string
@@ -51,6 +53,7 @@ export default function SidebarLayout({
   const { role, isSuperAdmin } = useCurrentUserRole()
   const { count: pendingApprovals } = usePendingApprovals()
   const { currentOrg } = useOrg()
+  const { current: levelUpNotif, currentLevel, dismissCurrent } = useLevelUpCheck()
 
   const SIDEBAR_NAV = SIDEBAR_NAV_DEFS.map((item) => ({
     ...item,
@@ -190,6 +193,11 @@ export default function SidebarLayout({
         )}
         {children}
       </main>
+
+      {/* Level-up modal */}
+      {levelUpNotif && currentLevel && (
+        <LevelUpModal level={currentLevel} onClose={dismissCurrent} />
+      )}
 
       {/* Mobile bottom nav */}
       <nav className="fixed bottom-0 left-0 right-0 bg-surface-container-highest rounded-t-xl z-50 px-4 md:px-12 py-4 flex justify-between items-center xl:hidden border-t border-outline-variant">
