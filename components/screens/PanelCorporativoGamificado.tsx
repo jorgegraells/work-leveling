@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import SidebarLayout from "@/components/layout/SidebarLayout"
 
 // ---------------------------------------------------------------------------
@@ -101,6 +102,8 @@ export default function PanelCorporativoGamificado({
     }
   }
 
+  const t = useTranslations("misiones")
+
   const headerUser = {
     name: userName,
     level: userLevel,
@@ -121,7 +124,7 @@ export default function PanelCorporativoGamificado({
           <div className="flex justify-center mb-8">
             <div className="bg-surface-container-lowest px-8 py-3 rounded-full border-2 border-primary/30 shadow-[0_0_20px_rgba(233,196,0,0.1)]">
               <span className="text-sm font-black text-primary tracking-[0.2em] uppercase">
-                NIVEL {userLevel}
+                {t("levelBadge", { n: userLevel })}
               </span>
             </div>
           </div>
@@ -133,11 +136,10 @@ export default function PanelCorporativoGamificado({
                 assignment
               </span>
               <h2 className="font-headline font-bold text-2xl text-on-surface">
-                No tienes proyectos asignados
+                {t("noProjectsAssigned")}
               </h2>
               <p className="text-outline text-sm max-w-md text-center">
-                Cuando un administrador te asigne proyectos, aparecerán aquí
-                como misiones que puedes completar.
+                {t("noProjectsHint")}
               </p>
             </div>
           ) : (
@@ -147,7 +149,7 @@ export default function PanelCorporativoGamificado({
                 <header className="flex flex-col md:flex-row justify-between items-center w-full px-8 py-10 bg-surface-container-highest rounded-xl shadow-card-lg relative overflow-hidden">
                   <div className="absolute top-3 left-8">
                     <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">
-                      Proyecto Actual
+                      {t("currentProject")}
                     </span>
                   </div>
 
@@ -176,8 +178,7 @@ export default function PanelCorporativoGamificado({
                           </span>
                           <span className="w-1 h-1 bg-outline-variant rounded-full" />
                           <span className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                            {currentProject.objectivesCompleted}/
-                            {currentProject.objectivesTotal} misiones
+                            {t("missionsCount", { completed: currentProject.objectivesCompleted, total: currentProject.objectivesTotal })}
                           </span>
                         </div>
                       </div>
@@ -188,12 +189,12 @@ export default function PanelCorporativoGamificado({
                     {currentProject.status === "COMPLETED" && currentProject.approvalStatus === "APPROVED" ? (
                       <span className="px-8 py-3 bg-secondary/20 text-secondary font-bold rounded-lg uppercase text-xs tracking-widest flex items-center gap-2">
                         <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                        COMPLETADO
+                        {t("completedBadge")}
                       </span>
                     ) : currentProject.status === "COMPLETED" ? (
                       <span className="px-8 py-3 bg-primary/20 text-primary font-bold rounded-lg uppercase text-xs tracking-widest flex items-center gap-2">
                         <span className="material-symbols-outlined text-base">hourglass_top</span>
-                        PENDIENTE DE REVISIÓN
+                        {t("pendingReview")}
                       </span>
                     ) : currentProject.objectivesCompleted >=
                       currentProject.objectivesTotal &&
@@ -203,14 +204,14 @@ export default function PanelCorporativoGamificado({
                         disabled={completing}
                         className="px-8 py-3 bg-secondary text-on-secondary-fixed font-bold rounded-lg shadow-lg shadow-secondary/10 hover:brightness-110 transition-all active:scale-95 uppercase text-xs tracking-widest disabled:opacity-50"
                       >
-                        {completing ? "ENVIANDO..." : "COMPLETAR"}
+                        {completing ? t("sending") : t("complete")}
                       </button>
                     ) : (
                       <Link
                         href={`/misiones/${currentProject.missionId}`}
                         className="px-8 py-3 bg-primary text-on-primary font-bold rounded-lg shadow-lg shadow-primary/10 hover:brightness-110 transition-all active:scale-95 uppercase text-xs tracking-widest"
                       >
-                        VER MISIONES
+                        {t("viewMissions")}
                       </Link>
                     )}
                   </div>
@@ -267,7 +268,7 @@ export default function PanelCorporativoGamificado({
                             <div className="w-full mt-6 md:mt-8 mb-4">
                               <div className="flex justify-between items-center mb-2">
                                 <span className="text-[10px] font-bold text-outline/50 uppercase">
-                                  Archivado
+                                  {t("archived")}
                                 </span>
                                 <span className="text-[10px] font-bold text-outline/50">
                                   {p.progress}%
@@ -284,7 +285,7 @@ export default function PanelCorporativoGamificado({
                               disabled
                               className="w-full min-h-[52px] bg-surface-variant text-outline font-bold py-3 rounded-md cursor-not-allowed uppercase text-[10px] tracking-widest"
                             >
-                              ARCHIVADO
+                              {t("archivedBadge")}
                             </button>
                           </div>
                         </div>
@@ -317,7 +318,7 @@ export default function PanelCorporativoGamificado({
                           <div className="w-full mt-6 md:mt-8 mb-4">
                             <div className="flex justify-between items-center mb-2">
                               <span className="text-[10px] font-bold text-outline uppercase">
-                                PROGRESO
+                                {t("progress")}
                               </span>
                               <span className="text-[10px] font-bold text-primary">
                                 {progressLabel}
@@ -333,18 +334,18 @@ export default function PanelCorporativoGamificado({
                           {p.status === "COMPLETED" && p.approvalStatus === "APPROVED" ? (
                             <button className="w-full min-h-[52px] bg-secondary text-on-secondary-fixed font-bold py-3 rounded-md shadow-lg shadow-secondary/20 hover:opacity-90 transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
                               <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                              COMPLETADO
+                              {t("completedBadge")}
                             </button>
                           ) : p.status === "COMPLETED" ? (
                             <button className="w-full min-h-[52px] bg-primary/20 text-primary font-bold py-3 rounded-md transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
                               <span className="material-symbols-outlined text-sm">hourglass_top</span>
-                              EN REVISIÓN
+                              {t("underReview")}
                             </button>
                           ) : (
                             <button className="w-full min-h-[52px] bg-primary text-on-primary font-bold py-3 rounded-md transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest">
                               {p.status === "PENDING"
-                                ? "PENDIENTE"
-                                : "EN PROGRESO"}
+                                ? t("pending")
+                                : t("inProgress")}
                             </button>
                           )}
                         </div>

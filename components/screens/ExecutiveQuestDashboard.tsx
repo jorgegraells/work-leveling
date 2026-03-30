@@ -74,10 +74,10 @@ const ACTIVITY_COLOR: Record<string, string> = {
   LEVEL_UP:          "text-primary",
 }
 
-function timeAgo(dateStr: string): string {
+function timeAgo(dateStr: string, nowLabel: string): string {
   const diff = Date.now() - new Date(dateStr).getTime()
   const mins = Math.floor(diff / 60000)
-  if (mins < 1) return "Ahora"
+  if (mins < 1) return nowLabel
   if (mins < 60) return `${mins}m`
   const hrs = Math.floor(mins / 60)
   if (hrs < 24) return `${hrs}h`
@@ -104,6 +104,8 @@ export default function ExecutiveQuestDashboard({
   completedCount,
   inProgressCount,
 }: DashboardProps) {
+  const t = useTranslations("dashboard")
+  const tc = useTranslations("common")
   const headerUser = { name: userName, level: userLevel, title: userTitle, avatarUrl: userAvatarUrl }
 
   return (
@@ -117,14 +119,14 @@ export default function ExecutiveQuestDashboard({
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h1 className="text-2xl md:text-3xl font-headline font-black text-on-surface">
-                Bienvenido, {userName.split(" ")[0]}
+                {t("welcome", { name: userName.split(" ")[0] })}
               </h1>
               <p className="text-outline text-[10px] uppercase tracking-widest mt-1">{userTitle}</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="bg-surface-container-lowest px-5 py-2 rounded-full border border-primary/20">
                 <span className="text-xs font-black text-primary tracking-[0.15em] uppercase">
-                  Nivel {userLevel}
+                  {t("levelBadge", { n: userLevel })}
                 </span>
               </div>
               <div className="bg-surface-container-lowest px-4 py-2 rounded-full border border-outline-variant/20">
@@ -138,10 +140,10 @@ export default function ExecutiveQuestDashboard({
           {/* ── KPI cards ── */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: "XP Total",     value: totalXp.toLocaleString(), icon: "bolt",          color: "text-primary" },
-              { label: "En Progreso",  value: String(inProgressCount),  icon: "pending",       color: "text-tertiary" },
-              { label: "Completados",  value: String(completedCount),   icon: "task_alt",      color: "text-secondary" },
-              { label: "Trofeos",      value: String(trophies),         icon: "emoji_events",  color: "text-primary" },
+              { label: tc("xpTotal"),     value: totalXp.toLocaleString(), icon: "bolt",          color: "text-primary" },
+              { label: tc("inProgress"),  value: String(inProgressCount),  icon: "pending",       color: "text-tertiary" },
+              { label: tc("completed"),   value: String(completedCount),   icon: "task_alt",      color: "text-secondary" },
+              { label: tc("trophies"),    value: String(trophies),         icon: "emoji_events",  color: "text-primary" },
             ].map((kpi) => (
               <div key={kpi.label} className="rounded-xl bg-surface-container-highest p-1">
                 <div className="bg-surface-bright rounded-lg p-5 flex items-center gap-4">
@@ -165,11 +167,11 @@ export default function ExecutiveQuestDashboard({
               <div className="bg-surface-bright rounded-lg h-full p-6 border border-outline-variant/10">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h3 className="text-lg font-headline font-bold text-on-surface">Proyectos Activos</h3>
-                    <p className="text-outline text-[9px] uppercase tracking-widest mt-0.5">Tus asignaciones actuales</p>
+                    <h3 className="text-lg font-headline font-bold text-on-surface">{t("activeProjects")}</h3>
+                    <p className="text-outline text-[9px] uppercase tracking-widest mt-0.5">{t("currentAssignments")}</p>
                   </div>
                   <Link href="/misiones" className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline">
-                    Ver todos
+                    {t("viewAll")}
                   </Link>
                 </div>
 
@@ -186,18 +188,18 @@ export default function ExecutiveQuestDashboard({
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-bold text-on-surface truncate group-hover:text-primary transition-colors">{p.title}</div>
-                          <div className="text-[9px] text-outline uppercase tracking-wider">{p.objectivesCompleted}/{p.objectivesTotal} misiones</div>
+                          <div className="text-[9px] text-outline uppercase tracking-wider">{p.objectivesCompleted}/{p.objectivesTotal} {tc("missions")}</div>
                         </div>
                         <div className="flex items-center gap-3 flex-shrink-0">
                           {p.status === "COMPLETED" && p.approvalStatus !== "APPROVED" ? (
                             <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-primary/20 text-primary flex items-center gap-1">
                               <span className="material-symbols-outlined text-xs">hourglass_top</span>
-                              EN REVISIÓN
+                              {tc("underReview")}
                             </span>
                           ) : p.status === "COMPLETED" && p.approvalStatus === "APPROVED" ? (
                             <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-secondary/20 text-secondary flex items-center gap-1">
                               <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                              COMPLETADO
+                              {tc("completedBadge")}
                             </span>
                           ) : (
                             <>
@@ -214,8 +216,8 @@ export default function ExecutiveQuestDashboard({
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
                     <span className="material-symbols-outlined text-5xl text-outline/30 mb-3">folder_open</span>
-                    <p className="text-outline text-sm">No tienes proyectos activos</p>
-                    <p className="text-outline/60 text-xs mt-1">Tu admin te asignará proyectos</p>
+                    <p className="text-outline text-sm">{t("noActiveProjects")}</p>
+                    <p className="text-outline/60 text-xs mt-1">{t("adminWillAssign")}</p>
                   </div>
                 )}
               </div>
@@ -226,8 +228,8 @@ export default function ExecutiveQuestDashboard({
               <div className="bg-surface-bright rounded-lg h-full p-6 border border-outline-variant/10">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h3 className="text-lg font-headline font-bold text-on-surface">Misiones Pendientes</h3>
-                    <p className="text-outline text-[9px] uppercase tracking-widest mt-0.5">Tareas por completar</p>
+                    <h3 className="text-lg font-headline font-bold text-on-surface">{t("pendingMissions")}</h3>
+                    <p className="text-outline text-[9px] uppercase tracking-widest mt-0.5">{t("tasksToComplete")}</p>
                   </div>
                   <div className="bg-primary/20 text-primary px-3 py-1 rounded-full text-[10px] font-bold">
                     {pendingObjectives.length}
@@ -256,8 +258,8 @@ export default function ExecutiveQuestDashboard({
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
                     <span className="material-symbols-outlined text-5xl text-secondary/40 mb-3">task_alt</span>
-                    <p className="text-outline text-sm">Todo al día</p>
-                    <p className="text-outline/60 text-xs mt-1">No tienes misiones pendientes</p>
+                    <p className="text-outline text-sm">{t("allCaughtUp")}</p>
+                    <p className="text-outline/60 text-xs mt-1">{t("noPendingMissions")}</p>
                   </div>
                 )}
               </div>
@@ -270,7 +272,7 @@ export default function ExecutiveQuestDashboard({
             {/* Recent activity */}
             <div className="col-span-12 md:col-span-8 rounded-xl bg-surface-container-highest p-1">
               <div className="bg-surface-bright rounded-lg h-full p-6 border border-outline-variant/10">
-                <h3 className="text-lg font-headline font-bold text-on-surface mb-4">Actividad Reciente</h3>
+                <h3 className="text-lg font-headline font-bold text-on-surface mb-4">{t("recentActivity")}</h3>
 
                 {recentActivity.length > 0 ? (
                   <div className="space-y-2">
@@ -283,12 +285,12 @@ export default function ExecutiveQuestDashboard({
                           <span className="text-sm text-on-surface">{a.title}</span>
                           <span className="text-xs text-outline ml-2">{a.body}</span>
                         </div>
-                        <span className="text-[9px] text-outline/60 flex-shrink-0">{timeAgo(a.createdAt)}</span>
+                        <span className="text-[9px] text-outline/60 flex-shrink-0">{timeAgo(a.createdAt, tc("now"))}</span>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-outline text-sm py-4">Sin actividad reciente</p>
+                  <p className="text-outline text-sm py-4">{t("noRecentActivity")}</p>
                 )}
               </div>
             </div>
@@ -296,18 +298,18 @@ export default function ExecutiveQuestDashboard({
             {/* Quick stats */}
             <div className="col-span-12 md:col-span-4 rounded-xl bg-surface-container-highest p-1">
               <div className="bg-surface-bright rounded-lg h-full p-6 border border-outline-variant/10 flex flex-col justify-between">
-                <h3 className="text-lg font-headline font-bold text-on-surface mb-4">Resumen</h3>
+                <h3 className="text-lg font-headline font-bold text-on-surface mb-4">{t("summary")}</h3>
                 <div className="space-y-4 flex-1">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-outline">Kredits</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-outline">{tc("kredits")}</span>
                     <span className="text-secondary font-black text-lg">{kredits}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-outline">Trofeos</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-outline">{tc("trophies")}</span>
                     <span className="text-primary font-black text-lg">{trophies}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-outline">XP Total</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-outline">{tc("xpTotal")}</span>
                     <span className="text-on-surface font-black text-lg">{totalXp.toLocaleString()}</span>
                   </div>
                 </div>
@@ -315,7 +317,7 @@ export default function ExecutiveQuestDashboard({
                   href="/perfil"
                   className="mt-6 w-full py-3 bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary rounded-md font-bold uppercase text-[10px] tracking-widest text-center block hover:brightness-110 transition-all active:scale-95"
                 >
-                  Ver Perfil Completo
+                  {t("viewFullProfile")}
                 </Link>
               </div>
             </div>

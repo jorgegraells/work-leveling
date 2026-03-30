@@ -201,6 +201,10 @@
     "employeeCol": "Employee",
     "levelPrefix": "Lv.",
     "missionCountLabel": "missions",
-    "noDataLabel": "No data"
+    "noDataLabel": "No data",
+    "statusPending": "Pending",
+    "statusInProgress": "In Progress",
+    "statusCompleted": "Completed",
+    "statusArchived": "Archived"
   }
 }

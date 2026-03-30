@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { Textarea } from "@/components/ui/textarea"
 import type { MissionModule, ApprovalStatus } from "@prisma/client"
 
@@ -105,6 +106,7 @@ export default function AprobacionDetail({
 }: {
   approval: ApprovalWithFullDetails
 }) {
+  const t = useTranslations("aprobaciones")
   const router = useRouter()
   const { userMission } = approval
   const { user, mission } = userMission
@@ -136,12 +138,12 @@ export default function AprobacionDetail({
       })
       if (!res.ok) {
         const data = await res.json()
-        throw new Error(data.error || "Error al aprobar")
+        throw new Error(data.error || t("errorApproving"))
       }
       router.push("/admin/aprobaciones")
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error desconocido")
+      setError(err instanceof Error ? err.message : t("unknownError"))
     } finally {
       setLoading(null)
     }
@@ -149,7 +151,7 @@ export default function AprobacionDetail({
 
   async function handleReject() {
     if (!note.trim()) {
-      setError("Debes indicar un motivo para rechazar la mision")
+      setError(t("rejectReasonRequired"))
       return
     }
     setLoading("reject")
@@ -162,12 +164,12 @@ export default function AprobacionDetail({
       })
       if (!res.ok) {
         const data = await res.json()
-        throw new Error(data.error || "Error al rechazar")
+        throw new Error(data.error || t("errorRejecting"))
       }
       router.push("/admin/aprobaciones")
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error desconocido")
+      setError(err instanceof Error ? err.message : t("unknownError"))
     } finally {
       setLoading(null)
     }
@@ -246,7 +248,7 @@ export default function AprobacionDetail({
           {mission.objectives.length > 0 && (
             <div className="space-y-2 pt-2">
               <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                Objetivos
+                {t("objectives")}
               </p>
               <div className="space-y-1.5">
                 {mission.objectives.map((obj) => (
@@ -273,7 +275,7 @@ export default function AprobacionDetail({
       <div className="rounded-xl bg-surface-container-highest p-1">
         <div className="rounded-lg bg-surface-bright p-6">
           <p className="text-[10px] font-bold uppercase tracking-widest text-outline mb-3">
-            Empleado
+            {t("employee")}
           </p>
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-surface-container-lowest overflow-hidden flex-shrink-0">
@@ -296,7 +298,7 @@ export default function AprobacionDetail({
                 {user.name}
               </h3>
               <p className="text-[10px] text-primary uppercase tracking-widest">
-                Nivel {user.level}
+                {t("level", { n: user.level })}
                 {user.title ? ` - ${user.title}` : ""}
               </p>
             </div>
@@ -309,7 +311,7 @@ export default function AprobacionDetail({
         <div className="rounded-xl bg-surface-container-highest p-1">
           <div className="rounded-lg bg-surface-bright p-6 space-y-4">
             <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-              Puntuacion por atributo
+              {t("scoreByAttribute")}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
@@ -332,12 +334,12 @@ export default function AprobacionDetail({
         <div className="rounded-xl bg-surface-container-highest p-1">
           <div className="rounded-lg bg-surface-bright p-6 space-y-4">
             <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-              Nota (requerida para rechazar)
+              {t("noteRequired")}
             </p>
             <Textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Escribe una nota sobre el desempeno del empleado..."
+              placeholder={t("notePlaceholder")}
               className="bg-surface-container-lowest border-outline-variant/30 text-on-surface placeholder:text-outline text-sm min-h-24"
             />
 
@@ -356,7 +358,7 @@ export default function AprobacionDetail({
                     progress_activity
                   </span>
                 )}
-                Aprobar
+                {t("approve")}
               </button>
               <button
                 onClick={handleReject}
@@ -368,7 +370,7 @@ export default function AprobacionDetail({
                     progress_activity
                   </span>
                 )}
-                Rechazar
+                {t("reject")}
               </button>
             </div>
           </div>
@@ -383,12 +385,11 @@ export default function AprobacionDetail({
               {approval.status === "APPROVED" ? "verified" : "cancel"}
             </span>
             <p className="text-on-surface font-body text-sm">
-              Esta mision ya fue{" "}
-              {approval.status === "APPROVED" ? "aprobada" : "rechazada"}
+              {approval.status === "APPROVED" ? t("alreadyApproved") : t("alreadyRejected")}
             </p>
             {approval.note && (
               <p className="text-on-surface-variant text-sm mt-2">
-                Nota: {approval.note}
+                {t("noteLabel", { note: approval.note })}
               </p>
             )}
           </div>

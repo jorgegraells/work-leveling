@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 interface UserStats {
   xpHistory: { date: string; amount: number }[]
   missionsByModule: { module: string; count: number; label: string }[]
@@ -23,25 +25,26 @@ function formatDate(dateStr: string) {
 }
 
 export default function Estadisticas({ stats }: { stats: UserStats }) {
+  const t = useTranslations("estadisticas")
   const maxXp = Math.max(...stats.xpHistory.map((d) => d.amount), 1)
   const maxModuleCount = Math.max(...stats.missionsByModule.map((m) => m.count), 1)
 
   return (
     <div className="min-h-screen bg-surface font-body text-on-surface px-6 py-8 max-w-[1600px] mx-auto">
-      <h1 className="font-headline text-2xl font-bold mb-8">Estadisticas</h1>
+      <h1 className="font-headline text-2xl font-bold mb-8">{t("title")}</h1>
 
       {/* KPI cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <KpiCard icon="bolt" label="Total XP" value={stats.totalXp.toLocaleString()} accent="text-primary" />
-        <KpiCard icon="military_tech" label="Misiones Completadas" value={String(stats.totalCompleted)} accent="text-secondary" />
-        <KpiCard icon="trending_up" label="Nivel Actual" value={String(stats.level)} accent="text-tertiary" />
+        <KpiCard icon="bolt" label={t("totalXp")} value={stats.totalXp.toLocaleString()} accent="text-primary" />
+        <KpiCard icon="military_tech" label={t("completedMissions")} value={String(stats.totalCompleted)} accent="text-secondary" />
+        <KpiCard icon="trending_up" label={t("currentLevel")} value={String(stats.level)} accent="text-tertiary" />
       </div>
 
       {/* XP History Chart */}
       <div className="rounded-xl bg-surface-container-highest p-1 shadow-card mb-8">
         <div className="rounded-lg bg-surface-bright p-5">
           <h2 className="text-[10px] font-bold uppercase tracking-widest text-outline mb-4">
-            XP Ultimos 30 dias
+            {t("xpLast30Days")}
           </h2>
           <div className="overflow-x-auto no-scrollbar">
             <svg
@@ -113,10 +116,10 @@ export default function Estadisticas({ stats }: { stats: UserStats }) {
         <div className="rounded-xl bg-surface-container-highest p-1 shadow-card">
           <div className="rounded-lg bg-surface-bright p-5">
             <h2 className="text-[10px] font-bold uppercase tracking-widest text-outline mb-4">
-              Misiones por Modulo
+              {t("missionsByModule")}
             </h2>
             {stats.missionsByModule.length === 0 ? (
-              <p className="text-sm text-on-surface-variant">Sin misiones completadas aun</p>
+              <p className="text-sm text-on-surface-variant">{t("noMissions")}</p>
             ) : (
               <div className="space-y-3">
                 {stats.missionsByModule.map((mod) => (
@@ -142,10 +145,10 @@ export default function Estadisticas({ stats }: { stats: UserStats }) {
         <div className="rounded-xl bg-surface-container-highest p-1 shadow-card">
           <div className="rounded-lg bg-surface-bright p-5">
             <h2 className="text-[10px] font-bold uppercase tracking-widest text-outline mb-4">
-              Atributos
+              {t("attributes")}
             </h2>
             {stats.attributes.length === 0 ? (
-              <p className="text-sm text-on-surface-variant">Sin atributos asignados</p>
+              <p className="text-sm text-on-surface-variant">{t("noAttributes")}</p>
             ) : (
               <div className="space-y-3">
                 {stats.attributes.map((attr) => (

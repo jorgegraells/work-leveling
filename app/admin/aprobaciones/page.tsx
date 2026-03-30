@@ -1,9 +1,11 @@
+import { getTranslations } from "next-intl/server"
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import AprobacionesList from "@/components/screens/admin/AprobacionesList"
 import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 
 export default async function AprobacionesPage() {
+  const t = await getTranslations("aprobaciones")
   const user = await requireCurrentUser()
 
   // Build org filter: superadmin sees all; managers see only their org
@@ -63,10 +65,10 @@ export default async function AprobacionesPage() {
         <div className="flex-1 px-4 sm:px-8 py-8 max-w-[1600px] mx-auto w-full space-y-8 overflow-y-auto">
           <div>
             <h1 className="text-2xl font-headline font-bold text-on-surface">
-              Aprobaciones Pendientes
+              {t("pendingTitle")}
             </h1>
             <p className="text-outline text-[10px] uppercase tracking-widest mt-1">
-              Revisa y aprueba las misiones completadas
+              {t("pendingSubtitle")}
             </p>
           </div>
           <AprobacionesList approvals={JSON.parse(JSON.stringify(approvals))} />

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import type { MissionWithObjectives, UserMissionWithUser } from "@/types/proyectos"
 import type { MissionModule } from "@prisma/client"
 import AsignacionModal from "./AsignacionModal"
@@ -42,28 +43,29 @@ const MODULE_META: Record<
   },
 }
 
-const STATUS_BADGE: Record<string, { label: string; classes: string }> = {
-  PENDING: {
-    label: "Pendiente",
-    classes: "bg-surface-container-high text-outline",
-  },
-  IN_PROGRESS: {
-    label: "En Progreso",
-    classes: "bg-tertiary-container/30 text-tertiary",
-  },
-  COMPLETED: {
-    label: "Completada",
-    classes: "bg-secondary-container/30 text-secondary",
-  },
-  ARCHIVED: {
-    label: "Archivada",
-    classes: "bg-surface-container-high text-outline",
-  },
-}
-
 export default function ProyectoDetail({ mission, assignments }: ProyectoDetailProps) {
+  const t = useTranslations("proyectos")
   const [showAsignModal, setShowAsignModal] = useState(false)
   const mod = MODULE_META[mission.module]
+
+  const STATUS_BADGE: Record<string, { label: string; classes: string }> = {
+    PENDING: {
+      label: t("statusPending"),
+      classes: "bg-surface-container-high text-outline",
+    },
+    IN_PROGRESS: {
+      label: t("statusInProgress"),
+      classes: "bg-tertiary-container/30 text-tertiary",
+    },
+    COMPLETED: {
+      label: t("statusCompleted"),
+      classes: "bg-secondary-container/30 text-secondary",
+    },
+    ARCHIVED: {
+      label: t("statusArchived"),
+      classes: "bg-surface-container-high text-outline",
+    },
+  }
 
   return (
     <div className="p-6 md:p-10 space-y-8 max-w-5xl mx-auto">
@@ -77,13 +79,13 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
         </Link>
         <div className="flex-1">
           <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-            Admin / Proyectos
+            {t("adminProyectos")}
           </p>
           <h1 className="font-headline text-2xl font-bold text-on-surface mt-0.5">
             {mission.title}
           </h1>
           <span className="text-[9px] text-outline">
-            Creado por {mission.createdBy?.name ?? "Sistema"}
+            {t("createdBy", { name: mission.createdBy?.name ?? "Sistema" })}
           </span>
         </div>
         <div className="flex gap-2">
@@ -93,14 +95,14 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
             className="flex items-center gap-2 px-4 py-2.5 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-[0.98] transition-transform"
           >
             <span className="material-symbols-outlined text-base">person_add</span>
-            Asignar
+            {t("assign")}
           </button>
           <Link
             href={`/admin/proyectos/${mission.id}/editar`}
             className="flex items-center gap-2 px-4 py-2.5 rounded-md bg-surface-container-highest text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-variant active:scale-[0.98] transition-all"
           >
             <span className="material-symbols-outlined text-base">edit</span>
-            Editar
+            {t("edit")}
           </Link>
         </div>
       </div>
@@ -125,7 +127,7 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
                   {mission.xpReward.toLocaleString()} XP
                 </span>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest bg-surface-container-high text-on-surface-variant">
-                  Prioridad: {mission.priority}
+                  {t("priority", { value: mission.priority })}
                 </span>
               </div>
               {mission.description && (
@@ -141,7 +143,7 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
         <div className="rounded-xl bg-surface-container-highest p-1">
           <div className="rounded-lg bg-surface-bright p-6 space-y-4">
             <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-              Objetivos ({mission.objectives.length})
+              {t("objectives", { count: mission.objectives.length })}
             </p>
             <div className="space-y-2">
               {mission.objectives.map((obj, i) => (
@@ -171,7 +173,7 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
         <div className="rounded-lg bg-surface-bright p-6 space-y-4">
           <div className="flex items-center justify-between">
             <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-              Usuarios Asignados ({assignments.length})
+              {t("assignedUsers", { count: assignments.length })}
             </p>
           </div>
 
@@ -180,14 +182,14 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
               <span className="material-symbols-outlined text-3xl text-outline block opacity-40">
                 group
               </span>
-              <p className="text-sm text-outline">No hay usuarios asignados todavía.</p>
+              <p className="text-sm text-outline">{t("noUsersAssigned")}</p>
               <button
                 type="button"
                 onClick={() => setShowAsignModal(true)}
                 className="inline-flex items-center gap-1 text-primary text-[11px] font-bold uppercase tracking-widest hover:underline"
               >
                 <span className="material-symbols-outlined text-base">person_add</span>
-                Asignar ahora
+                {t("assignNow")}
               </button>
             </div>
           ) : (
@@ -196,19 +198,19 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
                 <thead>
                   <tr className="text-left">
                     <th className="text-[10px] font-bold uppercase tracking-widest text-outline pb-3 pr-4">
-                      Usuario
+                      {t("userColumn")}
                     </th>
                     <th className="text-[10px] font-bold uppercase tracking-widest text-outline pb-3 pr-4">
-                      Nivel
+                      {t("levelColumn")}
                     </th>
                     <th className="text-[10px] font-bold uppercase tracking-widest text-outline pb-3 pr-4">
-                      Progreso
+                      {t("progressColumn")}
                     </th>
                     <th className="text-[10px] font-bold uppercase tracking-widest text-outline pb-3 pr-4">
-                      Estado
+                      {t("statusColumn")}
                     </th>
                     <th className="text-[10px] font-bold uppercase tracking-widest text-outline pb-3">
-                      Completado
+                      {t("completedColumn")}
                     </th>
                   </tr>
                 </thead>
@@ -239,7 +241,7 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
                         </td>
                         <td className="py-3 pr-4">
                           <span className="text-[12px] font-bold text-primary">
-                            Nv. {a.user.level}
+                            {t("levelValue", { n: a.user.level })}
                           </span>
                         </td>
                         <td className="py-3 pr-4 w-36">

@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import type { MissionModule, ApprovalStatus } from "@prisma/client"
 
 interface ApprovalUser {
@@ -63,12 +64,6 @@ const STATUS_STYLE: Record<ApprovalStatus, string> = {
   REJECTED: "bg-error/20 text-error",
 }
 
-const STATUS_LABEL: Record<ApprovalStatus, string> = {
-  PENDING: "Pendiente",
-  APPROVED: "Aprobada",
-  REJECTED: "Rechazada",
-}
-
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime()
   const mins = Math.floor(diff / 60000)
@@ -85,6 +80,14 @@ export default function AprobacionesList({
 }: {
   approvals: ApprovalWithDetails[]
 }) {
+  const t = useTranslations("aprobaciones")
+
+  const STATUS_LABEL: Record<ApprovalStatus, string> = {
+    PENDING: t("pending"),
+    APPROVED: t("approved"),
+    REJECTED: t("rejected"),
+  }
+
   if (approvals.length === 0) {
     return (
       <div className="rounded-xl bg-surface-container-highest p-1">
@@ -93,10 +96,10 @@ export default function AprobacionesList({
             task_alt
           </span>
           <p className="text-on-surface font-body text-sm">
-            No hay aprobaciones pendientes
+            {t("noPending")}
           </p>
           <p className="text-outline text-[10px] uppercase tracking-widest mt-2">
-            Todas las misiones han sido revisadas
+            {t("allReviewed")}
           </p>
         </div>
       </div>
@@ -161,12 +164,12 @@ export default function AprobacionesList({
                     {user.name}
                   </p>
                   <div className="flex items-center gap-2">
-                    <p className="text-[10px] text-outline">Nivel {user.level}</p>
+                    <p className="text-[10px] text-outline">{t("level", { n: user.level })}</p>
                     {userMission.completedAt && (
                       <>
                         <span className="w-0.5 h-0.5 bg-outline-variant rounded-full" />
                         <p className="text-[10px] text-outline">
-                          Completado {new Date(userMission.completedAt).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
+                          {t("completed", { date: new Date(userMission.completedAt).toLocaleDateString("es-ES", { day: "numeric", month: "short" }) })}
                         </p>
                       </>
                     )}

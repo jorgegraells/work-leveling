@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { useTranslations } from "next-intl"
 import {
   ResponsiveContainer,
   BarChart,
@@ -60,12 +61,7 @@ const MODULE_COLOR: Record<string, string> = {
   ESTRATEGIA_EXPANSION: "#8e9192",
 }
 
-const STATUS_LABEL: Record<string, string> = {
-  PENDING: "Pendiente",
-  IN_PROGRESS: "En Progreso",
-  COMPLETED: "Completada",
-  ARCHIVED: "Archivada",
-}
+// STATUS_LABEL is built inside the component with translations
 
 const STATUS_COLOR: Record<string, string> = {
   PENDING: "#8e9192",
@@ -93,18 +89,26 @@ function CustomTooltip({ active, payload, label }: { active?: boolean; payload?:
   )
 }
 
-function PieTooltip({ active, payload }: { active?: boolean; payload?: { name: string; value: number }[] }) {
+function PieTooltip({ active, payload, missionLabel }: { active?: boolean; payload?: { name: string; value: number }[]; missionLabel: string }) {
   if (!active || !payload?.length) return null
   return (
     <div className="bg-surface-container-highest rounded-lg px-3 py-2 border border-outline-variant/20 text-xs">
       <p className="text-on-surface font-bold">{payload[0].name}</p>
-      <p className="text-outline">{payload[0].value} misiones</p>
+      <p className="text-outline">{payload[0].value} {missionLabel}</p>
     </div>
   )
 }
 
 export default function EmpresaDashboard({ org, departments, members, missionStats }: Props) {
+  const t = useTranslations("empresa")
   const [selectedDept, setSelectedDept] = useState<string | null>(null)
+
+  const STATUS_LABEL: Record<string, string> = {
+    PENDING: t("statusPending"),
+    IN_PROGRESS: t("statusInProgress"),
+    COMPLETED: t("statusCompleted"),
+    ARCHIVED: t("statusArchived"),
+  }
 
   const filteredMembers = useMemo(
     () =>
@@ -148,7 +152,7 @@ export default function EmpresaDashboard({ org, departments, members, missionSta
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-outline">Dashboard</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-outline">{t("dashboard")}</p>
           <h1 className="font-headline text-2xl font-bold text-on-surface mt-0.5">{org.name}</h1>
         </div>
         {/* Department filter */}
@@ -162,7 +166,7 @@ export default function EmpresaDashboard({ org, departments, members, missionSta
                   : "bg-surface-container-highest text-outline hover:text-on-surface"
               }`}
             >
-              Todos
+              {t("all")}
             </button>
             {departments.map((d) => (
               <button
@@ -185,25 +189,25 @@ export default function EmpresaDashboard({ org, departments, members, missionSta
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
           {
-            label: "Empleados",
+            label: t("employees"),
             value: filteredMembers.length,
             icon: "group",
             color: "text-tertiary",
           },
           {
-            label: "Activas",
+            label: t("active"),
             value: filteredStats.active,
             icon: "military_tech",
             color: "text-primary",
           },
           {
-            label: "Completadas",
+            label: t("completedMissions"),
             value: filteredStats.completed,
             icon: "check_circle",
             color: "text-secondary",
           },
           {
-            label: "Tasa Completado",
+            label: t("completionRate"),
             value: `${completionRate}%`,
             icon: "bar_chart",
             color: "text-on-tertiary-container",
@@ -238,11 +242,11 @@ export default function EmpresaDashboard({ org, departments, members, missionSta
         <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
           <div className="rounded-lg bg-surface-bright p-5">
             <p className="text-[10px] font-bold uppercase tracking-widest text-outline mb-4">
-              Estado de Misiones
+              {t("missionStatus")}
             </p>
             {statusData.length === 0 ? (
               <div className="h-40 flex items-center justify-center text-outline text-sm">
-                Sin datos
+                {t("noDataLabel")}
               </div>
             ) : (
               <div className="flex items-center gap-4">
@@ -261,7 +265,7 @@ export default function EmpresaDashboard({ org, departments, members, missionSta
                         <Cell key={i} fill={entry.fill} />
                       ))}
                     </Pie>
-                    <Tooltip content={<PieTooltip />} />
+                    <Tooltip content={<PieTooltip missionLabel={t("missionCountLabel")} />} />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="space-y-2 flex-1">
@@ -285,11 +289,11 @@ export default function EmpresaDashboard({ org, departments, members, missionSta
         <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
           <div className="rounded-lg bg-surface-bright p-5">
             <p className="text-[10px] font-bold uppercase tracking-widest text-outline mb-4">
-              Misiones por Módulo
+              {t("missionsByModule")}
             </p>
             {moduleData.length === 0 ? (
               <div className="h-40 flex items-center justify-center text-outline text-sm">
-                Sin datos
+                {t("noDataLabel")}
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={160}>
@@ -324,10 +328,12 @@ export default function EmpresaDashboard({ org, departments, members, missionSta
         <div className="rounded-lg bg-surface-bright p-5">
           <div className="flex items-center justify-between mb-4">
             <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-              Empleados
+              {t("employeeTable")}
             </p>
             <span className="text-[10px] text-outline">
-              {filteredMembers.length} trabajador{filteredMembers.length !== 1 ? "es" : ""}
+              {filteredMembers.length !== 1
+                ? t("workerCountPlural", { count: filteredMembers.length })
+                : t("workerCount", { count: filteredMembers.length })}
             </span>
           </div>
 
@@ -336,26 +342,26 @@ export default function EmpresaDashboard({ org, departments, members, missionSta
               <span className="material-symbols-outlined text-4xl text-outline opacity-40 block">
                 group
               </span>
-              <p className="text-outline text-sm">Sin empleados en este departamento</p>
+              <p className="text-outline text-sm">{t("noEmployees")}</p>
             </div>
           ) : (
             <div className="space-y-2">
               {/* Header row */}
               <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 px-3 pb-1">
                 <span className="text-[9px] font-bold uppercase tracking-widest text-outline">
-                  Empleado
+                  {t("employeeCol")}
                 </span>
                 <span className="text-[9px] font-bold uppercase tracking-widest text-outline w-20 text-center">
-                  Activas
+                  {t("activeMissions")}
                 </span>
                 <span className="text-[9px] font-bold uppercase tracking-widest text-outline w-20 text-center">
-                  Completadas
+                  {t("completedCol")}
                 </span>
                 <span className="text-[9px] font-bold uppercase tracking-widest text-outline w-16 text-center hidden sm:block">
-                  XP
+                  {t("xpCol")}
                 </span>
                 <span className="text-[9px] font-bold uppercase tracking-widest text-outline w-24 text-center hidden md:block">
-                  Progreso
+                  {t("progressCol")}
                 </span>
               </div>
 
@@ -384,7 +390,7 @@ export default function EmpresaDashboard({ org, departments, members, missionSta
                         {member.name}
                       </p>
                       <p className="text-[9px] text-outline">
-                        Nv.{member.level}{" "}
+                        {t("levelPrefix")}{member.level}{" "}
                         {member.departmentName && (
                           <span className="text-on-surface-variant">· {member.departmentName}</span>
                         )}

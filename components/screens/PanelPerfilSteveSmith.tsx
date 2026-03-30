@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import { useUser } from "@clerk/nextjs"
 
@@ -127,6 +128,7 @@ const SCORE_LABELS: { key: keyof ApprovalScores; label: string; color: string }[
 
 function ProjectCard({ project }: { project: CompletedProject }) {
   const [expanded, setExpanded] = useState(false)
+  const t = useTranslations("perfil")
 
   return (
     <div className={`rounded-xl bg-surface-container-highest p-1 transition-all ${expanded ? "shadow-[0px_20px_40px_rgba(0,0,0,0.4)]" : ""}`}>
@@ -144,7 +146,7 @@ function ProjectCard({ project }: { project: CompletedProject }) {
               <div className="text-sm font-bold text-on-surface truncate">{project.title}</div>
               {project.isArchived && (
                 <span className="text-[9px] font-bold uppercase tracking-widest bg-outline/20 text-outline px-1.5 py-0.5 rounded-full flex-shrink-0">
-                  Archivado
+                  {t("archived")}
                 </span>
               )}
             </div>
@@ -166,21 +168,21 @@ function ProjectCard({ project }: { project: CompletedProject }) {
               <div className="mt-4 p-4 bg-surface-container-lowest rounded-lg space-y-4">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-secondary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">Aprobado</span>
-                  <span className="text-[10px] text-outline">por {project.approval.approverName}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">{t("approved")}</span>
+                  <span className="text-[10px] text-outline">{t("approvedBy", { name: project.approval.approverName })}</span>
                 </div>
 
                 {/* Note */}
                 {project.approval.note && (
                   <div className="p-3 bg-surface-container-high rounded-lg">
-                    <div className="text-[9px] font-bold uppercase tracking-widest text-outline mb-1">Nota del revisor</div>
+                    <div className="text-[9px] font-bold uppercase tracking-widest text-outline mb-1">{t("reviewerNote")}</div>
                     <p className="text-sm text-on-surface whitespace-pre-line">{project.approval.note}</p>
                   </div>
                 )}
 
                 {/* Scores */}
                 <div>
-                  <div className="text-[9px] font-bold uppercase tracking-widest text-outline mb-3">Valoración de atributos</div>
+                  <div className="text-[9px] font-bold uppercase tracking-widest text-outline mb-3">{t("attributeRating")}</div>
                   <div className="grid grid-cols-2 gap-2">
                     {SCORE_LABELS.map(({ key, label, color }) => {
                       const score = project.approval!.scores[key]
@@ -213,7 +215,7 @@ function ProjectCard({ project }: { project: CompletedProject }) {
             {/* Objectives */}
             {project.objectives.length > 0 && (
               <div>
-                <div className="text-[9px] font-bold uppercase tracking-widest text-outline mb-3">Misiones del proyecto</div>
+                <div className="text-[9px] font-bold uppercase tracking-widest text-outline mb-3">{t("projectMissions")}</div>
                 <div className="space-y-1.5">
                   {project.objectives.map((obj, i) => (
                     <div key={i} className="flex items-center gap-3 p-2.5 bg-surface-container-lowest rounded-lg">
@@ -242,6 +244,7 @@ function ProjectCard({ project }: { project: CompletedProject }) {
 
 export default function PanelPerfilSteveSmith({ user, completedProjects, pendingReview }: PanelPerfilProps) {
   const { user: clerkUser } = useUser()
+  const t = useTranslations("perfil")
 
   const leftAttrs = user.attributes.filter((a) => a.attribute.side === "left")
   const rightAttrs = user.attributes.filter((a) => a.attribute.side === "right")
@@ -281,7 +284,7 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
                   <div className="absolute inset-0 bg-primary opacity-20 blur-2xl group-hover:opacity-40 transition-opacity" />
                   <div className="w-32 h-32 rounded-full wood-bezel flex items-center justify-center relative z-10 border border-primary/30 glow-gold">
                     <div className="text-center">
-                      <div className="text-primary font-headline font-extrabold text-2xl tracking-tighter">NIVEL</div>
+                      <div className="text-primary font-headline font-extrabold text-2xl tracking-tighter">{t("nivel")}</div>
                       <div className="text-on-surface font-headline font-black text-4xl leading-tight">{user.level}</div>
                     </div>
                   </div>
@@ -338,7 +341,7 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
                   <div className="bg-surface-bright rounded-lg p-6 border border-primary/20">
                     <div className="flex items-center gap-2 mb-4">
                       <span className="material-symbols-outlined text-primary">hourglass_top</span>
-                      <h3 className="text-lg font-headline font-bold text-on-surface">Pendientes de Revisión</h3>
+                      <h3 className="text-lg font-headline font-bold text-on-surface">{t("pendingReview")}</h3>
                       <span className="bg-primary/20 text-primary px-2 py-0.5 rounded-full text-[10px] font-bold">{pendingReview.length}</span>
                     </div>
                     <div className="space-y-2">
@@ -349,7 +352,7 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
                             <div className="text-sm font-bold text-on-surface">{p.title}</div>
                             <div className="text-[9px] text-outline uppercase tracking-wider">{p.module}</div>
                           </div>
-                          <span className="text-[9px] font-bold uppercase tracking-widest text-primary bg-primary/10 px-2 py-1 rounded-full">En revisión</span>
+                          <span className="text-[9px] font-bold uppercase tracking-widest text-primary bg-primary/10 px-2 py-1 rounded-full">{t("underReview")}</span>
                         </div>
                       ))}
                     </div>
@@ -361,11 +364,11 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
               <div>
                 <div className="flex justify-between items-end mb-4">
                   <div>
-                    <h3 className="text-2xl font-headline font-bold text-on-surface">Proyectos Completados</h3>
-                    <p className="text-outline text-[10px] uppercase tracking-widest mt-1">Historial con valoraciones</p>
+                    <h3 className="text-2xl font-headline font-bold text-on-surface">{t("completedProjects")}</h3>
+                    <p className="text-outline text-[10px] uppercase tracking-widest mt-1">{t("historyWithRatings")}</p>
                   </div>
                   <Link href="/misiones" className="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded hover:bg-primary hover:text-on-primary transition-all duration-300 font-headline font-bold text-[10px] uppercase tracking-tighter">
-                    Ver Todos
+                    {t("viewAll")}
                   </Link>
                 </div>
 
@@ -379,10 +382,10 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
                   <div className="rounded-xl bg-surface-container-highest p-1">
                     <div className="rounded-lg bg-surface-bright p-12 text-center border border-outline-variant/10">
                       <span className="material-symbols-outlined text-5xl text-outline/40 mb-4 block">explore</span>
-                      <p className="text-on-surface font-headline font-bold text-lg">Sin proyectos completados</p>
-                      <p className="text-outline text-[10px] uppercase tracking-widest mt-2">Completa misiones para ver tus logros aquí</p>
+                      <p className="text-on-surface font-headline font-bold text-lg">{t("noCompletedProjects")}</p>
+                      <p className="text-outline text-[10px] uppercase tracking-widest mt-2">{t("noCompletedHint")}</p>
                       <Link href="/misiones" className="mt-6 inline-block px-6 py-2 bg-primary/10 text-primary border border-primary/20 rounded hover:bg-primary hover:text-on-primary transition-all font-headline font-bold text-xs uppercase tracking-tighter">
-                        Explorar Misiones
+                        {t("exploreMissions")}
                       </Link>
                     </div>
                   </div>
@@ -394,8 +397,8 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
             <div className="col-span-12 md:col-span-4 bg-surface-container-highest p-1 rounded-xl shadow-2xl h-fit">
               <div className="bg-surface-bright rounded-lg p-8 flex flex-col justify-between border border-outline-variant/10">
                 <div>
-                  <h3 className="text-xl font-headline font-bold text-on-surface mb-2">Progreso de Rango</h3>
-                  <p className="text-outline text-[10px] uppercase tracking-widest mb-6">Hacia Nivel {user.level + 1}</p>
+                  <h3 className="text-xl font-headline font-bold text-on-surface mb-2">{t("rankProgress")}</h3>
+                  <p className="text-outline text-[10px] uppercase tracking-widest mb-6">{t("towardsLevel", { n: user.level + 1 })}</p>
 
                   <div className="relative w-full aspect-square flex items-center justify-center mb-8">
                     <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
@@ -404,7 +407,7 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
                     </svg>
                     <div className="absolute flex flex-col items-center">
                       <span className="text-4xl font-headline font-black text-on-surface">{progressPercent}%</span>
-                      <span className="text-[0.6rem] text-outline uppercase tracking-[0.3em]">Hacia Nivel {user.level + 1}</span>
+                      <span className="text-[0.6rem] text-outline uppercase tracking-[0.3em]">{t("towardsLevel", { n: user.level + 1 })}</span>
                     </div>
                   </div>
                 </div>
@@ -412,11 +415,11 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-surface-container-lowest p-4 rounded-lg text-center border border-outline-variant/10">
                     <div className="text-primary font-black text-xl leading-none">{user.trophies}</div>
-                    <div className="text-[0.5rem] text-outline uppercase mt-1">Trofeos</div>
+                    <div className="text-[0.5rem] text-outline uppercase mt-1">{t("trophies")}</div>
                   </div>
                   <div className="bg-surface-container-lowest p-4 rounded-lg text-center border border-outline-variant/10">
                     <div className="text-secondary font-black text-xl leading-none">{user.kredits >= 1000 ? `${(user.kredits / 1000).toFixed(1)}k` : user.kredits}</div>
-                    <div className="text-[0.5rem] text-outline uppercase mt-1">Kredits</div>
+                    <div className="text-[0.5rem] text-outline uppercase mt-1">{t("kredits")}</div>
                   </div>
                 </div>
               </div>
