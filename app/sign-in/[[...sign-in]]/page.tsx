@@ -1,6 +1,10 @@
 import { SignIn } from "@clerk/nextjs"
+import { auth } from "@clerk/nextjs/server"
+import { redirect } from "next/navigation"
 
-export default function SignInPage() {
+export default async function SignInPage() {
+  const { userId } = await auth()
+  if (userId) redirect("/dashboard")
   return (
     <div className="min-h-screen flex items-center justify-center bg-surface relative overflow-hidden">
       <div className="absolute inset-0 bg-primary opacity-5 blur-[100px] pointer-events-none" />
