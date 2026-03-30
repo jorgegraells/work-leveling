@@ -206,5 +206,15 @@
     "statusInProgress": "In Progress",
     "statusCompleted": "Completed",
     "statusArchived": "Archived"
+  },
+  "attributes": {
+    "logica": "Logic",
+    "creatividad": "Creativity",
+    "liderazgo": "Leadership",
+    "negociacion": "Negotiation",
+    "estrategia": "Strategy",
+    "analisis": "Analysis",
+    "comunicacion": "Communication",
+    "adaptabilidad": "Adaptability"
   }
 }

@@ -45,10 +45,12 @@ export default function AdminDashboard({
   const [resetDone, setResetDone] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
 
+  const [resetScope, setResetScope] = useState<"gameplay" | "full">("gameplay")
+
   async function handleReset() {
     setResetting(true)
     try {
-      await fetch("/api/admin/reset", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scope: "gameplay" }) })
+      await fetch("/api/admin/reset", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scope: resetScope }) })
       setResetDone(true)
       setShowConfirm(false)
       setTimeout(() => setResetDone(false), 4000)
@@ -166,26 +168,45 @@ export default function AdminDashboard({
           <p className="text-[10px] font-bold uppercase tracking-widest text-error mb-1">
             Zona de Peligro
           </p>
-          <p className="text-[11px] text-outline mb-4">
-            Resetear todos los datos de juego (misiones, XP, aprobaciones). Los usuarios, empresas y plantillas de misiones se conservan.
-          </p>
+          {/* Scope selector */}
+          <div className="flex gap-2 mb-4">
+            {([
+              { key: "gameplay", label: "Solo gameplay", hint: "Borra misiones, XP, aprobaciones. Conserva usuarios y empresas." },
+              { key: "full", label: "Borrado total", hint: "Borra TODO excepto el superadmin." },
+            ] as const).map((opt) => (
+              <button
+                key={opt.key}
+                type="button"
+                onClick={() => setResetScope(opt.key)}
+                className={`flex-1 p-3 rounded-lg text-left border transition-all ${
+                  resetScope === opt.key
+                    ? "border-error bg-error/10 text-error"
+                    : "border-outline-variant/20 bg-surface-container-lowest text-outline hover:border-error/30"
+                }`}
+              >
+                <p className="text-[10px] font-bold uppercase tracking-widest">{opt.label}</p>
+                <p className="text-[10px] mt-0.5 opacity-70">{opt.hint}</p>
+              </button>
+            ))}
+          </div>
+
           {!showConfirm ? (
             <button
               onClick={() => setShowConfirm(true)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-error/10 text-error border border-error/20 text-[10px] font-bold uppercase tracking-widest hover:bg-error/20 active:scale-95 transition-transform"
             >
               <span className="material-symbols-outlined text-sm">restart_alt</span>
-              Resetear Base de Datos
+              Ejecutar Reset
             </button>
           ) : (
-            <div className="flex items-center gap-3">
-              <p className="text-sm text-error font-medium">¿Confirmas el reset? Esta acción no se puede deshacer.</p>
+            <div className="flex items-center gap-3 flex-wrap">
+              <p className="text-sm text-error font-medium">¿Confirmas? Esta acción <strong>no se puede deshacer</strong>.</p>
               <button
                 onClick={handleReset}
                 disabled={resetting}
                 className="px-4 py-2 rounded-md bg-error text-white text-[10px] font-bold uppercase tracking-widest active:scale-95 disabled:opacity-50 transition-transform"
               >
-                {resetting ? "Reseteando..." : "Confirmar Reset"}
+                {resetting ? "Reseteando..." : "Confirmar"}
               </button>
               <button
                 onClick={() => setShowConfirm(false)}

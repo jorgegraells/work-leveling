@@ -12,7 +12,7 @@ import { useUser } from "@clerk/nextjs"
 
 interface UserAttributeData {
   value: number
-  attribute: { label: string; color: string; side: string }
+  attribute: { key: string; label: string; color: string; side: string }
 }
 
 interface UserData {
@@ -245,6 +245,7 @@ function ProjectCard({ project }: { project: CompletedProject }) {
 export default function PanelPerfilSteveSmith({ user, completedProjects, pendingReview }: PanelPerfilProps) {
   const { user: clerkUser } = useUser()
   const t = useTranslations("perfil")
+  const tAttr = useTranslations("attributes")
 
   const leftAttrs = user.attributes.filter((a) => a.attribute.side === "left")
   const rightAttrs = user.attributes.filter((a) => a.attribute.side === "right")
@@ -266,9 +267,9 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
               {/* Left attributes */}
               <div className="col-span-12 lg:col-span-4 space-y-6">
                 {leftAttrs.map(({ value, attribute: attr }) => (
-                  <div key={attr.label} className="space-y-2">
+                  <div key={tAttr.has(attr.key) ? tAttr(attr.key as Parameters<typeof tAttr>[0]) : attr.label} className="space-y-2">
                     <div className="flex justify-between text-[0.65rem] font-bold uppercase tracking-wider text-outline">
-                      {attr.label}
+                      {tAttr.has(attr.key) ? tAttr(attr.key as Parameters<typeof tAttr>[0]) : attr.label}
                       <span className={SKILL_TEXT[attr.color] || "text-on-surface"}>{value}%</span>
                     </div>
                     <div className="h-3 bg-surface-container-high rounded-full overflow-hidden p-0.5">
@@ -316,9 +317,9 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
               {/* Right attributes */}
               <div className="col-span-12 lg:col-span-4 space-y-6">
                 {rightAttrs.map(({ value, attribute: attr }) => (
-                  <div key={attr.label} className="space-y-2">
+                  <div key={tAttr.has(attr.key) ? tAttr(attr.key as Parameters<typeof tAttr>[0]) : attr.label} className="space-y-2">
                     <div className="flex justify-between text-[0.65rem] font-bold uppercase tracking-wider text-outline">
-                      {attr.label}
+                      {tAttr.has(attr.key) ? tAttr(attr.key as Parameters<typeof tAttr>[0]) : attr.label}
                       <span className={SKILL_TEXT[attr.color] || "text-on-surface"}>{value}%</span>
                     </div>
                     <div className="h-3 bg-surface-container-high rounded-full overflow-hidden p-0.5">
