@@ -7,8 +7,16 @@ export default async function NuevoProyectoPage() {
   const user = await requireCurrentUser()
 
   const orgs = user.isSuperAdmin
-    ? await prisma.organization.findMany({ select: { id: true, name: true } })
-    : [await prisma.organization.findUnique({ where: { id: user.organizationId ?? undefined }, select: { id: true, name: true } })]
+    ? await prisma.organization.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } })
+    : await prisma.organization.findMany({
+        where: {
+          orgRoles: {
+            some: { userId: user.id, confirmed: true, role: { in: ["MANAGER", "ORG_ADMIN"] } },
+          },
+        },
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      })
 
   return (
     <SidebarLayout
@@ -25,7 +33,7 @@ export default async function NuevoProyectoPage() {
           <h1 className="text-2xl font-headline font-bold text-on-surface mb-2">Nueva Misión</h1>
           <p className="text-outline text-[10px] uppercase tracking-widest mb-8">Crear un nuevo proyecto con objetivos</p>
           <ProyectoForm
-            orgs={orgs.filter(Boolean) as { id: string; name: string }[]}
+            orgs={orgs}
             defaultOrgId={user.organizationId ?? undefined}
           />
         </div>

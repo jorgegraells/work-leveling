@@ -218,29 +218,47 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
             </p>
 
             {/* Empresa */}
-            {orgs.length > 1 && (
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                  Empresa
-                </label>
-                <div className="relative">
-                  <select
-                    value={selectedOrgId}
-                    onChange={(e) => setSelectedOrgId(e.target.value)}
-                    className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary appearance-none"
-                  >
-                    {orgs.map((org) => (
-                      <option key={org.id} value={org.id}>
-                        {org.name}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-base pointer-events-none">
-                    expand_more
-                  </span>
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                Empresa
+              </label>
+              {orgs.length === 1 ? (
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15">
+                  <span className="material-symbols-outlined text-primary">corporate_fare</span>
+                  <span className="text-sm font-semibold text-on-surface">{orgs[0].name}</span>
+                  <span className="text-[9px] text-outline ml-auto">Auto-seleccionada</span>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {orgs.map((org) => (
+                    <button
+                      key={org.id}
+                      type="button"
+                      onClick={() => setSelectedOrgId(org.id)}
+                      className={`flex items-center gap-3 p-3 rounded-lg border transition-all text-left ${
+                        selectedOrgId === org.id
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-outline-variant/15 bg-surface-container-lowest text-on-surface hover:border-outline-variant/40"
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-lg">corporate_fare</span>
+                      <span className="text-sm font-semibold">{org.name}</span>
+                      {selectedOrgId === org.id && (
+                        <span
+                          className="material-symbols-outlined text-sm ml-auto"
+                          style={{ fontVariationSettings: "'FILL' 1" }}
+                        >
+                          check_circle
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <p className="text-[10px] text-outline">
+                Esta misión será visible para los empleados de la empresa seleccionada
+              </p>
+            </div>
 
             {/* Title */}
             <div className="space-y-1.5">

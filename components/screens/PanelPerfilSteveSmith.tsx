@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import { useUser } from "@clerk/nextjs"
@@ -242,26 +242,6 @@ function ProjectCard({ project }: { project: CompletedProject }) {
 
 export default function PanelPerfilSteveSmith({ user, completedProjects, pendingReview }: PanelPerfilProps) {
   const { user: clerkUser } = useUser()
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [avatarUploading, setAvatarUploading] = useState(false)
-
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file || !clerkUser) return
-    setAvatarUploading(true)
-    try {
-      await clerkUser.setProfileImage({ file })
-      await fetch("/api/me/avatar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ avatarUrl: clerkUser.imageUrl }),
-      })
-    } catch (err) {
-      console.error("Avatar upload failed:", err)
-    } finally {
-      setAvatarUploading(false)
-    }
-  }
 
   const leftAttrs = user.attributes.filter((a) => a.attribute.side === "left")
   const rightAttrs = user.attributes.filter((a) => a.attribute.side === "right")
@@ -308,37 +288,17 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
                 </div>
 
                 <div className="relative">
-                  <div
-                    className="w-48 h-48 rounded-full p-3 wood-bezel cursor-pointer group/avatar"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    <div className="w-full h-full rounded-full overflow-hidden border-2 border-outline-variant/30 shadow-2xl relative">
-                      {user.avatarUrl ? (
-                        <img alt="Portrait" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" src={user.avatarUrl} />
+                  <div className="w-48 h-48 rounded-full p-3 wood-bezel">
+                    <div className="w-full h-full rounded-full overflow-hidden border-2 border-outline-variant/30 shadow-2xl">
+                      {(clerkUser?.imageUrl ?? user.avatarUrl) ? (
+                        <img alt={user.name} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" src={clerkUser?.imageUrl ?? user.avatarUrl ?? ""} />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-surface-container-high">
                           <span className="material-symbols-outlined text-6xl text-outline">person</span>
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
-                        {avatarUploading ? (
-                          <span className="material-symbols-outlined text-white text-3xl animate-spin">refresh</span>
-                        ) : (
-                          <>
-                            <span className="material-symbols-outlined text-white text-3xl">photo_camera</span>
-                            <span className="text-[9px] font-bold uppercase tracking-widest text-white">Cambiar</span>
-                          </>
-                        )}
-                      </div>
                     </div>
                   </div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleAvatarChange}
-                  />
                   <div className="absolute -bottom-2 -right-2 bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center shadow-lg">
                     <span className="material-symbols-outlined">verified</span>
                   </div>

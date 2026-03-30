@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import PanelCorporativoGamificado, {
   type ProjectCard,
 } from "@/components/screens/PanelCorporativoGamificado"

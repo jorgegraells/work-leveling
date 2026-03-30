@@ -23,6 +23,7 @@ interface OrgUser {
 interface AsignacionModalProps {
   missionId: string
   orgId: string
+  missionOrgId?: string
   onClose: () => void
 }
 
@@ -31,8 +32,11 @@ type Mode = "usuarios" | "departamento"
 export default function AsignacionModal({
   missionId,
   orgId,
+  missionOrgId,
   onClose,
 }: AsignacionModalProps) {
+  // Use missionOrgId when available to ensure users are filtered by the mission's org
+  const effectiveOrgId = missionOrgId ?? orgId
   const [mode, setMode] = useState<Mode>("usuarios")
   const [users, setUsers] = useState<OrgUser[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
@@ -48,8 +52,8 @@ export default function AsignacionModal({
       setLoading(true)
       try {
         const [usersRes, deptsRes] = await Promise.all([
-          fetch(`/api/admin/empresas/${orgId}/usuarios`),
-          fetch(`/api/admin/empresas/${orgId}/departamentos`),
+          fetch(`/api/admin/empresas/${effectiveOrgId}/usuarios`),
+          fetch(`/api/admin/empresas/${effectiveOrgId}/departamentos`),
         ])
         if (usersRes.ok) {
           const members = await usersRes.json()
@@ -70,7 +74,7 @@ export default function AsignacionModal({
       }
     }
     load()
-  }, [orgId])
+  }, [effectiveOrgId])
 
   function toggleUser(userId: string) {
     setSelectedUserIds((prev) =>

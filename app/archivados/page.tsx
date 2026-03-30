@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"

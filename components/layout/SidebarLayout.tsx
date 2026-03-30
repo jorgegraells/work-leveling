@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import { UserButton, SignOutButton } from "@clerk/nextjs"
+import { UserButton, SignOutButton, useUser } from "@clerk/nextjs"
 import { useCurrentUserRole } from "@/hooks/useCurrentUserRole"
 import { usePendingApprovals } from "@/hooks/usePendingApprovals"
 import { useOrg } from "@/contexts/OrgContext"
@@ -45,6 +45,7 @@ export default function SidebarLayout({
 }) {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(true)
+  const { user: clerkUser } = useUser()
   const { role, isSuperAdmin } = useCurrentUserRole()
   const { count: pendingApprovals } = usePendingApprovals()
   const { currentOrg } = useOrg()
@@ -55,9 +56,11 @@ export default function SidebarLayout({
     roleNavItems.push({ icon: "admin_panel_settings", label: "Admin", href: "/admin" })
     roleNavItems.push({ icon: "account_tree", label: "Proyectos", href: "/admin/proyectos" })
     roleNavItems.push({ icon: "approval", label: "Aprobaciones", href: "/admin/aprobaciones", badge: pendingApprovals })
+    roleNavItems.push({ icon: "domain", label: "Empresa", href: "/admin/empresa" })
   } else if (role === "ORG_ADMIN" || role === "MANAGER") {
     roleNavItems.push({ icon: "account_tree", label: "Proyectos", href: "/admin/proyectos" })
     roleNavItems.push({ icon: "approval", label: "Aprobaciones", href: "/admin/aprobaciones", badge: pendingApprovals })
+    roleNavItems.push({ icon: "domain", label: "Empresa", href: "/admin/empresa" })
   }
 
   const allNavItems = [...SIDEBAR_NAV, ...roleNavItems]
@@ -82,11 +85,11 @@ export default function SidebarLayout({
         <div className="mb-8 flex justify-between items-center h-10 w-full">
           <div className="px-2 flex items-center gap-4 flex-1 overflow-hidden">
             <div className="w-10 h-10 rounded-lg border border-primary/30 overflow-hidden shadow-lg flex-shrink-0 flex items-center justify-center bg-surface-container-lowest">
-              {user?.avatarUrl ? (
+              {(clerkUser?.imageUrl ?? user?.avatarUrl) ? (
                 <img
-                  alt="Avatar"
+                  alt={user?.name ?? "Usuario"}
                   className="w-full h-full object-cover"
-                  src={user.avatarUrl}
+                  src={clerkUser?.imageUrl ?? user?.avatarUrl ?? ""}
                 />
               ) : (
                 <span className="material-symbols-outlined text-xl text-outline">person</span>

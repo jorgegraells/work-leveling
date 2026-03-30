@@ -288,6 +288,7 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
         <AsignacionModal
           missionId={mission.id}
           orgId={mission.organizationId}
+          missionOrgId={mission.organizationId}
           onClose={() => setShowAsignModal(false)}
         />
       )}
