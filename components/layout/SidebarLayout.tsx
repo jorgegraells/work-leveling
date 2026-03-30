@@ -7,6 +7,7 @@ import { UserButton, SignOutButton, useUser } from "@clerk/nextjs"
 import { useCurrentUserRole } from "@/hooks/useCurrentUserRole"
 import { usePendingApprovals } from "@/hooks/usePendingApprovals"
 import { useOrg } from "@/contexts/OrgContext"
+import { useTranslations } from "next-intl"
 import NotificationBell from "@/components/layout/NotificationBell"
 import Breadcrumbs from "@/components/layout/Breadcrumbs"
 
@@ -17,21 +18,21 @@ export interface UserDataHeader {
   avatarUrl?: string | null
 }
 
-const SIDEBAR_NAV = [
-  { icon: "home",          label: "Dashboard",    href: "/dashboard"    },
-  { icon: "person",        label: "Perfil",       href: "/perfil"       },
-  { icon: "military_tech", label: "Misiones",     href: "/misiones"     },
-  { icon: "archive",       label: "Archivados",   href: "/archivados"   },
-  { icon: "bar_chart",     label: "Estadísticas", href: "/estadisticas" },
-  { icon: "business",      label: "Empresas",     href: "/empresas"     },
+const SIDEBAR_NAV_DEFS = [
+  { icon: "home",          key: "dashboard", href: "/dashboard"    },
+  { icon: "person",        key: "profile",   href: "/perfil"       },
+  { icon: "military_tech", key: "missions",  href: "/misiones"     },
+  { icon: "archive",       key: "archived",  href: "/archivados"   },
+  { icon: "bar_chart",     key: "stats",     href: "/estadisticas" },
+  { icon: "business",      key: "companies", href: "/empresas"     },
 ]
 
-const MOBILE_NAV = [
-  { icon: "home",          label: "Dashboard", href: "/dashboard"    },
-  { icon: "military_tech", label: "Misiones",  href: "/misiones"     },
-  { icon: "person",        label: "Perfil",    href: "/perfil"       },
-  { icon: "bar_chart",     label: "Stats",     href: "/estadisticas" },
-  { icon: "settings",      label: "Config",    href: "/settings"     },
+const MOBILE_NAV_DEFS = [
+  { icon: "home",          key: "dashboard", href: "/dashboard"    },
+  { icon: "military_tech", key: "missions",  href: "/misiones"     },
+  { icon: "person",        key: "profile",   href: "/perfil"       },
+  { icon: "bar_chart",     key: "stats",     href: "/estadisticas" },
+  { icon: "settings",      key: "settings",  href: "/settings"     },
 ]
 
 export default function SidebarLayout({
@@ -43,6 +44,7 @@ export default function SidebarLayout({
   user?: UserDataHeader
   breadcrumbs?: { label: string; href?: string }[]
 }) {
+  const t = useTranslations("nav")
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(true)
   const { user: clerkUser } = useUser()
@@ -50,17 +52,27 @@ export default function SidebarLayout({
   const { count: pendingApprovals } = usePendingApprovals()
   const { currentOrg } = useOrg()
 
+  const SIDEBAR_NAV = SIDEBAR_NAV_DEFS.map((item) => ({
+    ...item,
+    label: t(item.key as Parameters<typeof t>[0]),
+  }))
+
+  const MOBILE_NAV = MOBILE_NAV_DEFS.map((item) => ({
+    ...item,
+    label: t(item.key as Parameters<typeof t>[0]),
+  }))
+
   // Build dynamic nav items based on role
   const roleNavItems: { icon: string; label: string; href: string; badge?: number }[] = []
   if (isSuperAdmin) {
-    roleNavItems.push({ icon: "admin_panel_settings", label: "Admin", href: "/admin" })
-    roleNavItems.push({ icon: "account_tree", label: "Proyectos", href: "/admin/proyectos" })
-    roleNavItems.push({ icon: "approval", label: "Aprobaciones", href: "/admin/aprobaciones", badge: pendingApprovals })
-    roleNavItems.push({ icon: "domain", label: "Empresa", href: "/admin/empresa" })
+    roleNavItems.push({ icon: "admin_panel_settings", label: t("admin"), href: "/admin" })
+    roleNavItems.push({ icon: "account_tree", label: t("projects"), href: "/admin/proyectos" })
+    roleNavItems.push({ icon: "approval", label: t("approvals"), href: "/admin/aprobaciones", badge: pendingApprovals })
+    roleNavItems.push({ icon: "domain", label: t("company"), href: "/admin/empresa" })
   } else if (role === "ORG_ADMIN" || role === "MANAGER") {
-    roleNavItems.push({ icon: "account_tree", label: "Proyectos", href: "/admin/proyectos" })
-    roleNavItems.push({ icon: "approval", label: "Aprobaciones", href: "/admin/aprobaciones", badge: pendingApprovals })
-    roleNavItems.push({ icon: "domain", label: "Empresa", href: "/admin/empresa" })
+    roleNavItems.push({ icon: "account_tree", label: t("projects"), href: "/admin/proyectos" })
+    roleNavItems.push({ icon: "approval", label: t("approvals"), href: "/admin/aprobaciones", badge: pendingApprovals })
+    roleNavItems.push({ icon: "domain", label: t("company"), href: "/admin/empresa" })
   }
 
   const allNavItems = [...SIDEBAR_NAV, ...roleNavItems]
@@ -151,12 +163,12 @@ export default function SidebarLayout({
         <div className="mt-auto space-y-1 pt-4 border-t border-surface-container-highest/15">
           <Link href="/settings" className="flex items-center gap-3 px-4 py-2 text-outline hover:text-on-surface transition-colors">
             <span className="material-symbols-outlined flex-shrink-0">settings</span>
-            <span className="text-[10px] font-bold uppercase tracking-widest">Config</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest">{t("settings")}</span>
           </Link>
           <SignOutButton>
             <button className="w-full flex items-center gap-3 px-4 py-2 text-outline hover:text-error transition-colors focus:outline-none text-left">
               <span className="material-symbols-outlined flex-shrink-0">logout</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest">Logout</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest">{t("logout")}</span>
             </button>
           </SignOutButton>
           <div className="px-4 py-2 mt-2 flex justify-center">

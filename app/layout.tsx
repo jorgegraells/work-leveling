@@ -3,6 +3,8 @@ import { Manrope, Inter, Geist } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
 import { auth } from "@clerk/nextjs/server"
 import { cookies } from "next/headers"
+import { NextIntlClientProvider } from "next-intl"
+import { getMessages } from "next-intl/server"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 import PageTransitionWrapper from "@/components/layout/PageTransitionWrapper"
@@ -34,6 +36,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   let userOrgs: OrgInfo[] = []
   let selectedOrgId: string | null = null
+  const messages = await getMessages()
 
   try {
     const { userId } = await auth()
@@ -79,9 +82,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
         </head>
         <body className={`${manrope.variable} ${inter.variable} font-body`}>
-          <OrgContextProvider initialOrgId={selectedOrgId} initialOrgs={userOrgs}>
-            <PageTransitionWrapper>{children}</PageTransitionWrapper>
-          </OrgContextProvider>
+          <NextIntlClientProvider messages={messages}>
+            <OrgContextProvider initialOrgId={selectedOrgId} initialOrgs={userOrgs}>
+              <PageTransitionWrapper>{children}</PageTransitionWrapper>
+            </OrgContextProvider>
+          </NextIntlClientProvider>
         </body>
       </html>
     </ClerkProvider>

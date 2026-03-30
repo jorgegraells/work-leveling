@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "missions": "Missions",
+    "archived": "Archived",
+    "stats": "Stats",
+    "companies": "Companies",
+    "settings": "Settings",
+    "logout": "Logout",
+    "admin": "Admin",
+    "projects": "Projects",
+    "approvals": "Approvals",
+    "company": "Company"
+  },
+  "settings": {
+    "title": "Settings",
+    "photo": "Profile photo",
+    "photoHint": "Click to change · JPG, PNG, GIF",
+    "name": "Name",
+    "titleField": "Title",
+    "email": "Email",
+    "save": "Save changes",
+    "saving": "Saving...",
+    "saved": "Saved successfully",
+    "language": "Language",
+    "languageHint": "Select the interface language",
+    "spanish": "Español",
+    "english": "English",
+    "uploadError": "Error uploading image"
+  },
+  "archivados": {
+    "title": "Archived",
+    "subtitle": "Archived projects — your complete history",
+    "empty": "No archived projects",
+    "emptyHint": "Approved projects will be archived here",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "pending": "Pending",
+    "reviewedBy": "Reviewed by",
+    "note": "Note",
+    "xp": "XP"
+  },
+  "common": {
+    "level": "Level",
+    "loading": "Loading...",
+    "error": "Error",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close"
+  }
+}

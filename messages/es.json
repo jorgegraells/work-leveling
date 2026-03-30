@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "profile": "Perfil",
+    "missions": "Misiones",
+    "archived": "Archivados",
+    "stats": "Estadísticas",
+    "companies": "Empresas",
+    "settings": "Config",
+    "logout": "Logout",
+    "admin": "Admin",
+    "projects": "Proyectos",
+    "approvals": "Aprobaciones",
+    "company": "Empresa"
+  },
+  "settings": {
+    "title": "Configuración",
+    "photo": "Foto de perfil",
+    "photoHint": "Haz clic para cambiar · JPG, PNG, GIF",
+    "name": "Nombre",
+    "titleField": "Título",
+    "email": "Email",
+    "save": "Guardar cambios",
+    "saving": "Guardando...",
+    "saved": "Guardado correctamente",
+    "language": "Idioma",
+    "languageHint": "Selecciona el idioma de la interfaz",
+    "spanish": "Español",
+    "english": "English",
+    "uploadError": "Error al subir la imagen"
+  },
+  "archivados": {
+    "title": "Archivados",
+    "subtitle": "Proyectos archivados — tu historial completo",
+    "empty": "No hay proyectos archivados",
+    "emptyHint": "Los proyectos aprobados se archivarán aquí",
+    "approved": "Aprobado",
+    "rejected": "Rechazado",
+    "pending": "Pendiente",
+    "reviewedBy": "Revisado por",
+    "note": "Nota",
+    "xp": "XP"
+  },
+  "common": {
+    "level": "Nivel",
+    "loading": "Cargando...",
+    "error": "Error",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "close": "Cerrar"
+  }
+}

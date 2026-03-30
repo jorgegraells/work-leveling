@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 
 type ApprovalStatus = "PENDING" | "APPROVED" | "REJECTED"
 type MissionModule = "VENTAS_LEADS" | "PROYECTOS_CRONOGRAMA" | "ALIANZAS_CONTRATOS" | "INFORMES_CUMPLIMIENTO" | "ESTRATEGIA_EXPANSION"
@@ -40,20 +41,23 @@ const MODULE_COLOR: Record<MissionModule, { text: string; bg: string }> = {
   ESTRATEGIA_EXPANSION:  { text: "text-outline",                 bg: "bg-outline/10" },
 }
 
-const APPROVAL_STYLE: Record<ApprovalStatus, { label: string; icon: string; className: string }> = {
-  APPROVED: { label: "Aprobado",  icon: "check_circle",  className: "text-secondary" },
-  REJECTED: { label: "Rechazado", icon: "cancel",        className: "text-error" },
-  PENDING:  { label: "Pendiente", icon: "pending",       className: "text-primary" },
-}
 
 export default function Archivados({ archivedMissions }: { archivedMissions: ArchivedMission[] }) {
+  const t = useTranslations("archivados")
   const [expanded, setExpanded] = useState<string | null>(null)
+
+  const approvalStyle: Record<ApprovalStatus, { label: string; icon: string; className: string }> = {
+    APPROVED: { label: t("approved"), icon: "check_circle", className: "text-secondary" },
+    REJECTED: { label: t("rejected"), icon: "cancel",       className: "text-error" },
+    PENDING:  { label: t("pending"),  icon: "pending",      className: "text-primary" },
+  }
 
   if (archivedMissions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
         <span className="material-symbols-outlined text-5xl text-outline">archive</span>
-        <p className="text-sm text-outline">No hay proyectos archivados</p>
+        <p className="text-sm text-outline">{t("empty")}</p>
+        <p className="text-[10px] text-outline/60">{t("emptyHint")}</p>
       </div>
     )
   }
@@ -62,7 +66,7 @@ export default function Archivados({ archivedMissions }: { archivedMissions: Arc
     <div className="space-y-3">
       {archivedMissions.map((um) => {
         const moduleColor = MODULE_COLOR[um.mission.module]
-        const approvalInfo = um.approval ? APPROVAL_STYLE[um.approval.status] : null
+        const approvalInfo = um.approval ? approvalStyle[um.approval.status] : null
         const date = new Date(um.updatedAt).toLocaleDateString("es-ES", {
           day: "2-digit", month: "short", year: "numeric",
         })

@@ -1,9 +1,12 @@
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import Settings from "@/components/screens/Settings"
 import { requireCurrentUser } from "@/lib/auth-helpers"
+import { cookies } from "next/headers"
 
 export default async function SettingsPage() {
   const user = await requireCurrentUser()
+  const cookieStore = await cookies()
+  const locale = cookieStore.get("locale")?.value ?? "es"
 
   return (
     <SidebarLayout
@@ -18,6 +21,7 @@ export default async function SettingsPage() {
           title: user.title,
           avatarUrl: user.avatarUrl,
         }}
+        currentLocale={locale}
       />
     </SidebarLayout>
   )
