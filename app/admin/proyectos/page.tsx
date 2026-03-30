@@ -10,7 +10,7 @@ export default async function ProyectosPage() {
   const user = await requireCurrentUser()
 
   const missions = await prisma.mission.findMany({
-    where: { organizationId: user.organizationId },
+    where: user.isSuperAdmin ? {} : { organizationId: user.organizationId },
     include: {
       objectives: { orderBy: { order: "asc" } },
       _count: { select: { userMissions: true } },
