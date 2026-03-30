@@ -47,7 +47,7 @@ export default async function EmpresasPage() {
         <h1 className="font-headline text-2xl font-bold text-on-surface mb-8">Empresas</h1>
         <EmpresasSwitcher
           orgs={orgs}
-          currentOrgId={user.organizationId}
+          currentOrgId={user.organizationId ?? ""}
           pendingInvitations={pendingInvitations}
         />
       </div>

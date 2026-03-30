@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { UserButton, SignOutButton } from "@clerk/nextjs"
 import { useCurrentUserRole } from "@/hooks/useCurrentUserRole"
+import { usePendingApprovals } from "@/hooks/usePendingApprovals"
+import { useOrg } from "@/contexts/OrgContext"
 import NotificationBell from "@/components/layout/NotificationBell"
 import Breadcrumbs from "@/components/layout/Breadcrumbs"
 
@@ -19,6 +21,7 @@ const SIDEBAR_NAV = [
   { icon: "home",          label: "Dashboard",    href: "/dashboard"    },
   { icon: "person",        label: "Perfil",       href: "/perfil"       },
   { icon: "military_tech", label: "Misiones",     href: "/misiones"     },
+  { icon: "archive",       label: "Archivados",   href: "/archivados"   },
   { icon: "bar_chart",     label: "Estadísticas", href: "/estadisticas" },
   { icon: "business",      label: "Empresas",     href: "/empresas"     },
 ]
@@ -43,16 +46,18 @@ export default function SidebarLayout({
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(true)
   const { role, isSuperAdmin } = useCurrentUserRole()
+  const { count: pendingApprovals } = usePendingApprovals()
+  const { currentOrg } = useOrg()
 
   // Build dynamic nav items based on role
-  const roleNavItems: { icon: string; label: string; href: string }[] = []
+  const roleNavItems: { icon: string; label: string; href: string; badge?: number }[] = []
   if (isSuperAdmin) {
     roleNavItems.push({ icon: "admin_panel_settings", label: "Admin", href: "/admin" })
     roleNavItems.push({ icon: "account_tree", label: "Proyectos", href: "/admin/proyectos" })
-    roleNavItems.push({ icon: "approval", label: "Aprobaciones", href: "/admin/aprobaciones" })
+    roleNavItems.push({ icon: "approval", label: "Aprobaciones", href: "/admin/aprobaciones", badge: pendingApprovals })
   } else if (role === "ORG_ADMIN" || role === "MANAGER") {
     roleNavItems.push({ icon: "account_tree", label: "Proyectos", href: "/admin/proyectos" })
-    roleNavItems.push({ icon: "approval", label: "Aprobaciones", href: "/admin/aprobaciones" })
+    roleNavItems.push({ icon: "approval", label: "Aprobaciones", href: "/admin/aprobaciones", badge: pendingApprovals })
   }
 
   const allNavItems = [...SIDEBAR_NAV, ...roleNavItems]
@@ -94,6 +99,11 @@ export default function SidebarLayout({
               <p className="text-[9px] text-primary mt-1 truncate">
                 Nivel {user ? user.level : 42} {user ? user.title.split(" ")[0] : "Architect"}
               </p>
+              {currentOrg && (
+                <p className="text-[9px] text-on-surface/40 uppercase tracking-widest truncate mt-0.5">
+                  {currentOrg.name}
+                </p>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-1 flex-shrink-0">
@@ -112,6 +122,7 @@ export default function SidebarLayout({
         <nav className="flex-1 space-y-1">
           {allNavItems.map((item) => {
             const active = pathname === item.href
+            const badge = (item as { badge?: number }).badge
             return (
               <Link
                 key={item.href}
@@ -123,7 +134,12 @@ export default function SidebarLayout({
                 }`}
               >
                 <span className="material-symbols-outlined flex-shrink-0">{item.icon}</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest">{item.label}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest flex-1">{item.label}</span>
+                {badge && badge > 0 ? (
+                  <span className="bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center flex-shrink-0">
+                    {badge > 9 ? "9+" : badge}
+                  </span>
+                ) : null}
               </Link>
             )
           })}

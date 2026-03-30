@@ -1,11 +1,11 @@
-import { requireSuperAdmin } from "@/lib/auth-helpers"
+import { requireAdminAccess } from "@/lib/auth-helpers"
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const result = await requireSuperAdmin()
+  const result = await requireAdminAccess()
 
   // requireSuperAdmin returns a Response (403) or the User object
   if (result instanceof Response) {

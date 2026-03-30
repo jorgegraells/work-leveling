@@ -28,7 +28,7 @@ export default async function PerfilPage() {
     include: {
       attributes: { include: { attribute: true } },
       userMissions: {
-        where: { status: "COMPLETED" },
+        where: { status: { in: ["COMPLETED", "ARCHIVED"] } },
         include: {
           mission: {
             include: {
@@ -62,6 +62,7 @@ export default async function PerfilPage() {
       accentColor: MODULE_ACCENT[um.mission.module] || "primary" as const,
       xpReward: um.mission.xpReward,
       completedAt: um.completedAt?.toISOString() ?? null,
+      isArchived: um.status === "ARCHIVED",
       approval: um.approval ? {
         note: um.approval.note,
         approverName: um.approval.approver.name,

@@ -33,7 +33,9 @@ export async function POST(
   }
 
   const employee = approval.userMission.user
-  const canApprove = await canApproveInOrg(currentUser.id, employee.organizationId)
+  const canApprove = employee.organizationId
+    ? await canApproveInOrg(currentUser.id, employee.organizationId)
+    : currentUser.isSuperAdmin
   if (!canApprove) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }

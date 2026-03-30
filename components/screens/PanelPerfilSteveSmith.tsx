@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import Link from "next/link"
 import SidebarLayout from "@/components/layout/SidebarLayout"
+import { useUser } from "@clerk/nextjs"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -53,6 +54,7 @@ interface CompletedProject {
   accentColor: "primary" | "tertiary" | "secondary" | "on-tertiary-container"
   xpReward: number
   completedAt: string | null
+  isArchived?: boolean
   approval: {
     note: string | null
     approverName: string
@@ -138,7 +140,14 @@ function ProjectCard({ project }: { project: CompletedProject }) {
             <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>{project.icon}</span>
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-bold text-on-surface truncate">{project.title}</div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="text-sm font-bold text-on-surface truncate">{project.title}</div>
+              {project.isArchived && (
+                <span className="text-[9px] font-bold uppercase tracking-widest bg-outline/20 text-outline px-1.5 py-0.5 rounded-full flex-shrink-0">
+                  Archivado
+                </span>
+              )}
+            </div>
             <div className="text-[9px] text-outline uppercase tracking-wider">{project.module}</div>
           </div>
           <div className="flex items-center gap-3 flex-shrink-0">
@@ -232,6 +241,28 @@ function ProjectCard({ project }: { project: CompletedProject }) {
 // ---------------------------------------------------------------------------
 
 export default function PanelPerfilSteveSmith({ user, completedProjects, pendingReview }: PanelPerfilProps) {
+  const { user: clerkUser } = useUser()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [avatarUploading, setAvatarUploading] = useState(false)
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !clerkUser) return
+    setAvatarUploading(true)
+    try {
+      await clerkUser.setProfileImage({ file })
+      await fetch("/api/me/avatar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ avatarUrl: clerkUser.imageUrl }),
+      })
+    } catch (err) {
+      console.error("Avatar upload failed:", err)
+    } finally {
+      setAvatarUploading(false)
+    }
+  }
+
   const leftAttrs = user.attributes.filter((a) => a.attribute.side === "left")
   const rightAttrs = user.attributes.filter((a) => a.attribute.side === "right")
   const progressPercent = user.xpToNextLevel > 0 ? Math.min(100, Math.round((user.xp / user.xpToNextLevel) * 100)) : 0
@@ -277,8 +308,11 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
                 </div>
 
                 <div className="relative">
-                  <div className="w-48 h-48 rounded-full p-3 wood-bezel">
-                    <div className="w-full h-full rounded-full overflow-hidden border-2 border-outline-variant/30 shadow-2xl">
+                  <div
+                    className="w-48 h-48 rounded-full p-3 wood-bezel cursor-pointer group/avatar"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <div className="w-full h-full rounded-full overflow-hidden border-2 border-outline-variant/30 shadow-2xl relative">
                       {user.avatarUrl ? (
                         <img alt="Portrait" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" src={user.avatarUrl} />
                       ) : (
@@ -286,8 +320,25 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
                           <span className="material-symbols-outlined text-6xl text-outline">person</span>
                         </div>
                       )}
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
+                        {avatarUploading ? (
+                          <span className="material-symbols-outlined text-white text-3xl animate-spin">refresh</span>
+                        ) : (
+                          <>
+                            <span className="material-symbols-outlined text-white text-3xl">photo_camera</span>
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-white">Cambiar</span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleAvatarChange}
+                  />
                   <div className="absolute -bottom-2 -right-2 bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center shadow-lg">
                     <span className="material-symbols-outlined">verified</span>
                   </div>

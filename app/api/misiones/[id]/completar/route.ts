@@ -63,7 +63,7 @@ export async function POST(
   // Last fallback: the user's own org admin
   if (!approverId) {
     const ownOrgAdmin = await prisma.userOrganizationRole.findFirst({
-      where: { organizationId: user.organizationId, role: "ORG_ADMIN" },
+      where: { organizationId: user.organizationId ?? undefined, role: "ORG_ADMIN" },
       orderBy: { createdAt: "asc" },
     })
     if (ownOrgAdmin) approverId = ownOrgAdmin.userId

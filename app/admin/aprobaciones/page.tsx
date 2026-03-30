@@ -6,10 +6,16 @@ import { prisma } from "@/lib/prisma"
 export default async function AprobacionesPage() {
   const user = await requireCurrentUser()
 
-  // Super admin sees all pending approvals; org admins see only their org's
-  const orgFilter = user.isSuperAdmin
-    ? {}
-    : { userMission: { user: { organizationId: user.organizationId } } }
+  // Build org filter: superadmin sees all; managers see only their org
+  let orgFilter = {}
+  if (!user.isSuperAdmin) {
+    const orgRole = await prisma.userOrganizationRole.findFirst({
+      where: { userId: user.id, confirmed: true, role: { in: ["MANAGER", "ORG_ADMIN"] } },
+    })
+    if (orgRole) {
+      orgFilter = { userMission: { user: { orgRoles: { some: { organizationId: orgRole.organizationId } } } } }
+    }
+  }
 
   const approvals = await prisma.missionApproval.findMany({
     where: {

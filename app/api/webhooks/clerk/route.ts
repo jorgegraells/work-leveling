@@ -18,7 +18,19 @@ interface ClerkUserCreatedEvent {
   }
 }
 
-type ClerkEvent = ClerkUserCreatedEvent | { type: string; data: unknown }
+interface ClerkUserUpdatedEvent {
+  type: "user.updated"
+  data: {
+    id: string
+    image_url: string | null
+    first_name: string | null
+    last_name: string | null
+    email_addresses: { email_address: string; id: string }[]
+    primary_email_address_id: string
+  }
+}
+
+type ClerkEvent = ClerkUserCreatedEvent | ClerkUserUpdatedEvent | { type: string; data: unknown }
 
 // ---------------------------------------------------------------------------
 // Default attributes every new user gets (value = 0)
@@ -72,7 +84,21 @@ export async function POST(req: Request) {
     return new Response("Invalid webhook signature", { status: 400 })
   }
 
-  // Only handle user.created
+  // Handle user.updated — sync avatar and name
+  if (event.type === "user.updated") {
+    const { data } = event as ClerkUserUpdatedEvent
+    const name = [data.first_name, data.last_name].filter(Boolean).join(" ") || undefined
+    await prisma.user.updateMany({
+      where: { clerkUserId: data.id },
+      data: {
+        ...(data.image_url !== undefined ? { avatarUrl: data.image_url } : {}),
+        ...(name ? { name } : {}),
+      },
+    })
+    return new Response("User updated", { status: 200 })
+  }
+
+  // Only handle user.created for the rest
   if (event.type !== "user.created") {
     return new Response("OK", { status: 200 })
   }
@@ -90,17 +116,25 @@ export async function POST(req: Request) {
 
   const name = [data.first_name, data.last_name].filter(Boolean).join(" ") || primaryEmail.split("@")[0]
 
+  // Check if this user should be the super admin
+  const isSuperAdmin = !!process.env.SUPER_ADMIN_EMAIL && primaryEmail === process.env.SUPER_ADMIN_EMAIL
+
   try {
     await prisma.$transaction(async (tx) => {
-      // 1. Create a personal organization for the user
-      const orgSlug = `org-${data.id.slice(-8).toLowerCase()}`
-      const org = await tx.organization.create({
-        data: {
-          clerkOrgId: `personal_${data.id}`,
-          name:       `${name}'s Org`,
-          slug:       orgSlug,
-        },
-      })
+      let organizationId: string | undefined = undefined
+
+      if (!isSuperAdmin) {
+        // 1. Create a personal organization for regular users
+        const orgSlug = `org-${data.id.slice(-8).toLowerCase()}`
+        const org = await tx.organization.create({
+          data: {
+            clerkOrgId: `personal_${data.id}`,
+            name:       `${name}'s Org`,
+            slug:       orgSlug,
+          },
+        })
+        organizationId = org.id
+      }
 
       // 2. Create the user record
       const user = await tx.user.create({
@@ -109,13 +143,14 @@ export async function POST(req: Request) {
           email:          primaryEmail,
           name,
           avatarUrl:      data.image_url,
-          title:          "Executive",
+          title:          isSuperAdmin ? "Super Admin" : "Executive",
           level:          1,
           xp:             0,
           xpToNextLevel:  1000,
           trophies:       0,
           kredits:        0,
-          organizationId: org.id,
+          isSuperAdmin,
+          ...(organizationId ? { organizationId } : {}),
         },
       })
 

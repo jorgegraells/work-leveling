@@ -25,7 +25,7 @@ export default async function MisionesPage() {
   const user = await requireCurrentUser()
 
   const userMissions = await prisma.userMission.findMany({
-    where: { userId: user.id },
+    where: { userId: user.id, status: { not: "ARCHIVED" } },
     include: {
       mission: {
         include: {

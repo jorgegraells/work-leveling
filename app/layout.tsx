@@ -1,11 +1,16 @@
 import type { Metadata } from "next"
 import { Manrope, Inter, Geist } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
+import { auth } from "@clerk/nextjs/server"
+import { cookies } from "next/headers"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 import PageTransitionWrapper from "@/components/layout/PageTransitionWrapper"
+import { OrgContextProvider } from "@/contexts/OrgContext"
+import { prisma } from "@/lib/prisma"
+import type { OrgInfo } from "@/contexts/OrgContext"
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -26,23 +31,57 @@ export const metadata: Metadata = {
   description: "Panel Corporativo Gamificado — Executive Atelier Design System",
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  let userOrgs: OrgInfo[] = []
+  let selectedOrgId: string | null = null
+
+  try {
+    const { userId } = await auth()
+    if (userId) {
+      const cookieStore = await cookies()
+      selectedOrgId = cookieStore.get("selected-org-id")?.value ?? null
+
+      const dbUser = await prisma.user.findUnique({
+        where: { clerkUserId: userId },
+        include: {
+          orgRoles: {
+            where: { confirmed: true },
+            include: { organization: true },
+          },
+        },
+      })
+
+      if (dbUser) {
+        userOrgs = dbUser.orgRoles.map((r) => ({
+          id: r.organization.id,
+          name: r.organization.name,
+          slug: r.organization.slug,
+          plan: r.organization.plan,
+          role: r.role,
+        }))
+        // Auto-select first org if no cookie set
+        if (!selectedOrgId && userOrgs.length > 0) {
+          selectedOrgId = userOrgs[0].id
+        }
+      }
+    }
+  } catch {
+    // Not authenticated or DB unavailable — proceed with empty context
+  }
+
   return (
     <ClerkProvider>
       <html lang="es" className={cn("dark", "font-sans", geist.variable)}>
         <head>
-          {/* Material Symbols variable font — required by all screen components */}
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
           />
         </head>
         <body className={`${manrope.variable} ${inter.variable} font-body`}>
-          <PageTransitionWrapper>{children}</PageTransitionWrapper>
+          <OrgContextProvider initialOrgId={selectedOrgId} initialOrgs={userOrgs}>
+            <PageTransitionWrapper>{children}</PageTransitionWrapper>
+          </OrgContextProvider>
         </body>
       </html>
     </ClerkProvider>

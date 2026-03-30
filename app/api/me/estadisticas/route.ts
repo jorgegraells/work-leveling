@@ -15,11 +15,11 @@ export async function GET() {
     }),
     prisma.userMission.groupBy({
       by: ["missionId"],
-      where: { userId: user.id, status: "COMPLETED" },
+      where: { userId: user.id, status: { in: ["COMPLETED", "ARCHIVED"] } },
       _count: true,
     }),
     prisma.userMission.count({
-      where: { userId: user.id, status: "COMPLETED" },
+      where: { userId: user.id, status: { in: ["COMPLETED", "ARCHIVED"] } },
     }),
     prisma.userAttribute.findMany({
       where: { userId: user.id },

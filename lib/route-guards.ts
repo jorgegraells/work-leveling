@@ -15,4 +15,8 @@ export const PROTECTED_ROUTES = [
   "/settings(.*)",
   "/empresas(.*)",
   "/estadisticas(.*)",
+  // Archivados
+  "/archivados(.*)",
+  // Manager panel
+  "/manager(.*)",
 ]

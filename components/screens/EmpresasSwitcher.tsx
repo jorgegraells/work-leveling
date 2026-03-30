@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useOrg } from "@/contexts/OrgContext"
 
 type Plan = "FREE" | "STARTER" | "PROFESSIONAL" | "ENTERPRISE"
 type Role = "SUPER_ADMIN" | "ORG_ADMIN" | "MANAGER" | "MEMBER"
@@ -40,9 +41,11 @@ const ROLE_STYLE: Record<Role, { label: string; className: string }> = {
   MEMBER:      { label: "Miembro",     className: "bg-outline/20 text-outline" },
 }
 
-export default function EmpresasSwitcher({ orgs, currentOrgId, pendingInvitations }: EmpresasSwitcherProps) {
+export default function EmpresasSwitcher({ orgs, currentOrgId: propCurrentOrgId, pendingInvitations }: EmpresasSwitcherProps) {
   const router = useRouter()
   const [processing, setProcessing] = useState<string | null>(null)
+  const { currentOrgId: contextOrgId, setCurrentOrg } = useOrg()
+  const currentOrgId = contextOrgId ?? propCurrentOrgId
 
   async function handleAccept(roleId: string) {
     setProcessing(roleId)
@@ -150,8 +153,9 @@ export default function EmpresasSwitcher({ orgs, currentOrgId, pendingInvitation
               return (
                 <div
                   key={org.id}
-                  className={`rounded-xl bg-surface-container-highest p-1 transition-transform hover:scale-[1.02] ${
-                    isCurrent ? "ring-2 ring-primary" : ""
+                  onClick={() => !isCurrent && setCurrentOrg(org.id)}
+                  className={`rounded-xl bg-surface-container-highest p-1 transition-transform hover:scale-[1.02] cursor-pointer ${
+                    isCurrent ? "ring-2 ring-primary" : "hover:ring-1 hover:ring-outline-variant/30"
                   }`}
                 >
                   <div className="rounded-lg bg-surface-bright p-5 space-y-4">

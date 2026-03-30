@@ -8,7 +8,7 @@ export default async function NuevoProyectoPage() {
 
   const orgs = user.isSuperAdmin
     ? await prisma.organization.findMany({ select: { id: true, name: true } })
-    : [await prisma.organization.findUnique({ where: { id: user.organizationId }, select: { id: true, name: true } })]
+    : [await prisma.organization.findUnique({ where: { id: user.organizationId ?? undefined }, select: { id: true, name: true } })]
 
   return (
     <SidebarLayout
@@ -26,7 +26,7 @@ export default async function NuevoProyectoPage() {
           <p className="text-outline text-[10px] uppercase tracking-widest mb-8">Crear un nuevo proyecto con objetivos</p>
           <ProyectoForm
             orgs={orgs.filter(Boolean) as { id: string; name: string }[]}
-            defaultOrgId={user.organizationId}
+            defaultOrgId={user.organizationId ?? undefined}
           />
         </div>
         <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-50 flex-shrink-0" />

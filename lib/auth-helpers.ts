@@ -47,6 +47,32 @@ export async function requireSuperAdmin() {
 }
 
 // ---------------------------------------------------------------------------
+// Require super admin OR org-level manager/admin role, or return 403
+// ---------------------------------------------------------------------------
+
+export async function requireAdminAccess() {
+  const user = await requireCurrentUser()
+
+  if (user.isSuperAdmin) return user
+
+  // Check if user has at least MANAGER role in any org
+  const orgRole = await prisma.userOrganizationRole.findFirst({
+    where: {
+      userId: user.id,
+      confirmed: true,
+      role: { in: ["MANAGER", "ORG_ADMIN"] },
+    },
+    include: { organization: true },
+  })
+
+  if (!orgRole) {
+    return new Response("Forbidden", { status: 403 })
+  }
+
+  return user
+}
+
+// ---------------------------------------------------------------------------
 // Get a user's role in a specific organization (null if not a member)
 // ---------------------------------------------------------------------------
 
