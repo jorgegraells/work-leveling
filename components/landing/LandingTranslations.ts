@@ -4,7 +4,7 @@ export const t = {
 
     // Hero
     heroPhilosophy: "Nos motiva más trabajar en un juego por dinero ficticio que trabajar en la vida por dinero real.",
-    heroFusion: "Nosotros fusionamos ambos mundos.",
+    heroFusion: "Nosotros cambiamos eso.",
 
     // Second Hero
     heroHeadline: "El 87% de tus empleados ",
@@ -271,7 +271,7 @@ export const t = {
 
     // Hero
     heroPhilosophy: "We're more motivated to work in a game for fake money than to work in real life for real money.",
-    heroFusion: "We merge both worlds.",
+    heroFusion: "We change that.",
 
     // Second Hero
     heroHeadline: "87% of your employees ",
