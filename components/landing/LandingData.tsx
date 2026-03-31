@@ -47,13 +47,12 @@ function AnimatedNumber({ target, suffix = "", prefix = "" }: { target: number; 
 // Engagement trend chart (Gallup 2020-2024)
 // ---------------------------------------------------------------------------
 
-// Grouped by 5-year periods, averaged. Europe data from Gallup (tracked from ~2009)
 const ENGAGEMENT_DATA = [
-  { period: "2000–04", us: 26, europe: null,  label: "" },
-  { period: "2005–09", us: 27, europe: 11,    label: "Crisis" },
-  { period: "2010–14", us: 30, europe: 12,    label: "" },
-  { period: "2015–19", us: 34, europe: 13,    label: "" },
-  { period: "2020–24", us: 33, europe: 13,    label: "Post-pico" },
+  { period: "2020", us: 36, europe: 11, label: "Pico" },
+  { period: "2021", us: 34, europe: 11, label: "" },
+  { period: "2022", us: 32, europe: 13, label: "" },
+  { period: "2023", us: 33, europe: 13, label: "" },
+  { period: "2024", us: 30, europe: 13, label: "Caída" },
 ]
 
 function EngagementChart() {
@@ -66,7 +65,7 @@ function EngagementChart() {
           <h4 className="font-headline font-bold text-on-surface text-lg">Empleados comprometidos</h4>
           <span className="text-[9px] font-bold uppercase tracking-widest text-outline">Fuente: Gallup</span>
         </div>
-        <p className="text-xs text-outline mb-4">Media por períodos de 5 años — EE.UU. vs Europa (sobre 100%)</p>
+        <p className="text-xs text-outline mb-4">EE.UU. vs Europa — 2020 a 2024 (sobre 100%)</p>
         <p className="text-[9px] text-on-surface-variant/60 mb-6 italic">
           «Engaged» = empleados emocionalmente involucrados y motivados en su trabajo. El resto está desconectado o activamente desmotivado.
         </p>
@@ -74,34 +73,22 @@ function EngagementChart() {
         <div className="flex items-end gap-4 sm:gap-6">
           {ENGAGEMENT_DATA.map((d, i) => (
             <div key={d.period} className="flex-1 flex flex-col items-center">
-              {/* Labels */}
               <div className="flex gap-2 mb-1 justify-center">
                 <span className="text-[10px] font-bold text-primary">{visible ? `${d.us}%` : ""}</span>
-                {d.europe !== null && (
-                  <span className="text-[10px] font-bold text-error">{visible ? `${d.europe}%` : ""}</span>
-                )}
+                <span className="text-[10px] font-bold text-error">{visible ? `${d.europe}%` : ""}</span>
               </div>
-              {/* Bars */}
               <div className="w-full flex gap-1 justify-center h-44">
-                {/* US bar */}
                 <div className="flex-1 flex flex-col justify-end max-w-[40px]">
                   <div
                     className="w-full bg-primary rounded-t transition-all duration-1000 ease-out"
                     style={{ height: visible ? `${d.us}%` : "0%", transitionDelay: `${i * 120}ms` }}
                   />
                 </div>
-                {/* Europe bar */}
                 <div className="flex-1 flex flex-col justify-end max-w-[40px]">
-                  {d.europe !== null ? (
-                    <div
-                      className="w-full bg-error/70 rounded-t transition-all duration-1000 ease-out"
-                      style={{ height: visible ? `${d.europe}%` : "0%", transitionDelay: `${i * 120 + 60}ms` }}
-                    />
-                  ) : (
-                    <div className="w-full flex items-end justify-center pb-1">
-                      <span className="text-[8px] text-outline/40">—</span>
-                    </div>
-                  )}
+                  <div
+                    className="w-full bg-error/70 rounded-t transition-all duration-1000 ease-out"
+                    style={{ height: visible ? `${d.europe}%` : "0%", transitionDelay: `${i * 120 + 60}ms` }}
+                  />
                 </div>
               </div>
               {/* Period label */}
@@ -124,7 +111,7 @@ function EngagementChart() {
         </div>
 
         <p className="text-[9px] text-outline mt-3 text-center">
-          Europa no supera el 13% desde que se mide. En EE.UU., tras el pico de 2020, vuelve a caer. <span className="text-error font-bold">El 70–87% de empleados sigue desconectado.</span>
+          EE.UU. cayó del 36% al 30% en 4 años. Europa no supera el 13%. <span className="text-error font-bold">El 70–87% de empleados está desconectado.</span>
         </p>
       </div>
     </div>
