@@ -73,10 +73,12 @@ export default function SidebarLayout({
     roleNavItems.push({ icon: "account_tree", label: t("projects"), href: "/admin/proyectos" })
     roleNavItems.push({ icon: "approval", label: t("approvals"), href: "/admin/aprobaciones", badge: pendingApprovals })
     roleNavItems.push({ icon: "domain", label: t("company"), href: "/admin/empresa" })
+    roleNavItems.push({ icon: "monitoring", label: t("kpis"), href: "/admin/empresa/kpi" })
   } else if (role === "ORG_ADMIN" || role === "MANAGER") {
     roleNavItems.push({ icon: "account_tree", label: t("projects"), href: "/admin/proyectos" })
     roleNavItems.push({ icon: "approval", label: t("approvals"), href: "/admin/aprobaciones", badge: pendingApprovals })
     roleNavItems.push({ icon: "domain", label: t("company"), href: "/admin/empresa" })
+    roleNavItems.push({ icon: "monitoring", label: t("kpis"), href: "/admin/empresa/kpi" })
   }
 
   const allNavItems = [...SIDEBAR_NAV, ...roleNavItems]

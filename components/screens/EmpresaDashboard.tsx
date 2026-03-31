@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { useTranslations } from "next-intl"
+import Link from "next/link"
 import {
   ResponsiveContainer,
   BarChart,
@@ -43,6 +44,7 @@ interface Props {
   departments: { id: string; name: string }[]
   members: Member[]
   missionStats: MissionStats
+  kpiSummary?: { onTimePct: number; withDeadline: number }
 }
 
 // MODULE_LABEL built inside component using tCommon()
@@ -88,7 +90,7 @@ function PieTooltip({ active, payload, missionLabel }: { active?: boolean; paylo
   )
 }
 
-export default function EmpresaDashboard({ org, departments, members, missionStats }: Props) {
+export default function EmpresaDashboard({ org, departments, members, missionStats, kpiSummary }: Props) {
   const t = useTranslations("empresa")
   const tCommon = useTranslations("common")
   const [selectedDept, setSelectedDept] = useState<string | null>(null)
@@ -325,6 +327,35 @@ export default function EmpresaDashboard({ org, departments, members, missionSta
               </ResponsiveContainer>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* KPI Summary card */}
+      <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
+        <div className="rounded-lg bg-surface-bright p-5 flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center flex-shrink-0">
+              <span className="material-symbols-outlined text-xl text-tertiary">monitoring</span>
+            </div>
+            <div>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-outline">KPIs & Rendimiento</p>
+              {kpiSummary && kpiSummary.withDeadline > 0 ? (
+                <p className="font-headline text-2xl font-bold text-tertiary mt-0.5">
+                  {kpiSummary.onTimePct}% a tiempo
+                </p>
+              ) : (
+                <p className="text-sm text-outline mt-0.5">
+                  Añade plazos a tus misiones para ver KPIs
+                </p>
+              )}
+            </div>
+          </div>
+          <Link
+            href="/admin/empresa/kpi"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container-high transition-colors text-[10px] font-bold uppercase tracking-widest text-tertiary active:scale-95"
+          >
+            {t("viewKpis")} →
+          </Link>
         </div>
       </div>
 

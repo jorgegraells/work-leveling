@@ -7,6 +7,8 @@ import { redirect } from "next/navigation"
 import { cookies } from "next/headers"
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import EmpresaDashboard from "@/components/screens/EmpresaDashboard"
+import { aggregateTimeliness } from "@/lib/kpi-helpers"
+import type { TimelinessRecord } from "@/lib/kpi-helpers"
 
 export default async function EmpresaDashboardPage() {
   const user = await requireCurrentUser()
@@ -119,6 +121,35 @@ export default async function EmpresaDashboardPage() {
     archived: statusCounts.ARCHIVED,
   }
 
+  // Compute KPI summary (last 30 days) for the summary card
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  const completedMissionsForKpi = await prisma.userMission.findMany({
+    where: {
+      status: "COMPLETED",
+      completedAt: { gte: thirtyDaysAgo },
+      user: {
+        orgRoles: {
+          some: { organizationId: orgId, confirmed: true },
+        },
+      },
+    },
+    select: {
+      completedAt: true,
+      mission: { select: { dueDate: true } },
+    },
+  })
+
+  const kpiRecords: TimelinessRecord[] = completedMissionsForKpi.map(um => ({
+    completedAt: um.completedAt,
+    dueDate: um.mission.dueDate,
+  }))
+
+  const kpiAgg = aggregateTimeliness(kpiRecords)
+  const kpiSummary = {
+    onTimePct: kpiAgg.earlyPct + kpiAgg.onTimePct,
+    withDeadline: kpiAgg.withDeadline,
+  }
+
   return (
     <SidebarLayout
       user={{
@@ -140,6 +171,7 @@ export default async function EmpresaDashboardPage() {
             departments={departments}
             members={members}
             missionStats={missionStats}
+            kpiSummary={kpiSummary}
           />
         </div>
         <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />

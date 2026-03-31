@@ -11,7 +11,8 @@
     "admin": "Admin",
     "projects": "Projects",
     "approvals": "Approvals",
-    "company": "Company"
+    "company": "Company",
+    "kpis": "KPIs"
   },
   "settings": {
     "title": "Settings",
@@ -209,6 +210,29 @@
     "statusCompleted": "Completed",
     "statusArchived": "Archived"
   },
+  "kpi": {
+    "title": "KPIs & Performance",
+    "subtitle": "Timeliness and performance metrics",
+    "window30": "30 days",
+    "window60": "60 days",
+    "window90": "90 days",
+    "onTimePct": "On time",
+    "earlyPct": "Early",
+    "latePct": "Late",
+    "avgDelay": "Average delay",
+    "days": "days",
+    "topPerformers": "Top Employees",
+    "timelinessTrend": "Timeliness Trend",
+    "noDeadlineData": "No deadline data",
+    "noDeadlineHint": "Add due dates to your missions to see timeliness metrics",
+    "missionsCompleted": "Missions completed",
+    "completionRate": "Completion rate",
+    "xpEarned": "XP earned",
+    "department": "Department",
+    "total": "Total",
+    "avgDelayDays": "Avg delay",
+    "viewAll": "View all KPIs"
+  },
   "empresa": {
     "dashboard": "Dashboard",
     "all": "All",
@@ -235,7 +259,8 @@
     "statusCompleted": "Completed",
     "statusArchived": "Archived",
     "chartMissions": "Missions",
-    "roleMember": "Member"
+    "roleMember": "Member",
+    "viewKpis": "View full KPIs"
   },
   "attributes": {
     "logica": "Logic",

@@ -11,7 +11,8 @@
     "admin": "Admin",
     "projects": "Proyectos",
     "approvals": "Aprobaciones",
-    "company": "Empresa"
+    "company": "Empresa",
+    "kpis": "KPIs"
   },
   "settings": {
     "title": "Configuración",
@@ -209,6 +210,29 @@
     "statusCompleted": "Completada",
     "statusArchived": "Archivada"
   },
+  "kpi": {
+    "title": "KPIs & Rendimiento",
+    "subtitle": "Métricas de puntualidad y rendimiento",
+    "window30": "30 días",
+    "window60": "60 días",
+    "window90": "90 días",
+    "onTimePct": "A tiempo",
+    "earlyPct": "Anticipado",
+    "latePct": "Con retraso",
+    "avgDelay": "Retraso promedio",
+    "days": "días",
+    "topPerformers": "Top Empleados",
+    "timelinessTrend": "Evolución de Puntualidad",
+    "noDeadlineData": "Sin datos de plazos",
+    "noDeadlineHint": "Añade fechas límite a tus misiones para ver métricas de puntualidad",
+    "missionsCompleted": "Misiones completadas",
+    "completionRate": "Tasa de completado",
+    "xpEarned": "XP ganado",
+    "department": "Departamento",
+    "total": "Total",
+    "avgDelayDays": "Retraso prom.",
+    "viewAll": "Ver KPIs completos"
+  },
   "empresa": {
     "dashboard": "Dashboard",
     "all": "Todos",
@@ -235,7 +259,8 @@
     "statusCompleted": "Completada",
     "statusArchived": "Archivada",
     "chartMissions": "Misiones",
-    "roleMember": "Miembro"
+    "roleMember": "Miembro",
+    "viewKpis": "Ver KPIs completos"
   },
   "attributes": {
     "logica": "Lógica",
