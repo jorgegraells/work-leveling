@@ -27,6 +27,7 @@ export default async function PerfilPage() {
     where: { clerkUserId: userId },
     include: {
       attributes: { include: { attribute: true } },
+      userSkills: { include: { skill: true }, orderBy: { level: "desc" } },
       userMissions: {
         where: { status: { in: ["COMPLETED", "ARCHIVED"] } },
         include: {

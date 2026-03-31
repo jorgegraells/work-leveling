@@ -70,47 +70,61 @@ export async function PATCH(
   if (!canManage) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const body = await req.json()
-  const { title, description, module, icon, xpReward, priority, objectives } = body
+  const { title, description, module, icon, xpReward, priority, objectives, startDate, dueDate } = body
 
-  // Update mission fields
-  const updated = await prisma.mission.update({
-    where: { id },
-    data: {
-      ...(title !== undefined && { title }),
-      ...(description !== undefined && { description }),
-      ...(module !== undefined && { module }),
-      ...(icon !== undefined && { icon }),
-      ...(xpReward !== undefined && { xpReward }),
-      ...(priority !== undefined && { priority }),
-    },
-  })
+  const result = await prisma.$transaction(async (tx) => {
+    // Update mission fields
+    const updated = await tx.mission.update({
+      where: { id },
+      data: {
+        ...(title !== undefined && { title }),
+        ...(description !== undefined && { description }),
+        ...(module !== undefined && { module }),
+        ...(icon !== undefined && { icon }),
+        ...(xpReward !== undefined && { xpReward }),
+        ...(priority !== undefined && { priority }),
+        ...(startDate !== undefined && { startDate: startDate ? new Date(startDate) : null }),
+        ...(dueDate !== undefined && { dueDate: dueDate ? new Date(dueDate) : null }),
+      },
+    })
 
-  // If objectives array provided, replace them all
-  if (Array.isArray(objectives)) {
-    // Delete old objectives
-    await prisma.missionObjective.deleteMany({ where: { missionId: id } })
-    // Create new ones
-    if (objectives.length > 0) {
-      await prisma.missionObjective.createMany({
-        data: objectives.map(
-          (obj: { title: string; xpReward: number; order: number; icon: string }) => ({
-            missionId: id,
-            title: obj.title,
-            xpReward: obj.xpReward ?? 100,
-            order: obj.order,
-            icon: obj.icon,
-          })
-        ),
-      })
+    // If objectives array provided, replace them all
+    if (Array.isArray(objectives)) {
+      await tx.missionObjective.deleteMany({ where: { missionId: id } })
+      if (objectives.length > 0) {
+        await tx.missionObjective.createMany({
+          data: objectives.map(
+            (obj: { title: string; xpReward: number; order: number; icon: string }) => ({
+              missionId: id,
+              title: obj.title,
+              xpReward: obj.xpReward ?? 100,
+              order: obj.order,
+              icon: obj.icon,
+            })
+          ),
+        })
+      }
     }
-  }
 
-  const result = await prisma.mission.findUnique({
-    where: { id },
-    include: { objectives: { orderBy: { order: "asc" } } },
+    // If skillIds array provided, replace skill associations
+    if (Array.isArray(body.skillIds)) {
+      await tx.missionSkill.deleteMany({ where: { missionId: id } })
+      if (body.skillIds.length > 0) {
+        await tx.missionSkill.createMany({
+          data: body.skillIds.map((skillId: string) => ({ missionId: id, skillId }))
+        })
+      }
+    }
+
+    const full = await tx.mission.findUnique({
+      where: { id },
+      include: { objectives: { orderBy: { order: "asc" } } },
+    })
+
+    return { mission: updated, objectives: full?.objectives ?? [] }
   })
 
-  return NextResponse.json({ mission: updated, objectives: result?.objectives ?? [] })
+  return NextResponse.json(result)
 }
 
 // DELETE /api/admin/misiones/[id] — archive mission (set all userMissions to ARCHIVED)

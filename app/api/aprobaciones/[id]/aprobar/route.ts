@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { requireCurrentUser, canApproveInOrg } from "@/lib/auth-helpers"
 import { createNotification } from "@/lib/notifications"
 import { prisma } from "@/lib/prisma"
+import { calcSkillLevel } from "@/lib/skills"
 
 const SCORE_KEYS = [
   "scoreLogica",
@@ -136,6 +137,25 @@ export async function POST(
           },
         })
       }
+    }
+
+    // 2b. Award skill points for skills tagged on this mission
+    const missionSkills = await tx.missionSkill.findMany({
+      where: { missionId: mission.id },
+      select: { skillId: true },
+    })
+    for (const { skillId } of missionSkills) {
+      const skillPts = Math.round(mission.xpReward * 0.2)
+      const existing = await tx.userSkill.findUnique({
+        where: { userId_skillId: { userId: employee.id, skillId } },
+      })
+      const newPoints = (existing?.points ?? 0) + skillPts
+      const newSkillLevel = calcSkillLevel(newPoints)
+      await tx.userSkill.upsert({
+        where: { userId_skillId: { userId: employee.id, skillId } },
+        update: { points: newPoints, level: newSkillLevel },
+        create: { userId: employee.id, skillId, points: newPoints, level: newSkillLevel },
+      })
     }
 
     // 3. Add XP

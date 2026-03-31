@@ -15,6 +15,13 @@ interface UserAttributeData {
   attribute: { key: string; label: string; color: string; side: string }
 }
 
+interface UserSkillData {
+  id: string
+  points: number
+  level: number
+  skill: { name: string; slug: string; icon: string; color: string }
+}
+
 interface UserData {
   clerkUserId: string
   name: string
@@ -26,6 +33,7 @@ interface UserData {
   trophies: number
   kredits: number
   attributes: UserAttributeData[]
+  userSkills?: UserSkillData[]
 }
 
 interface ApprovalScores {
@@ -249,6 +257,7 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
   const { user: clerkUser } = useUser()
   const t = useTranslations("perfil")
   const tAttr = useTranslations("attributes")
+  const tSkills = useTranslations("skills")
 
   const leftAttrs = user.attributes.filter((a) => a.attribute.side === "left")
   const rightAttrs = user.attributes.filter((a) => a.attribute.side === "right")
@@ -333,6 +342,40 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
               </div>
             </div>
           </section>
+
+          {/* ── Skills ── */}
+          {user.userSkills && user.userSkills.length > 0 && (
+            <section>
+              <div className="mb-4">
+                <h3 className="text-2xl font-headline font-bold text-on-surface">{tSkills("title")}</h3>
+                <p className="text-outline text-[10px] uppercase tracking-widest mt-1">{tSkills("select")}</p>
+              </div>
+              <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
+                <div className="rounded-lg bg-surface-bright p-6">
+                  {user.userSkills.length === 0 ? (
+                    <p className="text-outline text-sm text-center py-4">{tSkills("noSkills")}</p>
+                  ) : (
+                    <div className="flex flex-wrap gap-3">
+                      {user.userSkills.map((us) => (
+                        <div
+                          key={us.id}
+                          className="flex items-center gap-2 px-3 py-2 rounded-full bg-surface-container-highest"
+                        >
+                          <span className="material-symbols-outlined text-primary text-base" style={{ fontVariationSettings: "'FILL' 1" }}>
+                            {us.skill.icon}
+                          </span>
+                          <span className="text-sm font-semibold text-on-surface">{us.skill.name}</span>
+                          <span className="text-[9px] font-bold uppercase tracking-widest bg-primary/20 text-primary px-1.5 py-0.5 rounded-full">
+                            {tSkills("level", { n: us.level })}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+          )}
 
           {/* ── Projects & Progress ── */}
           <section className="grid grid-cols-12 gap-6">

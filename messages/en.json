@@ -429,6 +429,13 @@
     "priorityNormal": "Normal",
     "priorityBaja": "Low"
   },
+  "skills": {
+    "title": "Skills",
+    "noSkills": "No skills yet",
+    "level": "Lvl {n}",
+    "select": "Project skills",
+    "selectHint": "Select the skills this mission develops"
+  },
   "proyectoForm": {
     "adminBreadcrumb": "Admin / Projects",
     "editTitle": "Edit Project",
@@ -475,6 +482,8 @@
     "iconHito": "Milestone",
     "iconTrofeo": "Trophy",
     "iconVelocidad": "Speed",
+    "skillsSection": "Project Skills",
+    "skillsHint": "Select the skills this mission develops",
     "missionsSection": "Project Missions",
     "missionsSubtitle": "Objectives the employee must complete",
     "addMission": "Add Mission",
@@ -570,5 +579,19 @@
     "noCompanies": "You don't belong to any company yet",
     "current": "Current",
     "roleMember": "Member"
+  },
+  "deadlines": {
+    "startDate": "Start date",
+    "dueDate": "Due date",
+    "sortDefault": "Default",
+    "sortUrgency": "Urgency",
+    "sortDeadline": "Deadline",
+    "overdue": "OVERDUE",
+    "critical": "CRITICAL",
+    "dueSoon": "Due soon",
+    "onTrack": "On track",
+    "completedEarly": "Early",
+    "completedOnTime": "On time",
+    "completedLate": "Late"
   }
 }

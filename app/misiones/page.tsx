@@ -60,6 +60,8 @@ export default async function MisionesPage() {
       objectivesTotal: um.mission.objectives.length,
       objectivesCompleted: completedCount,
       approvalStatus: um.approval?.status ?? undefined,
+      dueDate: um.mission.dueDate ? um.mission.dueDate.toISOString() : null,
+      completedAt: um.completedAt ? um.completedAt.toISOString() : null,
     }
   })
 

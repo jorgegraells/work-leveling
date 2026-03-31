@@ -14,19 +14,23 @@ export default async function ProyectoDetailPage({ params }: Props) {
   const user = await requireCurrentUser()
   const t = await getTranslations("admin")
 
-  const mission = await prisma.mission.findUnique({
-    where: { id: missionId },
-    include: {
-      objectives: { orderBy: { order: "asc" } },
-      createdBy: { select: { name: true } },
-      userMissions: {
-        include: {
-          user: { select: { id: true, name: true, avatarUrl: true, level: true } },
-          approval: true,
+  const [mission, skills] = await Promise.all([
+    prisma.mission.findUnique({
+      where: { id: missionId },
+      include: {
+        objectives: { orderBy: { order: "asc" } },
+        createdBy: { select: { name: true } },
+        skills: { include: { skill: true } },
+        userMissions: {
+          include: {
+            user: { select: { id: true, name: true, avatarUrl: true, level: true } },
+            approval: true,
+          },
         },
       },
-    },
-  })
+    }),
+    prisma.skill.findMany({ orderBy: { name: "asc" } }),
+  ])
 
   if (!mission) return redirect("/admin/proyectos")
 

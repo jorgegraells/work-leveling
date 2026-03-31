@@ -430,6 +430,13 @@
     "priorityNormal": "Normal",
     "priorityBaja": "Baja"
   },
+  "skills": {
+    "title": "Habilidades",
+    "noSkills": "Sin habilidades aún",
+    "level": "Niv. {n}",
+    "select": "Habilidades del proyecto",
+    "selectHint": "Selecciona las habilidades que trabaja esta misión"
+  },
   "proyectoForm": {
     "adminBreadcrumb": "Admin / Proyectos",
     "editTitle": "Editar Proyecto",
@@ -476,6 +483,8 @@
     "iconHito": "Hito",
     "iconTrofeo": "Trofeo",
     "iconVelocidad": "Velocidad",
+    "skillsSection": "Habilidades del Proyecto",
+    "skillsHint": "Selecciona las habilidades que trabaja esta misión",
     "missionsSection": "Misiones del Proyecto",
     "missionsSubtitle": "Objetivos que el empleado debe completar",
     "addMission": "Anadir Mision",
@@ -571,5 +580,19 @@
     "noCompanies": "No perteneces a ninguna empresa todavía",
     "current": "Actual",
     "roleMember": "Miembro"
+  },
+  "deadlines": {
+    "startDate": "Fecha inicio",
+    "dueDate": "Fecha límite",
+    "sortDefault": "Por defecto",
+    "sortUrgency": "Urgencia",
+    "sortDeadline": "Plazo",
+    "overdue": "VENCIDO",
+    "critical": "CRÍTICO",
+    "dueSoon": "Próximo",
+    "onTrack": "A tiempo",
+    "completedEarly": "Antes",
+    "completedOnTime": "A tiempo",
+    "completedLate": "Con retraso"
   }
 }

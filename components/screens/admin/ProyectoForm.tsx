@@ -19,6 +19,8 @@ interface ProyectoFormProps {
   mission?: MissionWithObjectives
   orgs: { id: string; name: string }[]
   defaultOrgId?: string
+  skills?: { id: string; name: string; icon: string; color: string }[]
+  initialSkillIds?: string[]
 }
 
 // AVAILABLE_ICONS and MODULE_OPTIONS built inside component using t()
@@ -46,7 +48,7 @@ const PRIORITY_COLOR_CLASS: Record<string, string> = {
   BAJA:   "text-outline",
 }
 
-export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFormProps) {
+export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, initialSkillIds }: ProyectoFormProps) {
   const router = useRouter()
   const t = useTranslations("proyectoForm")
   const tCommon = useTranslations("common")
@@ -121,8 +123,23 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
       icon: o.icon,
     })) ?? []
   )
+  const [selectedSkillIds, setSelectedSkillIds] = useState<string[]>(
+    initialSkillIds ?? []
+  )
+  const [startDate, setStartDate] = useState<string>(
+    mission?.startDate ? new Date(mission.startDate).toISOString().split("T")[0] : ""
+  )
+  const [dueDate, setDueDate] = useState<string>(
+    mission?.dueDate ? new Date(mission.dueDate).toISOString().split("T")[0] : ""
+  )
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  function toggleSkill(skillId: string) {
+    setSelectedSkillIds((prev) =>
+      prev.includes(skillId) ? prev.filter((id) => id !== skillId) : [...prev, skillId]
+    )
+  }
 
   function addObjective() {
     setObjectives((prev) => [
@@ -172,6 +189,9 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
       priority,
       organizationId: selectedOrgId,
       objectives: objectives.map((o, i) => ({ ...o, order: i })),
+      skillIds: selectedSkillIds,
+      startDate: startDate || null,
+      dueDate: dueDate || null,
     }
 
     try {
@@ -372,6 +392,45 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
           </div>
         </div>
 
+        {/* Dates card */}
+        <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
+          <div className="rounded-lg bg-surface-bright p-6 space-y-5">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-outline text-lg">event</span>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                Fechas del Proyecto
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                  Fecha de inicio
+                </label>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  style={{ colorScheme: "dark" }}
+                  className="bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary w-full"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                  Fecha límite
+                </label>
+                <input
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  style={{ colorScheme: "dark" }}
+                  className="bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary w-full"
+                />
+                <p className="text-[10px] text-outline">Opcional, pero recomendado para activar recordatorios</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Icon Picker card */}
         <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
           <div className="rounded-lg bg-surface-bright p-6 space-y-4">
@@ -427,6 +486,42 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
             </div>
           </div>
         </div>
+
+        {/* Skills section */}
+        {skills && skills.length > 0 && (
+          <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
+            <div className="rounded-lg bg-surface-bright p-6 space-y-4">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                  {t("skillsSection")}
+                </p>
+                <p className="text-[11px] text-on-surface-variant mt-0.5">
+                  {t("skillsHint")}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {skills.map((skill) => {
+                  const isSelected = selectedSkillIds.includes(skill.id)
+                  return (
+                    <button
+                      key={skill.id}
+                      type="button"
+                      onClick={() => toggleSkill(skill.id)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all active:scale-95 ${
+                        isSelected
+                          ? "bg-primary text-on-primary"
+                          : "bg-surface-container-high text-on-surface hover:bg-surface-container-highest"
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-sm">{skill.icon}</span>
+                      {skill.name}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Objectives section */}
         <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">

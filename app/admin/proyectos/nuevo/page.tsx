@@ -8,17 +8,20 @@ export default async function NuevoProyectoPage() {
   const user = await requireCurrentUser()
   const t = await getTranslations("admin")
 
-  const orgs = user.isSuperAdmin
-    ? await prisma.organization.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } })
-    : await prisma.organization.findMany({
-        where: {
-          orgRoles: {
-            some: { userId: user.id, confirmed: true, role: { in: ["MANAGER", "ORG_ADMIN"] } },
+  const [orgs, skills] = await Promise.all([
+    user.isSuperAdmin
+      ? prisma.organization.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } })
+      : prisma.organization.findMany({
+          where: {
+            orgRoles: {
+              some: { userId: user.id, confirmed: true, role: { in: ["MANAGER", "ORG_ADMIN"] } },
+            },
           },
-        },
-        select: { id: true, name: true },
-        orderBy: { name: "asc" },
-      })
+          select: { id: true, name: true },
+          orderBy: { name: "asc" },
+        }),
+    prisma.skill.findMany({ orderBy: { name: "asc" } }),
+  ])
 
   return (
     <SidebarLayout
@@ -37,6 +40,7 @@ export default async function NuevoProyectoPage() {
           <ProyectoForm
             orgs={orgs}
             defaultOrgId={user.organizationId ?? undefined}
+            skills={skills}
           />
         </div>
         <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />

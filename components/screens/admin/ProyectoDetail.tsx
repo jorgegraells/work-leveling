@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl"
 import type { MissionWithObjectives, UserMissionWithUser } from "@/types/proyectos"
 import type { MissionModule } from "@prisma/client"
 import AsignacionModal from "./AsignacionModal"
+import DeadlineBadge from "@/components/ui/DeadlineBadge"
 
 interface ProyectoDetailProps {
   mission: MissionWithObjectives
@@ -122,6 +123,13 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
               {mission.description && (
                 <p className="text-sm text-on-surface-variant">{mission.description}</p>
               )}
+              {mission.dueDate && (
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="material-symbols-outlined text-outline text-sm">event</span>
+                  <span className="text-[10px] text-outline uppercase tracking-widest">Fecha límite:</span>
+                  <DeadlineBadge dueDate={new Date(mission.dueDate as unknown as string).toISOString()} completedAt={null} />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -198,8 +206,11 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
                     <th className="text-[10px] font-bold uppercase tracking-widest text-outline pb-3 pr-4">
                       {t("statusColumn")}
                     </th>
-                    <th className="text-[10px] font-bold uppercase tracking-widest text-outline pb-3">
+                    <th className="text-[10px] font-bold uppercase tracking-widest text-outline pb-3 pr-4">
                       {t("completedColumn")}
+                    </th>
+                    <th className="text-[10px] font-bold uppercase tracking-widest text-outline pb-3">
+                      Plazo
                     </th>
                   </tr>
                 </thead>
@@ -253,7 +264,7 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
                             {badge.label}
                           </span>
                         </td>
-                        <td className="py-3">
+                        <td className="py-3 pr-4">
                           <span className="text-[11px] text-on-surface-variant">
                             {a.completedAt
                               ? new Date(a.completedAt).toLocaleDateString("es-ES", {
@@ -263,6 +274,17 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
                                 })
                               : "—"}
                           </span>
+                        </td>
+                        <td className="py-3">
+                          {mission.dueDate ? (
+                            <DeadlineBadge
+                              dueDate={new Date(mission.dueDate as unknown as string).toISOString()}
+                              completedAt={a.completedAt ? new Date(a.completedAt as unknown as string).toISOString() : null}
+                              compact
+                            />
+                          ) : (
+                            <span className="text-[11px] text-outline">—</span>
+                          )}
                         </td>
                       </tr>
                     )

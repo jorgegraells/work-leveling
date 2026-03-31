@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { title, description, module, icon, xpReward, priority, organizationId, objectives } = body
+  const { title, description, module, icon, xpReward, priority, organizationId, objectives, startDate, dueDate } = body
 
   if (!title || !module || !icon || !organizationId) {
     return NextResponse.json(
@@ -95,6 +95,8 @@ export async function POST(req: NextRequest) {
       isGlobal: false,
       organizationId,
       createdById: user.id,
+      startDate: startDate ? new Date(startDate) : null,
+      dueDate: dueDate ? new Date(dueDate) : null,
       objectives: {
         create: (objectives ?? []).map(
           (obj: { title: string; xpReward: number; order: number; icon: string }) => ({
@@ -108,6 +110,12 @@ export async function POST(req: NextRequest) {
     },
     include: { objectives: { orderBy: { order: "asc" } } },
   })
+
+  if (Array.isArray(body.skillIds) && body.skillIds.length > 0) {
+    await prisma.missionSkill.createMany({
+      data: body.skillIds.map((skillId: string) => ({ missionId: mission.id, skillId }))
+    })
+  }
 
   return NextResponse.json(mission, { status: 201 })
 }

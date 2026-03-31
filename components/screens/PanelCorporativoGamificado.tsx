@@ -1,10 +1,12 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
 import SidebarLayout from "@/components/layout/SidebarLayout"
+import DeadlineBadge from "@/components/ui/DeadlineBadge"
+import { computeDeadlineInfo } from "@/lib/deadline"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -25,6 +27,8 @@ export interface ProjectCard {
   objectivesTotal: number
   objectivesCompleted: number
   approvalStatus?: string // "PENDING" | "APPROVED" | "REJECTED" | undefined
+  dueDate?: string | null
+  completedAt?: string | null
 }
 
 export interface PanelCorporativoGamificadoProps {
@@ -64,6 +68,7 @@ export default function PanelCorporativoGamificado({
   const [canLeft, setCanLeft] = useState(false)
   const [canRight, setCanRight] = useState(true)
   const [completing, setCompleting] = useState(false)
+  const [sortMode, setSortMode] = useState<"default" | "urgency" | "deadline">("default")
 
   useEffect(() => {
     const el = carouselRef.current
@@ -103,6 +108,37 @@ export default function PanelCorporativoGamificado({
   }
 
   const t = useTranslations("misiones")
+
+  const URGENCY_ORDER: Record<string, number> = {
+    OVERDUE: 0,
+    DEADLINE_CRITICAL: 1,
+    DUE_SOON: 2,
+    ON_TRACK: 3,
+    NO_DEADLINE: 4,
+    COMPLETED_EARLY: 5,
+    COMPLETED_ON_TIME: 5,
+    COMPLETED_LATE: 6,
+  }
+
+  const sortedProjects = useMemo(() => {
+    if (sortMode === "default") return projects
+    if (sortMode === "urgency") {
+      return [...projects].sort((a, b) => {
+        const aStatus = computeDeadlineInfo(a.dueDate ?? null, a.completedAt ?? null).status
+        const bStatus = computeDeadlineInfo(b.dueDate ?? null, b.completedAt ?? null).status
+        return (URGENCY_ORDER[aStatus] ?? 99) - (URGENCY_ORDER[bStatus] ?? 99)
+      })
+    }
+    if (sortMode === "deadline") {
+      return [...projects].sort((a, b) => {
+        if (!a.dueDate && !b.dueDate) return 0
+        if (!a.dueDate) return 1
+        if (!b.dueDate) return -1
+        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+      })
+    }
+    return projects
+  }, [projects, sortMode])
 
   const headerUser = {
     name: userName,
@@ -218,6 +254,31 @@ export default function PanelCorporativoGamificado({
                 </header>
               )}
 
+              {/* Sort controls */}
+              <div className="flex items-center gap-2 px-2">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                  Ordenar:
+                </span>
+                {(["default", "urgency", "deadline"] as const).map((mode) => {
+                  const labels = { default: "Por defecto", urgency: "Urgencia", deadline: "Plazo" }
+                  const isActive = sortMode === mode
+                  return (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setSortMode(mode)}
+                      className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest transition-colors active:scale-95 ${
+                        isActive
+                          ? "bg-primary/20 text-primary"
+                          : "text-outline hover:bg-surface-container-high"
+                      }`}
+                    >
+                      {labels[mode]}
+                    </button>
+                  )
+                })}
+              </div>
+
               {/* Project cards carousel */}
               <div className="relative group flex items-center">
                 <button
@@ -234,7 +295,7 @@ export default function PanelCorporativoGamificado({
                   ref={carouselRef}
                   className="flex-1 flex gap-6 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory px-2 py-4"
                 >
-                  {projects.map((p) => {
+                  {sortedProjects.map((p) => {
                     const accentClass =
                       ACCENT_TEXT[p.accentColor] ?? "text-primary"
                     const progressLabel =
@@ -330,6 +391,11 @@ export default function PanelCorporativoGamificado({
                                 style={{ width: `${p.progress}%` }}
                               />
                             </div>
+                            {p.dueDate && (
+                              <div className="flex justify-center mt-2">
+                                <DeadlineBadge dueDate={p.dueDate ?? null} completedAt={p.completedAt ?? null} compact />
+                              </div>
+                            )}
                           </div>
                           {p.status === "COMPLETED" && p.approvalStatus === "APPROVED" ? (
                             <button className="w-full min-h-[52px] bg-secondary text-on-secondary-fixed font-bold py-3 rounded-md shadow-lg shadow-secondary/20 hover:opacity-90 transition-all active:scale-[0.98] uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
