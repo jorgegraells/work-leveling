@@ -233,6 +233,7 @@ function ProblemSection() {
   return (
     <section
       ref={section.ref}
+      id="como-funciona"
       className={`relative bg-surface-container-lowest px-6 py-24 transition-all duration-700 ${
         section.visible
           ? "translate-y-0 opacity-100"
@@ -406,7 +407,6 @@ function HowItWorksSection() {
 
   return (
     <section
-      id="como-funciona"
       ref={section.ref}
       className={`relative bg-surface-container-lowest px-6 py-24 transition-all duration-700 ${
         section.visible
