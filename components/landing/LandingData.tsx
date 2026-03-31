@@ -68,42 +68,40 @@ function EngagementChart() {
         </div>
         <p className="text-xs text-outline mb-6">Porcentaje de empleados engaged en su trabajo</p>
 
-        <div className="flex items-end gap-3 h-48">
+        <div className="flex gap-4">
           {ENGAGEMENT_DATA.map((d, i) => (
-            <div key={d.year} className="flex-1 flex flex-col items-center gap-1">
-              {/* Global bar */}
-              <div className="w-full flex gap-1 items-end justify-center" style={{ height: "100%" }}>
-                <div className="relative flex-1 flex flex-col justify-end items-center">
-                  <span className="text-[9px] font-bold text-primary mb-1">
-                    {visible ? `${d.global}%` : ""}
-                  </span>
+            <div key={d.year} className="flex-1 flex flex-col items-center">
+              {/* Labels */}
+              <div className="flex gap-1 w-full justify-center mb-1">
+                <span className="text-[9px] font-bold text-primary">{visible ? `${d.global}%` : ""}</span>
+                <span className="text-[9px] font-bold text-error">{visible ? `${d.europe}%` : ""}</span>
+              </div>
+              {/* Bars container */}
+              <div className="flex gap-1 w-full justify-center h-36">
+                {/* Global bar */}
+                <div className="flex-1 flex flex-col justify-end">
                   <div
                     className="w-full bg-primary rounded-t transition-all duration-1000 ease-out"
                     style={{
                       height: visible ? `${(d.global / maxVal) * 100}%` : "0%",
                       transitionDelay: `${i * 100}ms`,
-                      minHeight: visible ? 4 : 0,
                     }}
                   />
                 </div>
-                <div className="relative flex-1 flex flex-col justify-end items-center">
-                  <span className="text-[9px] font-bold text-error mb-1">
-                    {visible ? `${d.europe}%` : ""}
-                  </span>
+                {/* Europe bar */}
+                <div className="flex-1 flex flex-col justify-end">
                   <div
                     className="w-full bg-error/70 rounded-t transition-all duration-1000 ease-out"
                     style={{
                       height: visible ? `${(d.europe / maxVal) * 100}%` : "0%",
                       transitionDelay: `${i * 100 + 50}ms`,
-                      minHeight: visible ? 4 : 0,
                     }}
                   />
                 </div>
               </div>
-              <span className="text-[10px] font-bold text-outline">{d.year}</span>
-              {d.label && (
-                <span className="text-[8px] text-on-surface-variant">{d.label}</span>
-              )}
+              {/* Year label */}
+              <span className="text-[10px] font-bold text-outline mt-2">{d.year}</span>
+              {d.label && <span className="text-[8px] text-on-surface-variant">{d.label}</span>}
             </div>
           ))}
         </div>

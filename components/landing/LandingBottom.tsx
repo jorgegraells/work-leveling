@@ -550,13 +550,13 @@ const deepArguments = [
 
 function DeepArgumentsSection() {
   return (
-    <Section id="argumentos">
+    <Section id="argumentos" className="bg-surface-container-lowest">
       <div className="text-center mb-16 max-w-3xl mx-auto">
         <p className="text-[10px] font-label font-bold uppercase tracking-widest text-primary mb-4">
           Por qué funciona
         </p>
-        <h2 className="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">
-          No es un juego. Es tu sistema de gestión de talento.
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-headline font-extrabold text-on-surface mb-4">
+          Es tu sistema de gestión de talento.
         </h2>
         <p className="text-base font-body text-on-surface-variant leading-relaxed">
           Cada decisión en tu empresa deja un rastro. Cada empleado tiene un
