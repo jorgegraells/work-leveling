@@ -24,6 +24,8 @@ const TYPE_ICON: Record<NotificationType, string> = {
   DUE_SOON: "alarm",
   DEADLINE_CRITICAL: "alarm_on",
   OVERDUE: "alarm_off",
+  MISSION_OBJECTIVE_APPROVED: "task_alt",
+  MISSION_OBJECTIVE_REJECTED: "unpublished",
 }
 
 const TYPE_COLOR: Record<NotificationType, string> = {
@@ -35,6 +37,8 @@ const TYPE_COLOR: Record<NotificationType, string> = {
   DUE_SOON: "text-primary",
   DEADLINE_CRITICAL: "text-error",
   OVERDUE: "text-error",
+  MISSION_OBJECTIVE_APPROVED: "text-secondary",
+  MISSION_OBJECTIVE_REJECTED: "text-error",
 }
 
 function timeAgo(dateStr: string, t: (key: string, values?: Record<string, number>) => string) {

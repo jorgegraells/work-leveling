@@ -134,6 +134,9 @@ export default function PanelCorporativoGamificado({
     COMPLETED_LATE: 6,
   }
 
+  const dailyProjects = projects.filter((p) => p.missionType === "DAILY" && p.status !== "ARCHIVED")
+  const objectiveProjects = projects.filter((p) => p.missionType !== "DAILY")
+
   const sortedProjects = useMemo(() => {
     if (sortMode === "default") return objectiveProjects
     if (sortMode === "urgency") {
@@ -161,9 +164,6 @@ export default function PanelCorporativoGamificado({
     title: userTitle,
     avatarUrl: userAvatarUrl,
   }
-
-  const dailyProjects = projects.filter((p) => p.missionType === "DAILY" && p.status !== "ARCHIVED")
-  const objectiveProjects = projects.filter((p) => p.missionType !== "DAILY")
 
   const isEmpty = objectiveProjects.length === 0 && dailyProjects.length === 0
 
