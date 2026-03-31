@@ -23,7 +23,7 @@ export interface UserDataHeader {
 const SIDEBAR_NAV_DEFS = [
   { icon: "home",          key: "dashboard", href: "/dashboard"    },
   { icon: "person",        key: "profile",   href: "/perfil"       },
-  { icon: "military_tech", key: "missions",  href: "/misiones"     },
+  { icon: "military_tech", key: "missions",  href: "/objetivos"    },
   { icon: "archive",       key: "archived",  href: "/archivados"   },
   { icon: "bar_chart",     key: "stats",     href: "/estadisticas" },
   { icon: "business",      key: "companies", href: "/empresas"     },
@@ -31,7 +31,7 @@ const SIDEBAR_NAV_DEFS = [
 
 const MOBILE_NAV_DEFS = [
   { icon: "home",          key: "dashboard", href: "/dashboard"    },
-  { icon: "military_tech", key: "missions",  href: "/misiones"     },
+  { icon: "military_tech", key: "missions",  href: "/objetivos"    },
   { icon: "person",        key: "profile",   href: "/perfil"       },
   { icon: "bar_chart",     key: "stats",     href: "/estadisticas" },
   { icon: "settings",      key: "settings",  href: "/settings"     },
@@ -70,12 +70,12 @@ export default function SidebarLayout({
   const roleNavItems: { icon: string; label: string; href: string; badge?: number }[] = []
   if (isSuperAdmin) {
     roleNavItems.push({ icon: "admin_panel_settings", label: t("admin"), href: "/admin" })
-    roleNavItems.push({ icon: "account_tree", label: t("projects"), href: "/admin/proyectos" })
+    roleNavItems.push({ icon: "account_tree", label: t("projects"), href: "/admin/objetivos" })
     roleNavItems.push({ icon: "approval", label: t("approvals"), href: "/admin/aprobaciones", badge: pendingApprovals })
     roleNavItems.push({ icon: "domain", label: t("company"), href: "/admin/empresa" })
     roleNavItems.push({ icon: "monitoring", label: t("kpis"), href: "/admin/empresa/kpi" })
   } else if (role === "ORG_ADMIN" || role === "MANAGER") {
-    roleNavItems.push({ icon: "account_tree", label: t("projects"), href: "/admin/proyectos" })
+    roleNavItems.push({ icon: "account_tree", label: t("projects"), href: "/admin/objetivos" })
     roleNavItems.push({ icon: "approval", label: t("approvals"), href: "/admin/aprobaciones", badge: pendingApprovals })
     roleNavItems.push({ icon: "domain", label: t("company"), href: "/admin/empresa" })
     roleNavItems.push({ icon: "monitoring", label: t("kpis"), href: "/admin/empresa/kpi" })
@@ -207,7 +207,7 @@ export default function SidebarLayout({
         {MOBILE_NAV.map((item) => {
           const active =
             pathname === item.href ||
-            (item.href === "/misiones" && pathname.startsWith("/misiones"))
+            (item.href === "/objetivos" && pathname.startsWith("/objetivos"))
           return (
             <Link
               key={item.label}

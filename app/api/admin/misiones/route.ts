@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { title, description, module, icon, xpReward, priority, organizationId, objectives, startDate, dueDate } = body
+  const { title, description, module, icon, xpReward, priority, organizationId, objectives, startDate, dueDate, missionType } = body
 
   if (!title || !module || !icon || !organizationId) {
     return NextResponse.json(
@@ -97,6 +97,7 @@ export async function POST(req: NextRequest) {
       createdById: user.id,
       startDate: startDate ? new Date(startDate) : null,
       dueDate: dueDate ? new Date(dueDate) : null,
+      missionType: missionType ?? "OBJECTIVE",
       objectives: {
         create: (objectives ?? []).map(
           (obj: { title: string; xpReward: number; order: number; icon: string }) => ({

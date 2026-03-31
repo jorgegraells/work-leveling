@@ -68,7 +68,7 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
           </p>
         </div>
         <Link
-          href="/admin/proyectos/nuevo"
+          href="/admin/objetivos/nuevo"
           className="flex items-center gap-2 px-4 py-2.5 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-[0.98] transition-transform shadow-[0px_20px_40px_rgba(0,0,0,0.4)]"
         >
           <span className="material-symbols-outlined text-base">add</span>
@@ -93,7 +93,7 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
               </p>
             </div>
             <Link
-              href="/admin/proyectos/nuevo"
+              href="/admin/objetivos/nuevo"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-[0.98] transition-transform"
             >
               <span className="material-symbols-outlined text-base">add_circle</span>
@@ -196,14 +196,14 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
                   {/* Actions */}
                   <div className="flex gap-2 pt-1 mt-auto">
                     <Link
-                      href={`/admin/proyectos/${mission.id}`}
+                      href={`/admin/objetivos/${mission.id}`}
                       className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform"
                     >
                       <span className="material-symbols-outlined text-base">visibility</span>
                       {t("detail")}
                     </Link>
                     <Link
-                      href={`/admin/proyectos/${mission.id}`}
+                      href={`/admin/objetivos/${mission.id}`}
                       className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md bg-surface-container-high text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-container-highest transition-colors active:scale-95"
                     >
                       <span className="material-symbols-outlined text-base">edit</span>

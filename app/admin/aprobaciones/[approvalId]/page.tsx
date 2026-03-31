@@ -35,6 +35,12 @@ export default async function AprobacionDetailPage({
               },
             },
           },
+          objectives: {
+            include: {
+              objective: true,
+            },
+            orderBy: { id: "asc" },
+          },
         },
       },
     },

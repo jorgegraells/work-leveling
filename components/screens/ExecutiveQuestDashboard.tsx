@@ -170,7 +170,7 @@ export default function ExecutiveQuestDashboard({
                     <h3 className="text-lg font-headline font-bold text-on-surface">{t("activeProjects")}</h3>
                     <p className="text-outline text-[9px] uppercase tracking-widest mt-0.5">{t("currentAssignments")}</p>
                   </div>
-                  <Link href="/misiones" className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline">
+                  <Link href="/objetivos" className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline">
                     {t("viewAll")}
                   </Link>
                 </div>
@@ -180,7 +180,7 @@ export default function ExecutiveQuestDashboard({
                     {activeProjects.map((p) => (
                       <Link
                         key={p.id}
-                        href={`/misiones/${p.missionId}`}
+                        href={`/objetivos/${p.missionId}`}
                         className="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-lg hover:bg-surface-container-high transition-colors group"
                       >
                         <div className="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary flex-shrink-0">
@@ -241,7 +241,7 @@ export default function ExecutiveQuestDashboard({
                     {pendingObjectives.map((obj) => (
                       <Link
                         key={obj.id}
-                        href={`/misiones/${obj.missionId}`}
+                        href={`/objetivos/${obj.missionId}`}
                         className="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-container-lowest transition-colors group"
                       >
                         <div className="w-8 h-8 rounded bg-surface-container-lowest flex items-center justify-center text-tertiary flex-shrink-0 group-hover:text-primary transition-colors">

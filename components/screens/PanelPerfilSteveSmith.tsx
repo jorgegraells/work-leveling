@@ -414,7 +414,7 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
                     <h3 className="text-2xl font-headline font-bold text-on-surface">{t("completedProjects")}</h3>
                     <p className="text-outline text-[10px] uppercase tracking-widest mt-1">{t("historyWithRatings")}</p>
                   </div>
-                  <Link href="/misiones" className="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded hover:bg-primary hover:text-on-primary transition-all duration-300 font-headline font-bold text-[10px] uppercase tracking-tighter">
+                  <Link href="/objetivos" className="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded hover:bg-primary hover:text-on-primary transition-all duration-300 font-headline font-bold text-[10px] uppercase tracking-tighter">
                     {t("viewAll")}
                   </Link>
                 </div>
@@ -431,7 +431,7 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
                       <span className="material-symbols-outlined text-5xl text-outline/40 mb-4 block">explore</span>
                       <p className="text-on-surface font-headline font-bold text-lg">{t("noCompletedProjects")}</p>
                       <p className="text-outline text-[10px] uppercase tracking-widest mt-2">{t("noCompletedHint")}</p>
-                      <Link href="/misiones" className="mt-6 inline-block px-6 py-2 bg-primary/10 text-primary border border-primary/20 rounded hover:bg-primary hover:text-on-primary transition-all font-headline font-bold text-xs uppercase tracking-tighter">
+                      <Link href="/objetivos" className="mt-6 inline-block px-6 py-2 bg-primary/10 text-primary border border-primary/20 rounded hover:bg-primary hover:text-on-primary transition-all font-headline font-bold text-xs uppercase tracking-tighter">
                         {t("exploreMissions")}
                       </Link>
                     </div>

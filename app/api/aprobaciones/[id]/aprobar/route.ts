@@ -57,6 +57,20 @@ export async function POST(
     return NextResponse.json({ error: "Approval already processed" }, { status: 409 })
   }
 
+  // Check that ALL UserMissionObjectives are approved before allowing final approval
+  const objectives = await prisma.userMissionObjective.findMany({
+    where: { userMissionId: approval.userMissionId },
+  })
+  if (objectives.length > 0) {
+    const allApproved = objectives.every((o) => o.managerApproved === true)
+    if (!allApproved) {
+      return NextResponse.json(
+        { error: "Hay misiones pendientes de aprobación" },
+        { status: 400 }
+      )
+    }
+  }
+
   const employee = approval.userMission.user
   const canApprove = employee.organizationId
     ? await canApproveInOrg(currentUser.id, employee.organizationId)

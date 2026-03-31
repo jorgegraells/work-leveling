@@ -103,6 +103,10 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
     { value: "BAJA",   label: t("priorityBaja"),   colorClass: "text-outline" },
   ]
 
+  const [missionType, setMissionType] = useState<"OBJECTIVE" | "DAILY">(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ((mission as any)?.missionType as "OBJECTIVE" | "DAILY") ?? "OBJECTIVE"
+  )
   const [selectedOrgId, setSelectedOrgId] = useState(
     mission?.organizationId ?? defaultOrgId ?? orgs[0]?.id ?? ""
   )
@@ -184,14 +188,15 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
       title,
       description: description || null,
       module,
-      icon,
+      icon: missionType === "DAILY" ? "today" : icon,
       xpReward,
       priority,
       organizationId: selectedOrgId,
-      objectives: objectives.map((o, i) => ({ ...o, order: i })),
+      objectives: missionType === "DAILY" ? [] : objectives.map((o, i) => ({ ...o, order: i })),
       skillIds: selectedSkillIds,
       startDate: startDate || null,
       dueDate: dueDate || null,
+      missionType,
     }
 
     try {
@@ -212,7 +217,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
         return
       }
 
-      router.push("/admin/proyectos")
+      router.push("/admin/objetivos")
       router.refresh()
     } catch {
       setError(t("errorConnection"))
@@ -246,6 +251,43 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Mission type toggle */}
+        {!isEdit && (
+          <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
+            <div className="rounded-lg bg-surface-bright p-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-outline mb-3">
+                {t("missionTypeLabel")}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setMissionType("OBJECTIVE")}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all active:scale-95 ${
+                    missionType === "OBJECTIVE"
+                      ? "bg-primary text-on-primary"
+                      : "bg-surface-container-lowest text-outline hover:bg-surface-container-high"
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-base">account_tree</span>
+                  {t("complexObjective")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMissionType("DAILY")}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all active:scale-95 ${
+                    missionType === "DAILY"
+                      ? "bg-tertiary text-on-tertiary"
+                      : "bg-surface-container-lowest text-outline hover:bg-surface-container-high"
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-base">today</span>
+                  {t("dailyMission")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Main card */}
         <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
           <div className="rounded-lg bg-surface-bright p-6 space-y-5">
@@ -431,8 +473,8 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
           </div>
         </div>
 
-        {/* Icon Picker card */}
-        <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
+        {/* Icon Picker card — hidden for daily missions */}
+        {missionType !== "DAILY" && <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
           <div className="rounded-lg bg-surface-bright p-6 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -485,7 +527,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
               })}
             </div>
           </div>
-        </div>
+        </div>}
 
         {/* Skills section */}
         {skills && skills.length > 0 && (
@@ -523,8 +565,8 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
           </div>
         )}
 
-        {/* Objectives section */}
-        <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
+        {/* Objectives section — hidden for daily missions */}
+        {missionType !== "DAILY" && <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
           <div className="rounded-lg bg-surface-bright p-6 space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -580,7 +622,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
               </div>
             )}
           </div>
-        </div>
+        </div>}
 
         {/* Error */}
         {error && (

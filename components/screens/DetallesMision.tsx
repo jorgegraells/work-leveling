@@ -17,6 +17,10 @@ interface ObjectiveData {
   order: number
   icon: string
   status: string // LOCKED | IN_PROGRESS | COMPLETED
+  submittedAt?: string | null
+  managerApproved?: boolean | null
+  managerNote?: string | null
+  userMissionObjectiveId?: string | null
 }
 
 export interface DetallesMisionProps {
@@ -73,33 +77,79 @@ function ObjectiveCard({
   obj,
   missionId,
   onCompleted,
+  onSubmit,
   isCompleting,
+  isSubmitting,
 }: {
   obj: ObjectiveData
   missionId: string
   onCompleted: () => void
+  onSubmit: () => void
   isCompleting: boolean
+  isSubmitting: boolean
 }) {
   const t = useTranslations("detallesMision")
 
+  // Determine submission / manager review state
+  const isSubmitted = !!obj.submittedAt
+  const isApproved = obj.managerApproved === true
+  const isRejected = obj.managerApproved === false
+  const isPendingReview = isSubmitted && obj.managerApproved === null
+
   if (obj.status === "COMPLETED") {
     return (
-      <div className="group relative bg-surface-container-low border border-transparent hover:border-secondary/20 p-6 rounded-xl transition-all flex items-center gap-6 overflow-hidden">
+      <div className={`group relative p-6 rounded-xl transition-all flex items-start gap-6 overflow-hidden border ${
+        isApproved
+          ? "bg-secondary/10 border-secondary/20"
+          : isRejected
+            ? "bg-error/10 border-error/20"
+            : isPendingReview
+              ? "bg-primary/10 border-primary/20"
+              : "bg-surface-container-low border-transparent hover:border-secondary/20"
+      }`}>
         <div className="absolute top-0 right-0 p-2 opacity-5">
           <span className="material-symbols-outlined text-[120px]">
             check_circle
           </span>
         </div>
-        <div className="w-14 h-14 bg-secondary-container/20 rounded-xl flex items-center justify-center border border-secondary/20 flex-shrink-0">
-          <span className="material-symbols-outlined text-secondary text-3xl">
+        <div className={`w-14 h-14 rounded-xl flex items-center justify-center border flex-shrink-0 ${
+          isApproved
+            ? "bg-secondary-container/20 border-secondary/20"
+            : isRejected
+              ? "bg-error/20 border-error/20"
+              : "bg-secondary-container/20 border-secondary/20"
+        }`}>
+          <span className={`material-symbols-outlined text-3xl ${
+            isApproved ? "text-secondary" : isRejected ? "text-error" : "text-secondary"
+          }`}>
             {obj.icon}
           </span>
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3 mb-1 flex-wrap">
-            <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">
-              {t("objCompleted")}
-            </span>
+        <div className="flex-1 min-w-0 space-y-1">
+          <div className="flex items-center gap-3 flex-wrap">
+            {isApproved && (
+              <span className="text-[10px] font-bold text-secondary uppercase tracking-widest flex items-center gap-1">
+                <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                {t("objManagerApproved")}
+              </span>
+            )}
+            {isRejected && (
+              <span className="text-[10px] font-bold text-error uppercase tracking-widest flex items-center gap-1">
+                <span className="material-symbols-outlined text-xs">cancel</span>
+                {t("objManagerRejected")}
+              </span>
+            )}
+            {isPendingReview && (
+              <span className="text-[10px] font-bold text-primary uppercase tracking-widest flex items-center gap-1">
+                <span className="material-symbols-outlined text-xs">hourglass_top</span>
+                {t("objSubmittedPending")}
+              </span>
+            )}
+            {!isSubmitted && (
+              <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">
+                {t("objCompleted")}
+              </span>
+            )}
             <span className="w-1 h-1 bg-outline-variant rounded-full" />
             <span className="text-[10px] font-bold text-primary uppercase tracking-widest">
               +{obj.xpReward} XP
@@ -108,13 +158,36 @@ function ObjectiveCard({
           <h3 className="font-headline font-bold text-lg text-on-surface">
             {obj.title}
           </h3>
+          {isRejected && obj.managerNote && (
+            <p className="text-xs text-error/80 italic mt-1">"{obj.managerNote}"</p>
+          )}
         </div>
-        <span
-          className="material-symbols-outlined text-secondary flex-shrink-0"
-          style={{ fontVariationSettings: "'FILL' 1" }}
-        >
-          verified
-        </span>
+        <div className="flex flex-col items-end gap-2 flex-shrink-0">
+          {isApproved && (
+            <span
+              className="material-symbols-outlined text-secondary"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              verified
+            </span>
+          )}
+          {isRejected && (
+            <span className="material-symbols-outlined text-error">cancel</span>
+          )}
+          {isPendingReview && (
+            <span className="material-symbols-outlined text-primary">hourglass_top</span>
+          )}
+          {/* Show submit button if completed but not yet submitted (or rejected — allow resubmit) */}
+          {(!isSubmitted || isRejected) && (
+            <button
+              onClick={onSubmit}
+              disabled={isSubmitting}
+              className="px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary font-bold rounded-md hover:bg-primary/30 transition-all active:scale-95 uppercase text-[10px] tracking-widest disabled:opacity-50"
+            >
+              {isSubmitting ? "..." : t("objSubmitForReview")}
+            </button>
+          )}
+        </div>
       </div>
     )
   }
@@ -204,13 +277,24 @@ export default function DetallesMision({
   const router = useRouter()
   const t = useTranslations("detallesMision")
   const [completingObj, setCompletingObj] = useState<string | null>(null)
+  const [submittingObj, setSubmittingObj] = useState<string | null>(null)
   const [completingProject, setCompletingProject] = useState(false)
 
   const accent = ACCENT_MAP[accentColor] ?? ACCENT_MAP.primary
 
   const allDone = objectivesTotal > 0 && objectivesCompleted >= objectivesTotal
+
+  // All submitted objectives must be manager-approved before project can be submitted
+  const completedObjectives = objectives.filter((o) => o.status === "COMPLETED")
+  const allObjectivesManagerApproved =
+    completedObjectives.length === 0 ||
+    completedObjectives.every((o) => o.managerApproved === true)
+
   const canCompleteProject =
-    allDone && status !== "COMPLETED" && status !== "ARCHIVED"
+    allDone &&
+    allObjectivesManagerApproved &&
+    status !== "COMPLETED" &&
+    status !== "ARCHIVED"
 
   const handleCompleteObjective = async (objectiveId: string) => {
     setCompletingObj(objectiveId)
@@ -224,6 +308,21 @@ export default function DetallesMision({
       }
     } finally {
       setCompletingObj(null)
+    }
+  }
+
+  const handleSubmitObjective = async (objectiveId: string) => {
+    setSubmittingObj(objectiveId)
+    try {
+      const res = await fetch(
+        `/api/misiones/${missionId}/objetivos/${objectiveId}/submit`,
+        { method: "POST" }
+      )
+      if (res.ok) {
+        router.refresh()
+      }
+    } finally {
+      setSubmittingObj(null)
     }
   }
 
@@ -249,7 +348,7 @@ export default function DetallesMision({
             {/* Breadcrumb & Back */}
             <div className="mb-10 flex justify-between items-center flex-wrap gap-4">
               <Link
-                href="/misiones"
+                href="/objetivos"
                 className="group flex items-center gap-3 px-6 py-3 wood-bezel rounded-xl border border-outline-variant/10 hover:border-secondary/30 transition-all active:scale-95"
               >
                 <span className="material-symbols-outlined text-secondary">
@@ -370,7 +469,9 @@ export default function DetallesMision({
                       obj={obj}
                       missionId={missionId}
                       onCompleted={() => handleCompleteObjective(obj.id)}
+                      onSubmit={() => handleSubmitObjective(obj.id)}
                       isCompleting={completingObj === obj.id}
+                      isSubmitting={submittingObj === obj.id}
                     />
                   ))}
                   {objectives.length === 0 && (
@@ -437,6 +538,15 @@ export default function DetallesMision({
                       <span className="material-symbols-outlined text-primary text-lg">hourglass_top</span>
                       <p className="text-xs text-primary font-medium">
                         {t("pendingReviewNote")}
+                      </p>
+                    </div>
+                  )}
+                  {/* Warning: not all objectives approved yet */}
+                  {allDone && !allObjectivesManagerApproved && status !== "COMPLETED" && (
+                    <div className="flex items-center gap-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                      <span className="material-symbols-outlined text-primary text-lg">warning</span>
+                      <p className="text-xs text-primary font-medium">
+                        {t("allMissionsRequired")}
                       </p>
                     </div>
                   )}

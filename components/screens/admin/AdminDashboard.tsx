@@ -153,7 +153,7 @@ export default function AdminDashboard({
               {t("newCompany")}
             </Link>
             <Link
-              href="/admin/proyectos"
+              href="/admin/objetivos"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-surface-container-high text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-variant active:scale-95 transition-transform"
             >
               <span className="material-symbols-outlined text-sm text-tertiary">account_tree</span>

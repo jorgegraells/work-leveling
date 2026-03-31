@@ -47,6 +47,8 @@ enum NotificationType {
   DUE_SOON
   DEADLINE_CRITICAL
   OVERDUE
+  MISSION_OBJECTIVE_APPROVED
+  MISSION_OBJECTIVE_REJECTED
 }
 
 enum MissionModule {
@@ -195,8 +197,9 @@ model Mission {
   createdById String?
   createdBy   User?   @relation("MissionCreator", fields: [createdById], references: [id], onDelete: SetNull)
 
-  startDate DateTime?
-  dueDate   DateTime?
+  startDate   DateTime?
+  dueDate     DateTime?
+  missionType String    @default("OBJECTIVE") // "OBJECTIVE" | "DAILY"
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -304,7 +307,11 @@ model UserMissionObjective {
   objectiveId   String
   objective     MissionObjective @relation(fields: [objectiveId], references: [id], onDelete: Cascade)
 
-  completedAt DateTime?
+  completedAt       DateTime?
+  submittedAt       DateTime?   // when employee marked as done
+  managerApproved   Boolean?    // null=pending, true=approved, false=rejected
+  managerNote       String?     // manager feedback on this specific mission
+  managerApprovedAt DateTime?
 
   @@unique([userMissionId, objectiveId])
 }

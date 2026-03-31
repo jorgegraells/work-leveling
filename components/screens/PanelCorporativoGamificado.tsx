@@ -29,6 +29,7 @@ export interface ProjectCard {
   approvalStatus?: string // "PENDING" | "APPROVED" | "REJECTED" | undefined
   dueDate?: string | null
   completedAt?: string | null
+  missionType?: string // "OBJECTIVE" | "DAILY"
 }
 
 export interface PanelCorporativoGamificadoProps {
@@ -108,6 +109,19 @@ export default function PanelCorporativoGamificado({
   }
 
   const t = useTranslations("misiones")
+  const tCommon = useTranslations("common")
+  const [completingDaily, setCompletingDaily] = useState<string | null>(null)
+
+  const handleCompleteDaily = async (userMissionId: string, missionId: string) => {
+    if (completingDaily) return
+    setCompletingDaily(userMissionId)
+    try {
+      const res = await fetch(`/api/misiones/${missionId}/completar`, { method: "POST" })
+      if (res.ok) router.refresh()
+    } finally {
+      setCompletingDaily(null)
+    }
+  }
 
   const URGENCY_ORDER: Record<string, number> = {
     OVERDUE: 0,
@@ -121,24 +135,25 @@ export default function PanelCorporativoGamificado({
   }
 
   const sortedProjects = useMemo(() => {
-    if (sortMode === "default") return projects
+    if (sortMode === "default") return objectiveProjects
     if (sortMode === "urgency") {
-      return [...projects].sort((a, b) => {
+      return [...objectiveProjects].sort((a, b) => {
         const aStatus = computeDeadlineInfo(a.dueDate ?? null, a.completedAt ?? null).status
         const bStatus = computeDeadlineInfo(b.dueDate ?? null, b.completedAt ?? null).status
         return (URGENCY_ORDER[aStatus] ?? 99) - (URGENCY_ORDER[bStatus] ?? 99)
       })
     }
     if (sortMode === "deadline") {
-      return [...projects].sort((a, b) => {
+      return [...objectiveProjects].sort((a, b) => {
         if (!a.dueDate && !b.dueDate) return 0
         if (!a.dueDate) return 1
         if (!b.dueDate) return -1
         return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
       })
     }
-    return projects
-  }, [projects, sortMode])
+    return objectiveProjects
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [objectiveProjects, sortMode])
 
   const headerUser = {
     name: userName,
@@ -147,7 +162,10 @@ export default function PanelCorporativoGamificado({
     avatarUrl: userAvatarUrl,
   }
 
-  const isEmpty = projects.length === 0
+  const dailyProjects = projects.filter((p) => p.missionType === "DAILY" && p.status !== "ARCHIVED")
+  const objectiveProjects = projects.filter((p) => p.missionType !== "DAILY")
+
+  const isEmpty = objectiveProjects.length === 0 && dailyProjects.length === 0
 
   return (
     <SidebarLayout user={headerUser}>
@@ -244,7 +262,7 @@ export default function PanelCorporativoGamificado({
                       </button>
                     ) : (
                       <Link
-                        href={`/misiones/${currentProject.missionId}`}
+                        href={`/objetivos/${currentProject.missionId}`}
                         className="px-8 py-3 bg-primary text-on-primary font-bold rounded-lg shadow-lg shadow-primary/10 hover:brightness-110 transition-all active:scale-95 uppercase text-xs tracking-widest"
                       >
                         {t("viewMissions")}
@@ -254,8 +272,60 @@ export default function PanelCorporativoGamificado({
                 </header>
               )}
 
+              {/* Daily missions section */}
+              {dailyProjects.length > 0 && (
+                <section className="space-y-3">
+                  <h2 className="text-[10px] font-bold uppercase tracking-widest text-outline ml-2 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-tertiary text-base">today</span>
+                    {tCommon("dailyMissions")}
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {dailyProjects.map((p) => (
+                      <div
+                        key={p.id}
+                        className="rounded-xl bg-surface-container-highest p-1"
+                      >
+                        <div className="rounded-lg bg-surface-bright p-4 flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-lg bg-tertiary/20 flex items-center justify-center flex-shrink-0">
+                            <span
+                              className="material-symbols-outlined text-tertiary text-xl"
+                              style={{ fontVariationSettings: "'FILL' 1" }}
+                            >
+                              {p.icon}
+                            </span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-on-surface truncate">{p.title}</p>
+                            <p className="text-[10px] font-bold text-primary">+{p.xpReward} XP</p>
+                          </div>
+                          {p.status === "COMPLETED" && p.approvalStatus === "APPROVED" ? (
+                            <span className="text-[10px] font-bold text-secondary uppercase tracking-widest flex items-center gap-1 flex-shrink-0">
+                              <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                              {t("completedBadge")}
+                            </span>
+                          ) : p.status === "COMPLETED" ? (
+                            <span className="text-[10px] font-bold text-primary uppercase tracking-widest flex items-center gap-1 flex-shrink-0">
+                              <span className="material-symbols-outlined text-xs">hourglass_top</span>
+                              {t("underReview")}
+                            </span>
+                          ) : (
+                            <button
+                              onClick={() => handleCompleteDaily(p.id, p.missionId)}
+                              disabled={completingDaily === p.id}
+                              className="px-3 py-1.5 bg-tertiary text-on-tertiary font-bold rounded-md text-[10px] uppercase tracking-widest hover:brightness-110 transition-all active:scale-95 disabled:opacity-50 flex-shrink-0"
+                            >
+                              {completingDaily === p.id ? "..." : tCommon("submitMission")}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
               {/* Sort controls */}
-              <div className="flex items-center gap-2 px-2">
+              {objectiveProjects.length > 0 && <div className="flex items-center gap-2 px-2">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-outline">
                   Ordenar:
                 </span>
@@ -277,9 +347,10 @@ export default function PanelCorporativoGamificado({
                     </button>
                   )
                 })}
-              </div>
+              </div>}
 
               {/* Project cards carousel */}
+              {objectiveProjects.length > 0 &&
               <div className="relative group flex items-center">
                 <button
                   onClick={() => slide("left")}
@@ -356,7 +427,7 @@ export default function PanelCorporativoGamificado({
                     return (
                       <Link
                         key={p.id}
-                        href={`/misiones/${p.missionId}`}
+                        href={`/objetivos/${p.missionId}`}
                         className="min-w-full sm:min-w-[calc(50%-12px)] lg:min-w-[calc(33.33%-16px)] xl:min-w-[calc(25%-18px)] snap-start rounded-xl bg-surface-container-highest p-1 transition-all duration-300 hover:scale-[1.02] block"
                       >
                         <div className="h-full w-full rounded-lg bg-surface-bright p-6 md:p-8 flex flex-col items-center text-center glossy-card">
@@ -429,7 +500,7 @@ export default function PanelCorporativoGamificado({
                     chevron_right
                   </span>
                 </button>
-              </div>
+              </div>}
             </div>
           )}
         </div>

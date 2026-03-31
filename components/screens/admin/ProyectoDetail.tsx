@@ -62,7 +62,7 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link
-          href="/admin/proyectos"
+          href="/admin/objetivos"
           className="p-2 rounded-lg bg-surface-container-highest text-outline hover:text-on-surface transition-colors active:scale-95"
         >
           <span className="material-symbols-outlined">arrow_back</span>
@@ -88,7 +88,7 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
             {t("assign")}
           </button>
           <Link
-            href={`/admin/proyectos/${mission.id}/editar`}
+            href={`/admin/objetivos/${mission.id}/editar`}
             className="flex items-center gap-2 px-4 py-2.5 rounded-md bg-surface-container-highest text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-variant active:scale-[0.98] transition-all"
           >
             <span className="material-symbols-outlined text-base">edit</span>
