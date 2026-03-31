@@ -47,7 +47,7 @@ function AnimatedNumber({ target, suffix = "", prefix = "" }: { target: number; 
 // Engagement trend chart (Gallup 2020-2024)
 // ---------------------------------------------------------------------------
 
-// Average 2020-2024: US = (36+34+32+33+30)/5 = 33%, Europe = (11+11+13+13+13)/5 = 12.2% ≈ 12%
+// Average 2020-2025: US = (36+34+32+33+30+31)/6 = 32.7% ≈ 33%, Europe = (11+11+13+13+13+13)/6 = 12.3% ≈ 12%
 function EngagementChart() {
   const { ref, visible } = useScrollReveal()
 
@@ -58,7 +58,7 @@ function EngagementChart() {
           <h4 className="font-headline font-bold text-on-surface text-lg">Empleados comprometidos</h4>
           <span className="text-[9px] font-bold uppercase tracking-widest text-outline">Fuente: Gallup</span>
         </div>
-        <p className="text-xs text-outline mb-4">Media 2020–2024 — EE.UU. vs Europa (sobre 100%)</p>
+        <p className="text-xs text-outline mb-4">Media 2020–2025 — EE.UU. vs Europa (sobre 100%)</p>
         <p className="text-[9px] text-on-surface-variant/60 mb-6 italic">
           «Engaged» = empleados emocionalmente involucrados y motivados en su trabajo. El resto está desconectado o activamente desmotivado.
         </p>
