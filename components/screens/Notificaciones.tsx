@@ -21,6 +21,9 @@ const TYPE_ICON: Record<NotificationType, string> = {
   MISSION_REJECTED: "cancel",
   MISSION_ASSIGNED: "assignment",
   LEVEL_UP: "arrow_upward",
+  DUE_SOON: "alarm",
+  DEADLINE_CRITICAL: "alarm_on",
+  OVERDUE: "alarm_off",
 }
 
 const TYPE_COLOR: Record<NotificationType, string> = {
@@ -29,6 +32,9 @@ const TYPE_COLOR: Record<NotificationType, string> = {
   MISSION_REJECTED: "text-error",
   MISSION_ASSIGNED: "text-primary",
   LEVEL_UP: "text-primary",
+  DUE_SOON: "text-primary",
+  DEADLINE_CRITICAL: "text-error",
+  OVERDUE: "text-error",
 }
 
 function timeAgo(dateStr: string, t: (key: string, values?: Record<string, number>) => string) {
