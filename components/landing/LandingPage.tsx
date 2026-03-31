@@ -1,9 +1,10 @@
 "use client"
 
 import { useRef, useState, useEffect } from "react"
+import Link from "next/link"
 
 // ---------------------------------------------------------------------------
-// Scroll-reveal hook
+// Scroll-reveal hook with stagger support
 // ---------------------------------------------------------------------------
 
 function useScrollReveal() {
@@ -19,7 +20,7 @@ function useScrollReveal() {
           obs.disconnect()
         }
       },
-      { threshold: 0.15 },
+      { threshold: 0.1 },
     )
     obs.observe(el)
     return () => obs.disconnect()
@@ -28,13 +29,25 @@ function useScrollReveal() {
 }
 
 // ---------------------------------------------------------------------------
-// Reusable: Material icon helper
+// Material icon helper
 // ---------------------------------------------------------------------------
 
 function Icon({ name, className = "" }: { name: string; className?: string }) {
   return (
     <span className={`material-symbols-outlined ${className}`}>{name}</span>
   )
+}
+
+// ---------------------------------------------------------------------------
+// Stagger delay helper for inline styles
+// ---------------------------------------------------------------------------
+
+function stagger(visible: boolean, index: number, base = 100) {
+  return {
+    transitionDelay: visible ? `${index * base}ms` : "0ms",
+    opacity: visible ? 1 : 0,
+    transform: visible ? "translateY(0)" : "translateY(24px)",
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -46,47 +59,40 @@ function HeroSection() {
   useEffect(() => setLoaded(true), [])
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-surface">
-      {/* Subtle gold radial gradient */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(233,196,0,0.12),transparent_70%)]" />
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-surface">
+      {/* Gold radial gradient top */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(233,196,0,0.10),transparent_70%)]" />
 
       <div
         className={`relative z-10 mx-auto flex max-w-[1600px] flex-col items-center px-6 py-24 text-center transition-all duration-1000 ${
           loaded ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
         }`}
       >
-        {/* Badge */}
-        <span className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary-container/60 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-primary font-label">
-          <Icon name="sports_esports" className="text-base" />
-          Gamificacion Corporativa
-        </span>
-
-        {/* Title */}
-        <h1 className="font-headline text-5xl font-extrabold uppercase tracking-tight text-on-surface sm:text-6xl lg:text-7xl">
-          Work{" "}
+        {/* Headline */}
+        <h1 className="font-headline text-4xl font-extrabold leading-tight tracking-tight text-on-surface sm:text-5xl lg:text-6xl">
+          El 87% de tus empleados{" "}
           <span className="bg-gradient-to-r from-primary to-primary-fixed bg-clip-text text-transparent">
-            Leveling
+            no saben si lo estan haciendo bien
           </span>
         </h1>
 
         {/* Subtitle */}
-        <p className="mt-6 max-w-2xl font-headline text-xl font-bold text-on-surface-variant sm:text-2xl">
-          Transforma la gestion de tu equipo en una experiencia de juego
-        </p>
-
-        {/* Description */}
-        <p className="mt-4 max-w-xl font-body text-base text-on-surface-variant/70">
-          La plataforma que convierte objetivos corporativos en misiones epicas.
-          Tus empleados suben de nivel mientras crecen profesionalmente.
+        <p className="mt-6 max-w-2xl font-body text-lg text-on-surface-variant sm:text-xl">
+          Las revisiones trimestrales llegan tarde. Los Excel se pierden. El
+          talento se va sin que sepas por que. Work Leveling convierte cada
+          objetivo en una mision con progreso visible, feedback real y datos que
+          no mienten.
         </p>
 
         {/* CTAs */}
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
-          <button className="group relative rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim px-8 py-3 text-[10px] font-bold uppercase tracking-widest text-on-primary shadow-glow-gold transition-transform active:scale-95">
-            <span className="relative z-10">Solicitar Demo</span>
-            {/* Pulsing glow */}
-            <span className="absolute inset-0 animate-pulse rounded-md bg-primary/20 blur-xl" />
-          </button>
+          <Link
+            href="/sign-up"
+            className="group relative rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-on-primary shadow-[0_0_25px_rgba(233,196,0,0.2)] transition-transform active:scale-95"
+          >
+            <span className="relative z-10">Empieza gratis</span>
+            <span className="absolute inset-0 animate-pulse rounded-md bg-primary/15 blur-xl" />
+          </Link>
 
           <button
             onClick={() =>
@@ -96,16 +102,104 @@ function HeroSection() {
             }
             className="flex items-center gap-2 rounded-md px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface transition-colors hover:bg-surface-container-high active:scale-[0.98]"
           >
-            Ver como funciona
+            Como funciona
             <Icon name="arrow_downward" className="text-base" />
           </button>
         </div>
 
-        {/* Decorative floating icons */}
-        <div className="pointer-events-none absolute -bottom-10 left-1/2 flex -translate-x-1/2 gap-8 opacity-20">
-          <Icon name="emoji_events" className="text-5xl text-primary" />
-          <Icon name="military_tech" className="text-5xl text-secondary" />
-          <Icon name="trending_up" className="text-5xl text-tertiary" />
+        {/* Trust line */}
+        <p className="mt-8 font-body text-xs text-on-surface-variant/50">
+          Sin tarjeta de credito &middot; Implementacion en minutos &middot;
+          Datos tuyos, siempre
+        </p>
+      </div>
+    </section>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// SECTION 2 — El Problema (crear dolor)
+// ---------------------------------------------------------------------------
+
+const painPoints = [
+  {
+    icon: "visibility_off",
+    color: "text-error",
+    bg: "bg-error/10",
+    title: "Progreso invisible",
+    description:
+      "Tu mejor empleado lleva 6 meses sin saber si va bien. Cuando le preguntas en la review trimestral, ya tiene una oferta de otra empresa.",
+  },
+  {
+    icon: "description",
+    color: "text-outline",
+    bg: "bg-outline/10",
+    title: "Feedback que llega tarde",
+    description:
+      "Un Excel compartido. Tres versiones distintas. Nadie sabe cual es la buena. Cuando el manager da feedback, el empleado ya ni recuerda el proyecto.",
+  },
+  {
+    icon: "trending_down",
+    color: "text-error",
+    bg: "bg-error/10",
+    title: "Talento que se va en silencio",
+    description:
+      "No se fueron por el sueldo. Se fueron porque nadie les dijo que estaban creciendo. Porque ningun sistema les mostro su progreso.",
+  },
+  {
+    icon: "gavel",
+    color: "text-outline",
+    bg: "bg-outline/10",
+    title: "Decisiones sin datos",
+    description:
+      "Ascender a Maria o a Carlos? Sin datos objetivos, es intuicion. Y la intuicion no se defiende ante un comite.",
+  },
+]
+
+function ProblemSection() {
+  const section = useScrollReveal()
+
+  return (
+    <section
+      ref={section.ref}
+      className={`relative bg-surface-container-lowest px-6 py-24 transition-all duration-700 ${
+        section.visible
+          ? "translate-y-0 opacity-100"
+          : "translate-y-10 opacity-0"
+      }`}
+    >
+      <div className="mx-auto max-w-[1600px]">
+        <span className="mb-4 block text-center text-[10px] font-bold uppercase tracking-widest text-error font-label">
+          La realidad
+        </span>
+        <h2 className="mb-16 text-center font-headline text-2xl font-bold text-on-surface sm:text-3xl">
+          Esto pasa cada dia en tu empresa
+        </h2>
+
+        <div className="grid gap-6 sm:grid-cols-2">
+          {painPoints.map((p, i) => (
+            <div
+              key={i}
+              className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)] transition-all duration-500"
+              style={stagger(section.visible, i, 120)}
+            >
+              <div className="flex items-start gap-4 rounded-lg bg-surface-bright p-6">
+                <div
+                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${p.bg}`}
+                >
+                  <Icon name={p.icon} className={`text-2xl ${p.color}`} />
+                </div>
+                <div>
+                  <h3 className="mb-1.5 font-headline text-base font-bold text-on-surface">
+                    {p.title}
+                  </h3>
+                  <p className="font-body text-sm leading-relaxed text-on-surface-variant/70">
+                    {p.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -113,37 +207,45 @@ function HeroSection() {
 }
 
 // ---------------------------------------------------------------------------
-// SECTION 2 — Problema / Solucion
+// SECTION 3 — La Transformacion (resultados, no features)
 // ---------------------------------------------------------------------------
 
-const problems = [
-  { icon: "visibility_off", text: "Los empleados no ven su progreso" },
+const results = [
   {
-    icon: "description",
-    text: "Los objetivos se pierden en hojas de Excel",
+    metric: "3x mas feedback",
+    description:
+      "Cada mision completada genera una evaluacion de 8 atributos. Tu equipo recibe feedback continuo, no anual.",
+    icon: "rate_review",
+    color: "text-primary",
+    bg: "bg-primary/10",
   },
   {
-    icon: "trending_flat",
-    text: "No hay forma de medir el crecimiento real",
+    metric: "100% trazabilidad",
+    description:
+      "Quien creo el proyecto. Quien lo completo. Quien lo aprobo. Con que puntuacion. Que nota dejo. Todo documentado.",
+    icon: "verified_user",
+    color: "text-secondary",
+    bg: "bg-secondary/10",
+  },
+  {
+    metric: "Engagement real",
+    description:
+      "XP, niveles, atributos que crecen. El progreso es visible y adictivo. Tus empleados abren la app porque quieren, no porque deben.",
+    icon: "trending_up",
+    color: "text-tertiary",
+    bg: "bg-tertiary/10",
+  },
+  {
+    metric: "Decisiones con datos",
+    description:
+      "KPIs por empresa, departamento y persona. Tasa de completado, puntualidad, rendimiento. Todo en tiempo real.",
+    icon: "analytics",
+    color: "text-on-tertiary-container",
+    bg: "bg-on-tertiary-container/10",
   },
 ]
 
-const solutions = [
-  {
-    icon: "bar_chart",
-    text: "Progreso visible con barras de atributos y niveles",
-  },
-  {
-    icon: "assignment_turned_in",
-    text: "Misiones claras con objetivos paso a paso",
-  },
-  {
-    icon: "insights",
-    text: "Metricas reales de rendimiento y crecimiento",
-  },
-]
-
-function ProblemSolutionSection() {
+function TransformationSection() {
   const section = useScrollReveal()
 
   return (
@@ -156,89 +258,35 @@ function ProblemSolutionSection() {
       }`}
     >
       <div className="mx-auto max-w-[1600px]">
-        <h2 className="mb-16 text-center font-headline text-3xl font-bold text-on-surface sm:text-4xl">
-          Tu equipo necesita{" "}
-          <span className="text-primary">motivacion</span>?
+        <span className="mb-4 block text-center text-[10px] font-bold uppercase tracking-widest text-primary font-label">
+          Resultados
+        </span>
+        <h2 className="mb-16 text-center font-headline text-2xl font-bold text-on-surface sm:text-3xl">
+          Que pasa cuando tu equipo tiene misiones claras
         </h2>
 
-        <div className="grid gap-12 lg:grid-cols-[1fr_auto_1fr]">
-          {/* Problems */}
-          <div className="flex flex-col gap-5">
-            <span className="mb-2 text-[10px] font-bold uppercase tracking-widest text-error font-label">
-              El problema
-            </span>
-            {problems.map((p, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-4 rounded-lg bg-surface-container-lowest p-5 transition-all duration-500"
-                style={{
-                  transitionDelay: section.visible ? `${i * 100}ms` : "0ms",
-                  opacity: section.visible ? 1 : 0,
-                  transform: section.visible
-                    ? "translateY(0)"
-                    : "translateY(20px)",
-                }}
-              >
-                <Icon
-                  name={p.icon}
-                  className="mt-0.5 text-2xl text-error/70"
-                />
-                <p className="font-body text-base text-on-surface-variant">
-                  {p.text}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {results.map((r, i) => (
+            <div
+              key={i}
+              className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)] transition-all duration-500 hover:scale-[1.02]"
+              style={stagger(section.visible, i, 120)}
+            >
+              <div className="flex h-full flex-col rounded-lg bg-surface-bright p-6">
+                <div
+                  className={`mb-4 flex h-11 w-11 items-center justify-center rounded-full ${r.bg}`}
+                >
+                  <Icon name={r.icon} className={`text-2xl ${r.color}`} />
+                </div>
+                <h3 className={`mb-2 font-headline text-lg font-bold ${r.color}`}>
+                  {r.metric}
+                </h3>
+                <p className="font-body text-sm leading-relaxed text-on-surface-variant/70">
+                  {r.description}
                 </p>
               </div>
-            ))}
-          </div>
-
-          {/* Arrow / divider */}
-          <div className="hidden items-center justify-center lg:flex">
-            <div className="flex flex-col items-center gap-2">
-              <div className="h-24 w-px bg-gradient-to-b from-error/40 to-secondary/40" />
-              <Icon
-                name="arrow_forward"
-                className="text-3xl text-primary"
-              />
-              <div className="h-24 w-px bg-gradient-to-b from-secondary/40 to-transparent" />
             </div>
-          </div>
-
-          {/* Mobile arrow */}
-          <div className="flex items-center justify-center lg:hidden">
-            <Icon
-              name="arrow_downward"
-              className="text-3xl text-primary"
-            />
-          </div>
-
-          {/* Solutions */}
-          <div className="flex flex-col gap-5">
-            <span className="mb-2 text-[10px] font-bold uppercase tracking-widest text-secondary font-label">
-              La solucion
-            </span>
-            {solutions.map((s, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-4 rounded-lg bg-surface-container-lowest p-5 transition-all duration-500"
-                style={{
-                  transitionDelay: section.visible
-                    ? `${(i + 3) * 100}ms`
-                    : "0ms",
-                  opacity: section.visible ? 1 : 0,
-                  transform: section.visible
-                    ? "translateY(0)"
-                    : "translateY(20px)",
-                }}
-              >
-                <Icon
-                  name={s.icon}
-                  className="mt-0.5 text-2xl text-secondary"
-                />
-                <p className="font-body text-base text-on-surface-variant">
-                  {s.text}
-                </p>
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
     </section>
@@ -246,41 +294,39 @@ function ProblemSolutionSection() {
 }
 
 // ---------------------------------------------------------------------------
-// SECTION 3 — Como funciona (timeline)
+// SECTION 4 — Como funciona (timeline)
 // ---------------------------------------------------------------------------
 
 const steps = [
   {
-    icon: "account_tree",
-    title: "El admin crea proyectos",
+    title: "El admin crea un proyecto",
     description:
-      "Define los proyectos con objetivos claros y asigna recursos.",
-    color: "text-primary",
-    bg: "bg-primary/10",
+      "Define objetivos, asigna XP, establece deadline. Elige la empresa y el equipo.",
+    detail: "Con selector de iconos, skills asociados y prioridad",
   },
   {
-    icon: "assignment",
-    title: "Asigna misiones al equipo",
+    title: "Lo asigna al equipo",
     description:
-      "Cada proyecto se divide en misiones con pasos concretos.",
-    color: "text-tertiary",
-    bg: "bg-tertiary/10",
+      "Cada empleado recibe notificacion. El primer objetivo se desbloquea automaticamente.",
+    detail: "Asignacion individual o por departamento",
   },
   {
-    icon: "military_tech",
-    title: "Los empleados completan y suben de nivel",
+    title: "El empleado completa misiones",
     description:
-      "Ganan XP, trofeos y kredits al completar cada mision.",
-    color: "text-secondary",
-    bg: "bg-secondary/10",
+      "Avanza objetivo por objetivo. Ve su progreso en tiempo real. Cada paso desbloquea el siguiente.",
+    detail: "Sistema de bloqueo secuencial — sin saltarse pasos",
   },
   {
-    icon: "approval",
     title: "El manager aprueba y evalua",
     description:
-      "Revisa el trabajo, puntua atributos y da retroalimentacion.",
-    color: "text-primary",
-    bg: "bg-primary/10",
+      "Puntua 8 atributos del 1 al 5. Deja una nota personal. Puede rechazar con feedback constructivo.",
+    detail: "El rechazo no penaliza — mantiene el 80% del progreso",
+  },
+  {
+    title: "El empleado sube de nivel",
+    description:
+      "Gana XP, sus atributos crecen, su perfil refleja su evolucion real. Todo visible, todo medible.",
+    detail: "Curva exponencial — niveles iniciales rapidos, niveles altos prestigiosos",
   },
 ]
 
@@ -301,50 +347,40 @@ function HowItWorksSection() {
         <span className="mb-4 block text-center text-[10px] font-bold uppercase tracking-widest text-primary font-label">
           Flujo de trabajo
         </span>
-        <h2 className="mb-16 text-center font-headline text-3xl font-bold text-on-surface sm:text-4xl">
-          Como funciona
+        <h2 className="mb-16 text-center font-headline text-2xl font-bold text-on-surface sm:text-3xl">
+          Asi funciona, en la practica
         </h2>
 
         {/* Desktop: horizontal timeline */}
         <div className="hidden lg:block">
-          <div className="relative grid grid-cols-4 gap-8">
-            {/* Connector line */}
-            <div className="absolute left-[12.5%] right-[12.5%] top-[60px] h-px bg-gradient-to-r from-primary/40 via-tertiary/40 to-primary/40" />
+          {/* Connector line */}
+          <div className="relative">
+            <div className="absolute left-[10%] right-[10%] top-[18px] h-px bg-gradient-to-r from-primary/30 via-primary/10 to-primary/30" />
+          </div>
 
+          <div className="grid grid-cols-5 gap-6">
             {steps.map((step, i) => (
               <div
                 key={i}
                 className="relative flex flex-col items-center text-center transition-all duration-500"
-                style={{
-                  transitionDelay: section.visible
-                    ? `${i * 150}ms`
-                    : "0ms",
-                  opacity: section.visible ? 1 : 0,
-                  transform: section.visible
-                    ? "translateY(0)"
-                    : "translateY(30px)",
-                }}
+                style={stagger(section.visible, i, 150)}
               >
                 {/* Step number */}
-                <span className="mb-3 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50 font-label">
-                  Paso {i + 1}
+                <span className="relative z-10 mb-5 flex h-9 w-9 items-center justify-center rounded-full bg-surface-container-lowest font-headline text-xl font-black text-primary ring-2 ring-primary/30">
+                  {i + 1}
                 </span>
 
-                {/* Icon circle */}
-                <div
-                  className={`relative z-10 mb-6 flex h-[72px] w-[72px] items-center justify-center rounded-full ${step.bg} shadow-card`}
-                >
-                  <Icon name={step.icon} className={`text-4xl ${step.color}`} />
-                </div>
-
                 {/* Card */}
-                <div className="rounded-xl bg-surface-container-highest p-1 shadow-card">
-                  <div className="rounded-lg bg-surface-bright px-5 py-6">
+                <div className="w-full rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
+                  <div className="rounded-lg bg-surface-bright px-4 py-5">
                     <h3 className="mb-2 font-headline text-sm font-bold text-on-surface">
                       {step.title}
                     </h3>
-                    <p className="font-body text-xs text-on-surface-variant/70">
+                    <p className="mb-3 font-body text-xs leading-relaxed text-on-surface-variant/70">
                       {step.description}
+                    </p>
+                    <p className="font-body text-[10px] leading-relaxed text-primary/60">
+                      {step.detail}
                     </p>
                   </div>
                 </div>
@@ -355,48 +391,35 @@ function HowItWorksSection() {
 
         {/* Mobile: vertical timeline */}
         <div className="lg:hidden">
-          <div className="relative ml-6 border-l border-outline-variant/30 pl-8">
+          <div className="relative ml-5 border-l border-primary/20 pl-8">
             {steps.map((step, i) => (
               <div
                 key={i}
                 className="relative mb-10 last:mb-0 transition-all duration-500"
                 style={{
-                  transitionDelay: section.visible
-                    ? `${i * 150}ms`
-                    : "0ms",
+                  transitionDelay: section.visible ? `${i * 120}ms` : "0ms",
                   opacity: section.visible ? 1 : 0,
                   transform: section.visible
                     ? "translateX(0)"
                     : "translateX(-20px)",
                 }}
               >
-                {/* Dot on the line */}
-                <div
-                  className={`absolute -left-[calc(2rem+6px)] top-2 flex h-3 w-3 items-center justify-center rounded-full ${step.bg} ring-2 ring-surface-container-lowest`}
-                />
-
-                <span className="mb-1 block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50 font-label">
-                  Paso {i + 1}
+                {/* Number on the line */}
+                <span className="absolute -left-[calc(2rem+13px)] top-0 flex h-7 w-7 items-center justify-center rounded-full bg-surface-container-lowest font-headline text-sm font-black text-primary ring-2 ring-primary/30">
+                  {i + 1}
                 </span>
 
-                <div className="rounded-xl bg-surface-container-highest p-1 shadow-card">
-                  <div className="flex items-start gap-4 rounded-lg bg-surface-bright p-5">
-                    <div
-                      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${step.bg}`}
-                    >
-                      <Icon
-                        name={step.icon}
-                        className={`text-2xl ${step.color}`}
-                      />
-                    </div>
-                    <div>
-                      <h3 className="mb-1 font-headline text-sm font-bold text-on-surface">
-                        {step.title}
-                      </h3>
-                      <p className="font-body text-xs text-on-surface-variant/70">
-                        {step.description}
-                      </p>
-                    </div>
+                <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
+                  <div className="rounded-lg bg-surface-bright p-5">
+                    <h3 className="mb-1 font-headline text-sm font-bold text-on-surface">
+                      {step.title}
+                    </h3>
+                    <p className="mb-2 font-body text-xs leading-relaxed text-on-surface-variant/70">
+                      {step.description}
+                    </p>
+                    <p className="font-body text-[10px] leading-relaxed text-primary/60">
+                      {step.detail}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -409,61 +432,55 @@ function HowItWorksSection() {
 }
 
 // ---------------------------------------------------------------------------
-// SECTION 4 — Caracteristicas (feature grid)
+// SECTION 5 — Para cada rol
 // ---------------------------------------------------------------------------
 
-const features = [
+const roles = [
   {
-    icon: "rocket_launch",
-    title: "Proyectos & Misiones",
-    description:
-      "Crea proyectos con misiones paso a paso. Los empleados completan y avanzan.",
-    accent: "text-tertiary",
-    glow: "group-hover:shadow-glow-blue",
+    icon: "shield_person",
+    title: "CEO / Director",
+    subtitle: "Visibilidad total sin microgestion",
+    color: "text-primary",
+    borderColor: "border-primary/20",
+    bg: "bg-primary/10",
+    points: [
+      "Dashboard con KPIs por empresa y departamento",
+      "Tasa de completado, puntualidad y rendimiento en tiempo real",
+      "Gestion de multiples empresas desde una sola cuenta",
+      "Datos para presentar al consejo, no intuiciones",
+    ],
   },
   {
-    icon: "trending_up",
-    title: "Sistema de Niveles",
-    description:
-      "XP, niveles, trofeos y kredits. Progreso visible y motivante.",
-    accent: "text-secondary",
-    glow: "group-hover:shadow-glow-green",
+    icon: "supervisor_account",
+    title: "Manager",
+    subtitle: "Feedback estructurado que mejora al equipo",
+    color: "text-tertiary",
+    borderColor: "border-tertiary/20",
+    bg: "bg-tertiary/10",
+    points: [
+      "Aprueba misiones puntuando 8 atributos profesionales",
+      "Deja notas personalizadas que el empleado realmente lee",
+      "Ve quien esta bloqueado sin preguntar 'como vas'",
+      "Crea proyectos con objetivos claros en minutos",
+    ],
   },
   {
-    icon: "psychology",
-    title: "Atributos & Skills",
-    description:
-      "8 atributos evaluados por managers. Crecimiento profesional medible.",
-    accent: "text-primary",
-    glow: "group-hover:shadow-glow-gold",
-  },
-  {
-    icon: "fact_check",
-    title: "Aprobaciones",
-    description:
-      "Los managers revisan, puntuan y dejan notas. Trazabilidad completa.",
-    accent: "text-primary",
-    glow: "group-hover:shadow-glow-gold",
-  },
-  {
-    icon: "apartment",
-    title: "Multi-Empresa",
-    description:
-      "Un admin puede gestionar multiples empresas con departamentos.",
-    accent: "text-tertiary",
-    glow: "group-hover:shadow-glow-blue",
-  },
-  {
-    icon: "analytics",
-    title: "Estadisticas & KPIs",
-    description:
-      "Dashboards con metricas de rendimiento, rankings y tendencias.",
-    accent: "text-secondary",
-    glow: "group-hover:shadow-glow-green",
+    icon: "person",
+    title: "Empleado",
+    subtitle: "Saber exactamente donde estas y hacia donde vas",
+    color: "text-secondary",
+    borderColor: "border-secondary/20",
+    bg: "bg-secondary/10",
+    points: [
+      "Perfil profesional con atributos que crecen con cada mision",
+      "Feedback real despues de cada proyecto, no una vez al ano",
+      "Nivel, XP y skills visibles — tu crecimiento tiene forma",
+      "Notificaciones cuando se aprueba tu trabajo, con la nota del manager",
+    ],
   },
 ]
 
-function FeaturesSection() {
+function RolesSection() {
   const section = useScrollReveal()
 
   return (
@@ -477,38 +494,54 @@ function FeaturesSection() {
     >
       <div className="mx-auto max-w-[1600px]">
         <span className="mb-4 block text-center text-[10px] font-bold uppercase tracking-widest text-primary font-label">
-          Caracteristicas
+          Para tu organizacion
         </span>
-        <h2 className="mb-16 text-center font-headline text-3xl font-bold text-on-surface sm:text-4xl">
-          Todo lo que necesitas para{" "}
-          <span className="text-primary">nivelar</span> tu equipo
+        <h2 className="mb-16 text-center font-headline text-2xl font-bold text-on-surface sm:text-3xl">
+          Disenado para cada persona de tu organizacion
         </h2>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((f, i) => (
+        <div className="grid gap-6 lg:grid-cols-3">
+          {roles.map((role, i) => (
             <div
               key={i}
-              className={`group rounded-xl bg-surface-container-highest p-1 transition-all duration-500 hover:scale-[1.02] ${f.glow}`}
-              style={{
-                transitionDelay: section.visible
-                  ? `${i * 100}ms`
-                  : "0ms",
-                opacity: section.visible ? 1 : 0,
-                transform: section.visible
-                  ? "translateY(0)"
-                  : "translateY(30px)",
-              }}
+              className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)] transition-all duration-500 hover:scale-[1.02]"
+              style={stagger(section.visible, i, 150)}
             >
               <div className="flex h-full flex-col rounded-lg bg-surface-bright p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-surface-container-lowest">
-                  <Icon name={f.icon} className={`text-2xl ${f.accent}`} />
+                {/* Header */}
+                <div className="mb-5 flex items-center gap-3">
+                  <div
+                    className={`flex h-11 w-11 items-center justify-center rounded-full ${role.bg}`}
+                  >
+                    <Icon
+                      name={role.icon}
+                      className={`text-2xl ${role.color}`}
+                    />
+                  </div>
+                  <div>
+                    <h3 className={`font-headline text-base font-bold ${role.color}`}>
+                      {role.title}
+                    </h3>
+                    <p className="font-body text-xs text-on-surface-variant/70">
+                      {role.subtitle}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="mb-2 font-headline text-base font-bold text-on-surface">
-                  {f.title}
-                </h3>
-                <p className="font-body text-sm text-on-surface-variant/70">
-                  {f.description}
-                </p>
+
+                {/* Checkpoints */}
+                <ul className="flex flex-col gap-3">
+                  {role.points.map((point, j) => (
+                    <li key={j} className="flex items-start gap-2.5">
+                      <Icon
+                        name="check_circle"
+                        className={`mt-0.5 text-base ${role.color}`}
+                      />
+                      <span className="font-body text-sm leading-relaxed text-on-surface-variant">
+                        {point}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           ))}
@@ -519,16 +552,17 @@ function FeaturesSection() {
 }
 
 // ---------------------------------------------------------------------------
-// Main Landing Page component
+// Main Landing Page
 // ---------------------------------------------------------------------------
 
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-surface">
       <HeroSection />
-      <ProblemSolutionSection />
+      <ProblemSection />
+      <TransformationSection />
       <HowItWorksSection />
-      <FeaturesSection />
+      <RolesSection />
     </main>
   )
 }
