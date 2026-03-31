@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 interface ObjetivoRowProps {
   objetivo: {
     id?: string
@@ -25,6 +27,8 @@ export default function ObjetivoRow({
   isFirst,
   isLast,
 }: ObjetivoRowProps) {
+  const t = useTranslations("objetivoRow")
+
   return (
     <div className="flex items-center gap-2 p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15">
       {/* Icon preview + input */}
@@ -46,7 +50,7 @@ export default function ObjetivoRow({
         type="text"
         value={objetivo.title}
         onChange={(e) => onChange("title", e.target.value)}
-        placeholder="Nombre de la misión"
+        placeholder={t("titlePlaceholder")}
         className="flex-1 bg-surface-container-high rounded-md px-2 py-1.5 text-[12px] text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary placeholder:text-outline"
       />
 
@@ -69,7 +73,7 @@ export default function ObjetivoRow({
           onClick={onMoveUp}
           disabled={isFirst}
           className="p-1 rounded-md text-outline hover:text-on-surface hover:bg-surface-container-high disabled:opacity-30 disabled:cursor-not-allowed transition-colors active:scale-95"
-          title="Mover arriba"
+          title={t("moveUp")}
         >
           <span className="material-symbols-outlined text-base">arrow_upward</span>
         </button>
@@ -78,7 +82,7 @@ export default function ObjetivoRow({
           onClick={onMoveDown}
           disabled={isLast}
           className="p-1 rounded-md text-outline hover:text-on-surface hover:bg-surface-container-high disabled:opacity-30 disabled:cursor-not-allowed transition-colors active:scale-95"
-          title="Mover abajo"
+          title={t("moveDown")}
         >
           <span className="material-symbols-outlined text-base">arrow_downward</span>
         </button>
@@ -86,7 +90,7 @@ export default function ObjetivoRow({
           type="button"
           onClick={onDelete}
           className="p-1 rounded-md text-outline hover:text-error hover:bg-error-container/10 transition-colors active:scale-95"
-          title="Eliminar mision"
+          title={t("deleteMission")}
         >
           <span className="material-symbols-outlined text-base">delete</span>
         </button>

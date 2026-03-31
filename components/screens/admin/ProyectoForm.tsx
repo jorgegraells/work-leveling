@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import ObjetivoRow from "./ObjetivoRow"
 import type { MissionWithObjectives } from "@/types/proyectos"
 import type { MissionModule } from "@prisma/client"
@@ -20,70 +21,85 @@ interface ProyectoFormProps {
   defaultOrgId?: string
 }
 
-const AVAILABLE_ICONS = [
-  { name: "filter_alt", label: "Filtro" },
-  { name: "stacked_bar_chart", label: "Grafico" },
-  { name: "handshake", label: "Alianza" },
-  { name: "assignment_turned_in", label: "Informe" },
-  { name: "language", label: "Global" },
-  { name: "rocket_launch", label: "Lanzamiento" },
-  { name: "hub", label: "Red" },
-  { name: "shield", label: "Seguridad" },
-  { name: "database", label: "Base Datos" },
-  { name: "trending_up", label: "Ventas" },
-  { name: "account_tree", label: "Proyecto" },
-  { name: "description", label: "Documento" },
-  { name: "insights", label: "Insight" },
-  { name: "military_tech", label: "Logro" },
-  { name: "groups", label: "Equipo" },
-  { name: "code", label: "Codigo" },
-  { name: "build", label: "Herramienta" },
-  { name: "campaign", label: "Campana" },
-  { name: "psychology", label: "Estrategia" },
-  { name: "support_agent", label: "Soporte" },
-  { name: "inventory", label: "Inventario" },
-  { name: "payments", label: "Pago" },
-  { name: "analytics", label: "Analitica" },
-  { name: "calendar_month", label: "Calendario" },
-  { name: "target", label: "Objetivo" },
-  { name: "school", label: "Formacion" },
-  { name: "star", label: "Destacado" },
-  { name: "flag", label: "Hito" },
-  { name: "emoji_events", label: "Trofeo" },
-  { name: "speed", label: "Velocidad" },
+// AVAILABLE_ICONS and MODULE_OPTIONS built inside component using t()
+
+const ICON_NAMES = [
+  "filter_alt", "stacked_bar_chart", "handshake", "assignment_turned_in",
+  "language", "rocket_launch", "hub", "shield", "database", "trending_up",
+  "account_tree", "description", "insights", "military_tech", "groups",
+  "code", "build", "campaign", "psychology", "support_agent", "inventory",
+  "payments", "analytics", "calendar_month", "target", "school", "star",
+  "flag", "emoji_events", "speed",
 ] as const
 
-const MODULE_OPTIONS: { value: MissionModule; label: string; colorClass: string }[] = [
-  { value: "VENTAS_LEADS", label: "Ventas & Leads", colorClass: "text-secondary" },
-  { value: "PROYECTOS_CRONOGRAMA", label: "Proyectos & Cronograma", colorClass: "text-tertiary" },
-  { value: "ALIANZAS_CONTRATOS", label: "Alianzas & Contratos", colorClass: "text-primary" },
-  { value: "INFORMES_CUMPLIMIENTO", label: "Informes & Cumplimiento", colorClass: "text-on-tertiary-container" },
-  { value: "ESTRATEGIA_EXPANSION", label: "Estrategia & Expansion", colorClass: "text-outline" },
-]
-
 const MODULE_COLOR_CLASS: Record<MissionModule, string> = {
-  VENTAS_LEADS: "text-secondary",
-  PROYECTOS_CRONOGRAMA: "text-tertiary",
-  ALIANZAS_CONTRATOS: "text-primary",
+  VENTAS_LEADS:          "text-secondary",
+  PROYECTOS_CRONOGRAMA:  "text-tertiary",
+  ALIANZAS_CONTRATOS:    "text-primary",
   INFORMES_CUMPLIMIENTO: "text-on-tertiary-container",
-  ESTRATEGIA_EXPANSION: "text-outline",
+  ESTRATEGIA_EXPANSION:  "text-outline",
 }
 
-const PRIORITY_OPTIONS = [
-  { value: "ALTA", label: "Alta", colorClass: "text-error" },
-  { value: "NORMAL", label: "Normal", colorClass: "text-primary" },
-  { value: "BAJA", label: "Baja", colorClass: "text-outline" },
-]
-
 const PRIORITY_COLOR_CLASS: Record<string, string> = {
-  ALTA: "text-error",
+  ALTA:   "text-error",
   NORMAL: "text-primary",
-  BAJA: "text-outline",
+  BAJA:   "text-outline",
 }
 
 export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFormProps) {
   const router = useRouter()
+  const t = useTranslations("proyectoForm")
+  const tCommon = useTranslations("common")
   const isEdit = !!mission
+
+  const ICON_LABEL_MAP: Record<string, string> = {
+    filter_alt:           t("iconFiltro"),
+    stacked_bar_chart:    t("iconGrafico"),
+    handshake:            t("iconAlianza"),
+    assignment_turned_in: t("iconInforme"),
+    language:             t("iconGlobal"),
+    rocket_launch:        t("iconLanzamiento"),
+    hub:                  t("iconRed"),
+    shield:               t("iconSeguridad"),
+    database:             t("iconBaseDatos"),
+    trending_up:          t("iconVentas"),
+    account_tree:         t("iconProyecto"),
+    description:          t("iconDocumento"),
+    insights:             t("iconInsight"),
+    military_tech:        t("iconLogro"),
+    groups:               t("iconEquipo"),
+    code:                 t("iconCodigo"),
+    build:                t("iconHerramienta"),
+    campaign:             t("iconCampana"),
+    psychology:           t("iconEstrategia"),
+    support_agent:        t("iconSoporte"),
+    inventory:            t("iconInventario"),
+    payments:             t("iconPago"),
+    analytics:            t("iconAnalitica"),
+    calendar_month:       t("iconCalendario"),
+    target:               t("iconObjetivo"),
+    school:               t("iconFormacion"),
+    star:                 t("iconDestacado"),
+    flag:                 t("iconHito"),
+    emoji_events:         t("iconTrofeo"),
+    speed:                t("iconVelocidad"),
+  }
+
+  const AVAILABLE_ICONS = ICON_NAMES.map((name) => ({ name, label: ICON_LABEL_MAP[name] ?? name }))
+
+  const MODULE_OPTIONS: { value: MissionModule; label: string; colorClass: string }[] = [
+    { value: "VENTAS_LEADS",          label: tCommon("moduleVentas"),    colorClass: "text-secondary" },
+    { value: "PROYECTOS_CRONOGRAMA",  label: tCommon("moduleProyectos"), colorClass: "text-tertiary" },
+    { value: "ALIANZAS_CONTRATOS",    label: tCommon("moduleAlianzas"),  colorClass: "text-primary" },
+    { value: "INFORMES_CUMPLIMIENTO", label: tCommon("moduleInformes"),  colorClass: "text-on-tertiary-container" },
+    { value: "ESTRATEGIA_EXPANSION",  label: tCommon("moduleEstrategia"),colorClass: "text-outline" },
+  ]
+
+  const PRIORITY_OPTIONS = [
+    { value: "ALTA",   label: t("priorityAlta"),   colorClass: "text-error" },
+    { value: "NORMAL", label: t("priorityNormal"), colorClass: "text-primary" },
+    { value: "BAJA",   label: t("priorityBaja"),   colorClass: "text-outline" },
+  ]
 
   const [selectedOrgId, setSelectedOrgId] = useState(
     mission?.organizationId ?? defaultOrgId ?? orgs[0]?.id ?? ""
@@ -172,14 +188,14 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
 
       if (!res.ok) {
         const data = await res.json()
-        setError(data.error ?? "Error al guardar el proyecto")
+        setError(data.error ?? t("errorSave"))
         return
       }
 
       router.push("/admin/proyectos")
       router.refresh()
     } catch {
-      setError("Error de conexion")
+      setError(t("errorConnection"))
     } finally {
       setLoading(false)
     }
@@ -201,10 +217,10 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
         </button>
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-            Admin / Proyectos
+            {t("adminBreadcrumb")}
           </p>
           <h1 className="font-headline text-2xl font-bold text-on-surface mt-0.5">
-            {isEdit ? "Editar Proyecto" : "Nuevo Proyecto"}
+            {isEdit ? t("editTitle") : t("newTitle")}
           </h1>
         </div>
       </div>
@@ -214,19 +230,19 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
         <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
           <div className="rounded-lg bg-surface-bright p-6 space-y-5">
             <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-              Informacion General
+              {t("generalInfo")}
             </p>
 
-            {/* Empresa */}
+            {/* Company */}
             <div className="space-y-3">
               <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                Empresa
+                {t("fieldCompany")}
               </label>
               {orgs.length === 1 ? (
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15">
                   <span className="material-symbols-outlined text-primary">corporate_fare</span>
                   <span className="text-sm font-semibold text-on-surface">{orgs[0].name}</span>
-                  <span className="text-[9px] text-outline ml-auto">Auto-seleccionada</span>
+                  <span className="text-[9px] text-outline ml-auto">{t("autoSelected")}</span>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -256,21 +272,21 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
                 </div>
               )}
               <p className="text-[10px] text-outline">
-                Esta misión será visible para los empleados de la empresa seleccionada
+                {t("missionVisible")}
               </p>
             </div>
 
             {/* Title */}
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                Titulo del Proyecto
+                {t("fieldTitle")}
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
-                placeholder="Nombre del proyecto"
+                placeholder={t("titlePlaceholder")}
                 className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary placeholder:text-outline"
               />
             </div>
@@ -278,13 +294,13 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
             {/* Description */}
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                Descripcion
+                {t("fieldDescription")}
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                placeholder="Descripcion del proyecto (opcional)"
+                placeholder={t("descriptionPlaceholder")}
                 className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary placeholder:text-outline resize-none"
               />
             </div>
@@ -293,7 +309,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                  Modulo
+                  {t("fieldModule")}
                 </label>
                 <div className="relative">
                   <select
@@ -315,7 +331,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
 
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                  Prioridad
+                  {t("fieldPriority")}
                 </label>
                 <div className="relative">
                   <select
@@ -339,7 +355,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
             {/* XP Reward */}
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                XP Reward
+                {t("fieldXpReward")}
               </label>
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary text-lg">military_tech</span>
@@ -350,7 +366,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
                   min={0}
                   className="w-32 bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-primary font-bold border border-outline-variant/30 focus:outline-none focus:border-primary"
                 />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-outline">puntos</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-outline">{t("points")}</span>
               </div>
             </div>
           </div>
@@ -362,7 +378,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                  Icono del Proyecto
+                  {t("iconSection")}
                 </p>
                 {icon && (
                   <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-surface-container-lowest">
@@ -418,10 +434,10 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                  Misiones del Proyecto
+                  {t("missionsSection")}
                 </p>
                 <p className="text-[11px] text-on-surface-variant mt-0.5">
-                  Objetivos que el empleado debe completar
+                  {t("missionsSubtitle")}
                 </p>
               </div>
               <button
@@ -430,7 +446,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform"
               >
                 <span className="material-symbols-outlined text-base">add</span>
-                Anadir Mision
+                {t("addMission")}
               </button>
             </div>
 
@@ -441,8 +457,8 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
                     list_alt
                   </span>
                 </div>
-                <p className="text-outline text-sm">Sin misiones.</p>
-                <p className="text-outline text-[11px]">Anade al menos una mision.</p>
+                <p className="text-outline text-sm">{t("noMissions")}</p>
+                <p className="text-outline text-[11px]">{t("noMissionsHint")}</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -486,7 +502,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
             onClick={() => router.back()}
             className="px-4 py-2.5 rounded-md text-outline hover:bg-surface-container-high text-[10px] font-bold uppercase tracking-widest transition-colors active:scale-95"
           >
-            Cancelar
+            {t("cancelButton")}
           </button>
           <button
             type="submit"
@@ -498,7 +514,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId }: ProyectoFo
                 progress_activity
               </span>
             )}
-            {isEdit ? "Guardar Cambios" : "Crear Proyecto"}
+            {isEdit ? t("saveButton") : t("createButton")}
           </button>
         </div>
       </form>

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import type { Plan } from "@prisma/client"
 
 interface EmpresaFormProps {
@@ -17,13 +18,6 @@ interface EmpresaFormProps {
   }
 }
 
-const PLANS: { value: Plan; label: string; description: string }[] = [
-  { value: "FREE",         label: "Free",         description: "5 usuarios, funciones básicas" },
-  { value: "STARTER",      label: "Starter",      description: "15 usuarios, misiones ilimitadas" },
-  { value: "PROFESSIONAL", label: "Professional", description: "50 usuarios, analíticas avanzadas" },
-  { value: "ENTERPRISE",   label: "Enterprise",   description: "Ilimitado, soporte dedicado" },
-]
-
 const PLAN_COLORS: Record<Plan, string> = {
   FREE:         "text-outline border-outline/30 bg-outline/5",
   STARTER:      "text-secondary border-secondary/30 bg-secondary/5",
@@ -33,6 +27,7 @@ const PLAN_COLORS: Record<Plan, string> = {
 
 export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
   const router = useRouter()
+  const t = useTranslations("empresas")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -41,6 +36,13 @@ export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
   const [plan, setPlan] = useState<Plan>(initialData?.plan ?? "FREE")
   const [seats, setSeats] = useState(String(initialData?.seats ?? 5))
   const [clerkOrgId, setClerkOrgId] = useState(initialData?.clerkOrgId ?? "")
+
+  const PLANS: { value: Plan; label: string; description: string }[] = [
+    { value: "FREE",         label: "Free",         description: t("planFreeDesc") },
+    { value: "STARTER",      label: "Starter",      description: t("planStarterDesc") },
+    { value: "PROFESSIONAL", label: "Professional", description: t("planProDesc") },
+    { value: "ENTERPRISE",   label: "Enterprise",   description: t("planEnterpriseDesc") },
+  ]
 
   // Auto-generate slug from name (only in create mode)
   const handleNameChange = (val: string) => {
@@ -91,7 +93,7 @@ export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
       router.push(`/admin/empresas/${org.id}`)
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error desconocido")
+      setError(err instanceof Error ? err.message : t("unknownError"))
     } finally {
       setLoading(false)
     }
@@ -113,15 +115,15 @@ export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
             onClick={() => router.push("/admin/empresas")}
             className="text-[10px] font-bold uppercase tracking-widest text-outline hover:text-primary transition-colors"
           >
-            Empresas
+            {t("breadcrumb")}
           </button>
           <span className="text-outline/40">/</span>
           <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
-            {mode === "create" ? "Nueva" : "Editar"}
+            {mode === "create" ? t("formNew") : t("formEdit")}
           </span>
         </div>
         <h1 className="font-headline text-2xl font-bold text-on-surface">
-          {mode === "create" ? "Nueva Empresa" : `Editar: ${initialData?.name}`}
+          {mode === "create" ? t("formNewTitle") : t("formEditTitle", { name: initialData?.name ?? "" })}
         </h1>
       </div>
 
@@ -140,7 +142,7 @@ export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
             {/* Name */}
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-2">
-                Nombre de la empresa
+                {t("fieldName")}
               </label>
               <input
                 type="text"
@@ -155,7 +157,7 @@ export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
             {/* Slug */}
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-2">
-                Slug (URL)
+                {t("fieldSlug")}
               </label>
               <div className="flex items-center bg-surface-container-lowest rounded-lg overflow-hidden focus-within:ring-1 focus-within:ring-primary/40 transition-all">
                 <span className="px-3 text-[11px] text-outline/60 select-none">workleveling.app/org/</span>
@@ -165,13 +167,13 @@ export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
                   onChange={(e) => setSlug(e.target.value)}
                   required
                   pattern="[a-z0-9-]+"
-                  title="Solo letras minúsculas, números y guiones"
+                  title={t("fieldSlugValidation")}
                   placeholder="acme-corp"
                   className="flex-1 bg-transparent py-3 pr-4 text-[13px] text-on-surface placeholder:text-outline/40 outline-none"
                 />
               </div>
               <p className="text-[10px] text-outline/60 mt-1.5">
-                Solo letras minúsculas, números y guiones.
+                {t("fieldSlugHint")}
               </p>
             </div>
 
@@ -179,7 +181,7 @@ export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
             {mode === "create" && (
               <div>
                 <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-2">
-                  Clerk Organization ID
+                  {t("fieldClerkOrgId")}
                 </label>
                 <input
                   type="text"
@@ -190,7 +192,7 @@ export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
                   className="w-full bg-surface-container-lowest rounded-lg px-4 py-3 text-[13px] text-on-surface placeholder:text-outline/40 outline-none focus:ring-1 focus:ring-primary/40 transition-all font-mono"
                 />
                 <p className="text-[10px] text-outline/60 mt-1.5">
-                  ID de la organización en Clerk Dashboard.
+                  {t("fieldClerkOrgIdHint")}
                 </p>
               </div>
             )}
@@ -198,7 +200,7 @@ export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
             {/* Plan */}
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-3">
-                Plan
+                {t("fieldPlan")}
               </label>
               <div className="grid grid-cols-2 gap-2">
                 {PLANS.map((p) => (
@@ -222,7 +224,7 @@ export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
             {/* Seats */}
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-2">
-                Asientos (usuarios incluidos)
+                {t("fieldSeats")}
               </label>
               <input
                 type="number"
@@ -244,7 +246,7 @@ export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
             onClick={() => router.back()}
             className="px-4 py-2 rounded-md text-outline hover:bg-surface-container-high text-[10px] font-bold uppercase tracking-widest transition-colors active:scale-95"
           >
-            Cancelar
+            {t("cancelButton")}
           </button>
           <button
             type="submit"
@@ -254,7 +256,7 @@ export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
             {loading && (
               <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
             )}
-            {mode === "create" ? "Crear Empresa" : "Guardar Cambios"}
+            {mode === "create" ? t("createButton") : t("saveButton")}
           </button>
         </div>
       </form>

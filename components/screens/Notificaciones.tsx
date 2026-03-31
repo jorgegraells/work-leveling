@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import type { NotificationType } from "@prisma/client"
 
 export interface NotificationItem {
@@ -30,16 +31,16 @@ const TYPE_COLOR: Record<NotificationType, string> = {
   LEVEL_UP: "text-primary",
 }
 
-function timeAgo(dateStr: string) {
+function timeAgo(dateStr: string, t: (key: string, values?: Record<string, number>) => string) {
   const diff = Date.now() - new Date(dateStr).getTime()
   const mins = Math.floor(diff / 60000)
-  if (mins < 1) return "Justo ahora"
-  if (mins < 60) return `Hace ${mins}m`
+  if (mins < 1) return t("justNow")
+  if (mins < 60) return t("minutesAgo", { mins })
   const hours = Math.floor(mins / 60)
-  if (hours < 24) return `Hace ${hours}h`
+  if (hours < 24) return t("hoursAgo", { hours })
   const days = Math.floor(hours / 24)
-  if (days < 30) return `Hace ${days}d`
-  return `Hace ${Math.floor(days / 30)}mes`
+  if (days < 30) return t("daysAgo", { days })
+  return t("monthsAgo", { months: Math.floor(days / 30) })
 }
 
 export default function Notificaciones({
@@ -48,6 +49,7 @@ export default function Notificaciones({
   notifications: NotificationItem[]
 }) {
   const router = useRouter()
+  const t = useTranslations("notificaciones")
   const [notifications, setNotifications] = useState(initialNotifications)
   const [markingAll, setMarkingAll] = useState(false)
 
@@ -80,7 +82,7 @@ export default function Notificaciones({
             notifications_off
           </span>
           <p className="text-on-surface font-body text-sm">
-            No tienes notificaciones
+            {t("empty")}
           </p>
         </div>
       </div>
@@ -97,7 +99,7 @@ export default function Notificaciones({
             disabled={markingAll}
             className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-primary hover:text-on-surface transition-colors disabled:opacity-50"
           >
-            {markingAll ? "Marcando..." : `Marcar todas como leidas (${unreadCount})`}
+            {markingAll ? t("markingAll") : t("markAllRead", { count: unreadCount })}
           </button>
         </div>
       )}
@@ -144,7 +146,7 @@ export default function Notificaciones({
                 </p>
               </div>
               <span className="text-[10px] text-outline flex-shrink-0 mt-1">
-                {timeAgo(notif.createdAt)}
+                {timeAgo(notif.createdAt, t)}
               </span>
             </div>
           ))}

@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 interface AdminStats {
   totalMissions: number
   totalAssigned: number
@@ -18,38 +20,39 @@ const MODULE_COLOR: Record<string, string> = {
 }
 
 export default function AdminEstadisticas({ stats }: { stats: AdminStats }) {
+  const t = useTranslations("adminEstadisticas")
   const maxModuleCount = Math.max(...stats.missionsByModule.map((m) => m.count), 1)
 
   return (
     <div className="min-h-screen bg-surface font-body text-on-surface px-6 py-8 max-w-[1600px] mx-auto">
-      <h1 className="font-headline text-2xl font-bold mb-8">Estadisticas de la Organizacion</h1>
+      <h1 className="font-headline text-2xl font-bold mb-8">{t("title")}</h1>
 
       {/* KPI cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <KpiCard icon="military_tech" label="Total Misiones" value={String(stats.totalMissions)} accent="text-primary" />
-        <KpiCard icon="assignment" label="Asignadas" value={String(stats.totalAssigned)} accent="text-tertiary" />
-        <KpiCard icon="percent" label="Tasa de Completado" value={`${stats.completionRate}%`} accent="text-secondary" />
-        <KpiCard icon="pending_actions" label="Pendientes Aprobacion" value={String(stats.pendingApprovals)} accent="text-error" />
+        <KpiCard icon="military_tech"   label={t("kpiMissions")}   value={String(stats.totalMissions)}     accent="text-primary" />
+        <KpiCard icon="assignment"      label={t("kpiAssigned")}   value={String(stats.totalAssigned)}     accent="text-tertiary" />
+        <KpiCard icon="percent"         label={t("kpiCompletion")} value={`${stats.completionRate}%`}      accent="text-secondary" />
+        <KpiCard icon="pending_actions" label={t("kpiPending")}    value={String(stats.pendingApprovals)}  accent="text-error" />
       </div>
 
       {/* Top Performers */}
       <div className="rounded-xl bg-surface-container-highest p-1 shadow-card mb-8">
         <div className="rounded-lg bg-surface-bright p-5">
           <h2 className="text-[10px] font-bold uppercase tracking-widest text-outline mb-4">
-            Top Performers
+            {t("topPerformers")}
           </h2>
           {stats.topPerformers.length === 0 ? (
-            <p className="text-sm text-on-surface-variant">Sin datos de rendimiento</p>
+            <p className="text-sm text-on-surface-variant">{t("noPerformers")}</p>
           ) : (
             <div className="overflow-x-auto no-scrollbar">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                    <th className="text-left py-2 pr-4">#</th>
-                    <th className="text-left py-2 pr-4">Nombre</th>
-                    <th className="text-left py-2 pr-4">Nivel</th>
-                    <th className="text-right py-2 pr-4">XP</th>
-                    <th className="text-right py-2">Misiones</th>
+                    <th className="text-left py-2 pr-4">{t("colRank")}</th>
+                    <th className="text-left py-2 pr-4">{t("colName")}</th>
+                    <th className="text-left py-2 pr-4">{t("colLevel")}</th>
+                    <th className="text-right py-2 pr-4">{t("colXp")}</th>
+                    <th className="text-right py-2">{t("colMissions")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -85,10 +88,10 @@ export default function AdminEstadisticas({ stats }: { stats: AdminStats }) {
       <div className="rounded-xl bg-surface-container-highest p-1 shadow-card">
         <div className="rounded-lg bg-surface-bright p-5">
           <h2 className="text-[10px] font-bold uppercase tracking-widest text-outline mb-4">
-            Misiones Completadas por Modulo
+            {t("missionsByModule")}
           </h2>
           {stats.missionsByModule.length === 0 ? (
-            <p className="text-sm text-on-surface-variant">Sin misiones completadas aun</p>
+            <p className="text-sm text-on-surface-variant">{t("noMissions")}</p>
           ) : (
             <div className="space-y-3">
               {stats.missionsByModule.map((mod) => (

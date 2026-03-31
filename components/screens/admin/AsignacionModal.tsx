@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
 import {
   Dialog,
   DialogContent,
@@ -35,6 +36,7 @@ export default function AsignacionModal({
   missionOrgId,
   onClose,
 }: AsignacionModalProps) {
+  const t = useTranslations("asignacion")
   // Use missionOrgId when available to ensure users are filtered by the mission's org
   const effectiveOrgId = missionOrgId ?? orgId
   const [mode, setMode] = useState<Mode>("usuarios")
@@ -99,14 +101,14 @@ export default function AsignacionModal({
 
       if (!res.ok) {
         const data = await res.json()
-        setError(data.error ?? "Error al asignar")
+        setError(data.error ?? t("errorAssign"))
         return
       }
 
       const data = await res.json()
       setResult(data)
     } catch {
-      setError("Error de conexión")
+      setError(t("errorConnection"))
     } finally {
       setSubmitting(false)
     }
@@ -121,7 +123,7 @@ export default function AsignacionModal({
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="font-headline text-lg font-bold text-on-surface">
-              Asignar Misión
+              {t("title")}
             </DialogTitle>
             <button
               type="button"
@@ -140,18 +142,19 @@ export default function AsignacionModal({
               check_circle
             </span>
             <p className="font-headline text-xl font-bold text-on-surface">
-              {result.assigned} usuario{result.assigned !== 1 ? "s" : ""} asignado
-              {result.assigned !== 1 ? "s" : ""}
+              {result.assigned !== 1
+                ? t("successCountPlural", { count: result.assigned })
+                : t("successCount", { count: result.assigned })}
             </p>
             <p className="text-sm text-on-surface-variant">
-              Se han enviado notificaciones a los usuarios.
+              {t("notificationsSent")}
             </p>
             <button
               type="button"
               onClick={onClose}
               className="mt-2 px-6 py-2 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform"
             >
-              Cerrar
+              {t("closeButton")}
             </button>
           </div>
         ) : (
@@ -169,7 +172,7 @@ export default function AsignacionModal({
                       : "text-outline hover:text-on-surface-variant"
                   }`}
                 >
-                  {m === "usuarios" ? "Usuarios Específicos" : "Por Departamento"}
+                  {m === "usuarios" ? t("modeUsers") : t("modeDept")}
                 </button>
               ))}
             </div>
@@ -185,7 +188,7 @@ export default function AsignacionModal({
               <div className="space-y-2 max-h-64 overflow-y-auto no-scrollbar">
                 {users.length === 0 ? (
                   <p className="text-sm text-outline text-center py-4">
-                    No hay usuarios disponibles.
+                    {t("noUsers")}
                   </p>
                 ) : (
                   users.map((u) => {
@@ -216,7 +219,7 @@ export default function AsignacionModal({
                         )}
                         <div className="flex-1">
                           <p className="text-[13px] font-medium text-on-surface">{u.name}</p>
-                          <p className="text-[10px] text-outline">Nivel {u.level}</p>
+                          <p className="text-[10px] text-outline">{t("levelLabel", { n: u.level })}</p>
                         </div>
                         {selected && (
                           <span className="material-symbols-outlined text-primary text-base">
@@ -233,7 +236,7 @@ export default function AsignacionModal({
               <div className="space-y-2">
                 {departments.length === 0 ? (
                   <p className="text-sm text-outline text-center py-4">
-                    No hay departamentos configurados.
+                    {t("noDepts")}
                   </p>
                 ) : (
                   departments.map((d) => (
@@ -276,7 +279,7 @@ export default function AsignacionModal({
                 onClick={onClose}
                 className="px-4 py-2 rounded-md text-outline hover:bg-surface-container-high text-[10px] font-bold uppercase tracking-widest transition-colors active:scale-95"
               >
-                Cancelar
+                {t("cancelButton")}
               </button>
               <button
                 type="button"
@@ -293,7 +296,7 @@ export default function AsignacionModal({
                     progress_activity
                   </span>
                 )}
-                Confirmar Asignación
+                {t("confirmButton")}
               </button>
             </div>
           </div>

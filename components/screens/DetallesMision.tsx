@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import SidebarLayout from "@/components/layout/SidebarLayout"
 
 // ---------------------------------------------------------------------------
@@ -79,6 +80,8 @@ function ObjectiveCard({
   onCompleted: () => void
   isCompleting: boolean
 }) {
+  const t = useTranslations("detallesMision")
+
   if (obj.status === "COMPLETED") {
     return (
       <div className="group relative bg-surface-container-low border border-transparent hover:border-secondary/20 p-6 rounded-xl transition-all flex items-center gap-6 overflow-hidden">
@@ -95,7 +98,7 @@ function ObjectiveCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-1 flex-wrap">
             <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">
-              COMPLETADA
+              {t("objCompleted")}
             </span>
             <span className="w-1 h-1 bg-outline-variant rounded-full" />
             <span className="text-[10px] font-bold text-primary uppercase tracking-widest">
@@ -127,7 +130,7 @@ function ObjectiveCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-1 flex-wrap">
             <span className="text-[10px] font-bold text-tertiary uppercase tracking-widest">
-              EN PROGRESO
+              {t("objInProgress")}
             </span>
             <span className="w-1 h-1 bg-outline-variant rounded-full" />
             <span className="text-[10px] font-bold text-primary uppercase tracking-widest">
@@ -143,7 +146,7 @@ function ObjectiveCard({
           disabled={isCompleting}
           className="px-4 py-2 bg-secondary text-on-secondary-fixed font-bold rounded-md shadow-lg shadow-secondary/10 hover:brightness-110 transition-all active:scale-95 uppercase text-[10px] tracking-widest flex-shrink-0 disabled:opacity-50"
         >
-          {isCompleting ? "..." : "COMPLETAR"}
+          {isCompleting ? "..." : t("objComplete")}
         </button>
       </div>
     )
@@ -160,7 +163,7 @@ function ObjectiveCard({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-3 mb-1 flex-wrap">
           <span className="text-[10px] font-bold text-outline uppercase tracking-widest">
-            BLOQUEADA
+            {t("objLocked")}
           </span>
           <span className="w-1 h-1 bg-outline-variant rounded-full" />
           <span className="text-[10px] font-bold text-outline uppercase tracking-widest">
@@ -199,6 +202,7 @@ export default function DetallesMision({
   objectivesTotal,
 }: DetallesMisionProps) {
   const router = useRouter()
+  const t = useTranslations("detallesMision")
   const [completingObj, setCompletingObj] = useState<string | null>(null)
   const [completingProject, setCompletingProject] = useState(false)
 
@@ -252,7 +256,7 @@ export default function DetallesMision({
                   arrow_back
                 </span>
                 <span className="font-headline font-extrabold text-xs uppercase tracking-[0.2em] text-on-surface">
-                  Volver a Proyectos
+                  {t("backToProjects")}
                 </span>
               </Link>
               <div className="flex gap-2 flex-wrap">
@@ -268,16 +272,16 @@ export default function DetallesMision({
                   {status === "COMPLETED" && approvalStatus === "APPROVED" ? (
                     <>
                       <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                      Completado
+                      {t("statusCompleted")}
                     </>
                   ) : status === "COMPLETED" ? (
                     <>
                       <span className="material-symbols-outlined text-xs">hourglass_top</span>
-                      Pendiente de Revisión
+                      {t("statusPendingReview")}
                     </>
                   ) : status === "ARCHIVED"
-                    ? "Archivado"
-                    : "Activo"}
+                    ? t("statusArchived")
+                    : t("statusActive")}
                 </span>
                 <span className="px-3 py-1 bg-surface-container-highest text-outline text-[10px] font-bold uppercase rounded-full tracking-widest border border-outline/10">
                   {priority}
@@ -319,16 +323,16 @@ export default function DetallesMision({
                     <div className="flex justify-between items-end mb-6">
                       <div>
                         <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-outline mb-1">
-                          Status Actual
+                          {t("statusLabel")}
                         </p>
                         <h3 className="font-headline font-extrabold text-2xl text-on-surface">
                           {status === "COMPLETED" && approvalStatus === "APPROVED"
-                            ? "Proyecto completado"
+                            ? t("statusProjectCompleted")
                             : status === "COMPLETED"
-                              ? "Pendiente de revisión"
+                              ? t("statusPendingReviewLong")
                               : status === "ARCHIVED"
-                                ? "Archivado"
-                                : "En curso operativo"}
+                                ? t("statusArchivedLong")
+                                : t("statusInProgress")}
                         </h3>
                       </div>
                       <div className="text-right">
@@ -348,9 +352,9 @@ export default function DetallesMision({
                     </div>
                     <div className="mt-4 flex justify-between text-[10px] font-bold uppercase tracking-widest text-outline-variant">
                       <span>
-                        {objectivesCompleted}/{objectivesTotal} misiones
+                        {t("missionsCount", { completed: objectivesCompleted, total: objectivesTotal })}
                       </span>
-                      <span>+{xpReward} XP total</span>
+                      <span>{t("xpTotal", { xp: xpReward })}</span>
                     </div>
                   </div>
                 </section>
@@ -358,7 +362,7 @@ export default function DetallesMision({
                 {/* Objectives */}
                 <div className="space-y-4">
                   <h4 className="font-headline font-extrabold text-sm uppercase tracking-widest text-outline ml-2">
-                    Misiones Diarias
+                    {t("dailyMissions")}
                   </h4>
                   {objectives.map((obj) => (
                     <ObjectiveCard
@@ -375,7 +379,7 @@ export default function DetallesMision({
                         assignment
                       </span>
                       <p className="text-sm">
-                        No hay misiones diarias definidas para este proyecto.
+                        {t("noMissions")}
                       </p>
                     </div>
                   )}
@@ -387,7 +391,7 @@ export default function DetallesMision({
                 {/* Rewards */}
                 <div className="bg-surface-container-low rounded-xl p-8 border border-outline-variant/10">
                   <h4 className="font-headline font-black text-xl mb-6 uppercase tracking-tight text-on-surface">
-                    Recompensas de Proyecto
+                    {t("rewardsTitle")}
                   </h4>
                   <div className="space-y-6">
                     <div className="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg">
@@ -398,7 +402,7 @@ export default function DetallesMision({
                           </span>
                         </div>
                         <span className="text-sm font-bold text-on-surface">
-                          Puntos de Experiencia
+                          {t("xpLabel")}
                         </span>
                       </div>
                       <span className="text-lg font-headline font-black text-primary">
@@ -412,27 +416,27 @@ export default function DetallesMision({
                 <div className="p-6 wood-bezel rounded-xl flex flex-col gap-4">
                   <h4 className="text-xs font-bold uppercase tracking-widest text-outline">
                     {canCompleteProject
-                      ? "Todas las misiones completadas"
+                      ? t("actionAllDone")
                       : status === "COMPLETED" && approvalStatus === "APPROVED"
-                        ? "Proyecto aprobado"
+                        ? t("actionApproved")
                         : status === "COMPLETED"
-                          ? "Proyecto enviado a aprobación"
-                          : "Completa todas las misiones"}
+                          ? t("actionSentForApproval")
+                          : t("actionCompleteMissions")}
                   </h4>
                   <p className="text-sm font-medium text-on-surface leading-snug">
                     {canCompleteProject
-                      ? "Puedes marcar este proyecto como completado y enviarlo para aprobación del administrador."
+                      ? t("descAllDone")
                       : status === "COMPLETED" && approvalStatus === "APPROVED"
-                        ? "Tu proyecto ha sido aprobado. Las recompensas de XP fueron asignadas."
+                        ? t("descApproved")
                         : status === "COMPLETED"
-                          ? "Tu proyecto ha sido enviado para revisión. Recibirás una notificación cuando sea aprobado."
-                          : `Completa las ${objectivesTotal - objectivesCompleted} misiones restantes para poder finalizar el proyecto.`}
+                          ? t("descSentForApproval")
+                          : t("descRemaining", { count: objectivesTotal - objectivesCompleted })}
                   </p>
                   {status === "COMPLETED" && approvalStatus !== "APPROVED" && (
                     <div className="flex items-center gap-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
                       <span className="material-symbols-outlined text-primary text-lg">hourglass_top</span>
                       <p className="text-xs text-primary font-medium">
-                        Este proyecto está pendiente de revisión por tu administrador
+                        {t("pendingReviewNote")}
                       </p>
                     </div>
                   )}
@@ -443,22 +447,22 @@ export default function DetallesMision({
                       className="mt-2 w-full py-4 bg-gradient-to-r from-secondary to-secondary-container text-on-secondary font-black text-xs uppercase tracking-[0.2em] rounded-md shadow-lg active:scale-95 transition-all disabled:opacity-50"
                     >
                       {completingProject
-                        ? "ENVIANDO..."
-                        : "COMPLETAR PROYECTO"}
+                        ? t("sendingButton")
+                        : t("completeProjectButton")}
                     </button>
                   ) : status === "COMPLETED" && approvalStatus === "APPROVED" ? (
                     <div className="mt-2 w-full py-4 bg-secondary/20 text-secondary font-black text-xs uppercase tracking-[0.2em] rounded-md text-center flex items-center justify-center gap-2">
                       <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                      COMPLETADO
+                      {t("completedBadge")}
                     </div>
                   ) : status === "COMPLETED" ? (
                     <div className="mt-2 w-full py-4 bg-primary/20 text-primary font-black text-xs uppercase tracking-[0.2em] rounded-md text-center flex items-center justify-center gap-2">
                       <span className="material-symbols-outlined text-sm">hourglass_top</span>
-                      PENDIENTE DE REVISIÓN
+                      {t("pendingBadge")}
                     </div>
                   ) : (
                     <div className="mt-2 w-full py-4 bg-surface-variant text-outline font-black text-xs uppercase tracking-[0.2em] rounded-md text-center cursor-not-allowed">
-                      COMPLETAR PROYECTO
+                      {t("completeProjectButton")}
                     </div>
                   )}
                 </div>

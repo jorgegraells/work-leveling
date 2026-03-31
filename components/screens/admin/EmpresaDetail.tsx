@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import type { Plan, SubscriptionStatus } from "@prisma/client"
 import DepartamentosList from "./DepartamentosList"
 
@@ -57,18 +58,19 @@ const PLAN_BADGE: Record<Plan, { label: string; classes: string }> = {
   ENTERPRISE:   { label: "Enterprise",   classes: "bg-primary/20 text-primary" },
 }
 
-const SUB_STATUS: Record<SubscriptionStatus, { label: string; classes: string }> = {
-  TRIALING: { label: "Trial",     classes: "bg-tertiary/20 text-tertiary" },
-  ACTIVE:   { label: "Activa",    classes: "bg-secondary/20 text-secondary" },
-  PAST_DUE: { label: "Vencida",   classes: "bg-error/20 text-error" },
-  CANCELED: { label: "Cancelada", classes: "bg-outline/20 text-outline" },
-  PAUSED:   { label: "Pausada",   classes: "bg-primary/20 text-primary" },
-}
-
 export default function EmpresaDetail({ org, departments, users }: EmpresaDetailProps) {
   const router = useRouter()
+  const t = useTranslations("empresas")
   const [deleting, setDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+
+  const SUB_STATUS: Record<SubscriptionStatus, { label: string; classes: string }> = {
+    TRIALING: { label: "Trial",              classes: "bg-tertiary/20 text-tertiary" },
+    ACTIVE:   { label: t("subActive"),       classes: "bg-secondary/20 text-secondary" },
+    PAST_DUE: { label: t("subPastDue"),      classes: "bg-error/20 text-error" },
+    CANCELED: { label: t("subCanceled"),     classes: "bg-outline/20 text-outline" },
+    PAUSED:   { label: t("subPaused"),       classes: "bg-primary/20 text-primary" },
+  }
 
   const plan = PLAN_BADGE[org.plan]
   const sub = org.subscription ? SUB_STATUS[org.subscription.status] : null
@@ -92,6 +94,19 @@ export default function EmpresaDetail({ org, departments, users }: EmpresaDetail
     }
   }
 
+  const INFO_ROWS = [
+    { label: t("fieldPlanLabel"),    value: <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest ${plan.classes}`}>{plan.label}</span> },
+    { label: t("fieldSeatsLabel"),   value: t("seatsValue", { count: org.seats }) },
+    { label: t("fieldSubscription"), value: sub ? <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest ${sub.classes}`}>{sub.label}</span> : <span className="text-outline/40">—</span> },
+    { label: t("fieldPeriod"),       value: org.subscription ? new Date(org.subscription.currentPeriodEnd).toLocaleDateString("es-MX") : "—" },
+  ]
+
+  const METRICS = [
+    { icon: "group",         label: t("metricUsers"),   value: org.userCount,       accent: "text-tertiary",  bg: "bg-tertiary/10" },
+    { icon: "military_tech", label: t("metricMissions"),value: org.missionCount,    accent: "text-secondary", bg: "bg-secondary/10" },
+    { icon: "account_tree",  label: t("metricDepts"),   value: org.departmentCount, accent: "text-primary",   bg: "bg-primary/10" },
+  ]
+
   return (
     <div className="min-h-screen bg-surface font-body text-on-surface px-6 py-8 max-w-[1600px] mx-auto">
       {/* Breadcrumb + actions */}
@@ -100,12 +115,12 @@ export default function EmpresaDetail({ org, departments, users }: EmpresaDetail
           <div className="flex items-center gap-3 mb-1">
             <Link href="/admin" className="text-[10px] font-bold uppercase tracking-widest text-outline hover:text-primary transition-colors">Admin</Link>
             <span className="text-outline/40">/</span>
-            <Link href="/admin/empresas" className="text-[10px] font-bold uppercase tracking-widest text-outline hover:text-primary transition-colors">Empresas</Link>
+            <Link href="/admin/empresas" className="text-[10px] font-bold uppercase tracking-widest text-outline hover:text-primary transition-colors">{t("breadcrumb")}</Link>
             <span className="text-outline/40">/</span>
             <span className="text-[10px] font-bold uppercase tracking-widest text-primary">{org.name}</span>
           </div>
           <h1 className="font-headline text-2xl font-bold text-on-surface">{org.name}</h1>
-          <p className="text-[11px] text-outline mt-1">/{org.slug} · Creada el {createdDate}</p>
+          <p className="text-[11px] text-outline mt-1">/{org.slug} · {t("createdAt", { date: createdDate })}</p>
         </div>
         <div className="flex items-center gap-2">
           <Link
@@ -113,14 +128,14 @@ export default function EmpresaDetail({ org, departments, users }: EmpresaDetail
             className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-surface-container-high text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-variant active:scale-95 transition-transform"
           >
             <span className="material-symbols-outlined text-sm text-tertiary">manage_accounts</span>
-            Usuarios
+            {t("usersButton")}
           </Link>
           <button
             onClick={() => setShowDeleteConfirm(true)}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-error text-[10px] font-bold uppercase tracking-widest hover:bg-error/10 active:scale-95 transition-all"
           >
             <span className="material-symbols-outlined text-sm">delete</span>
-            Eliminar
+            {t("deleteButton")}
           </button>
         </div>
       </div>
@@ -132,15 +147,10 @@ export default function EmpresaDetail({ org, departments, users }: EmpresaDetail
           <div className="rounded-xl bg-surface-container-highest p-1 shadow-card">
             <div className="rounded-lg bg-surface-bright p-6">
               <p className="text-[10px] font-bold uppercase tracking-widest text-outline mb-4">
-                Información General
+                {t("generalInfo")}
               </p>
               <div className="grid grid-cols-2 gap-4">
-                {[
-                  { label: "Plan",  value: <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest ${plan.classes}`}>{plan.label}</span> },
-                  { label: "Asientos", value: `${org.seats} usuarios` },
-                  { label: "Suscripción", value: sub ? <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest ${sub.classes}`}>{sub.label}</span> : <span className="text-outline/40">—</span> },
-                  { label: "Período actual", value: org.subscription ? new Date(org.subscription.currentPeriodEnd).toLocaleDateString("es-MX") : "—" },
-                ].map(({ label, value }) => (
+                {INFO_ROWS.map(({ label, value }) => (
                   <div key={label} className="bg-surface-container-lowest rounded-lg p-3">
                     <p className="text-[9px] font-bold uppercase tracking-widest text-outline mb-1.5">{label}</p>
                     <div className="text-[12px] text-on-surface-variant">{value}</div>
@@ -154,14 +164,10 @@ export default function EmpresaDetail({ org, departments, users }: EmpresaDetail
           <div className="rounded-xl bg-surface-container-highest p-1 shadow-card">
             <div className="rounded-lg bg-surface-bright p-6">
               <p className="text-[10px] font-bold uppercase tracking-widest text-outline mb-4">
-                Métricas
+                {t("metrics")}
               </p>
               <div className="grid grid-cols-3 gap-3">
-                {[
-                  { icon: "group",        label: "Usuarios",      value: org.userCount,      accent: "text-tertiary",   bg: "bg-tertiary/10" },
-                  { icon: "military_tech",label: "Misiones",      value: org.missionCount,   accent: "text-secondary",  bg: "bg-secondary/10" },
-                  { icon: "account_tree", label: "Departamentos", value: org.departmentCount,accent: "text-primary",    bg: "bg-primary/10" },
-                ].map((m) => (
+                {METRICS.map((m) => (
                   <div key={m.label} className="bg-surface-container-lowest rounded-lg p-4 text-center">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2 ${m.bg}`}>
                       <span className={`material-symbols-outlined text-xl ${m.accent}`}>{m.icon}</span>
@@ -175,7 +181,7 @@ export default function EmpresaDetail({ org, departments, users }: EmpresaDetail
               {/* User capacity bar */}
               <div className="mt-4">
                 <div className="flex justify-between items-center mb-1.5">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-outline">Capacidad</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-outline">{t("capacity")}</p>
                   <p className="text-[10px] text-outline">{org.userCount} / {org.seats}</p>
                 </div>
                 <div className="h-1.5 bg-surface-container-lowest rounded-full overflow-hidden">
@@ -194,7 +200,7 @@ export default function EmpresaDetail({ org, departments, users }: EmpresaDetail
           <div className="rounded-lg bg-surface-bright p-6">
             <div className="flex items-center justify-between mb-4">
               <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                Departamentos
+                {t("departments")}
               </p>
               <span className="text-[10px] text-outline/60">{org.departments.length}</span>
             </div>
@@ -202,7 +208,7 @@ export default function EmpresaDetail({ org, departments, users }: EmpresaDetail
             {org.departments.length === 0 ? (
               <div className="text-center py-6">
                 <span className="material-symbols-outlined text-3xl text-outline/30 block mb-2">account_tree</span>
-                <p className="text-[11px] text-outline/60">Sin departamentos</p>
+                <p className="text-[11px] text-outline/60">{t("noDepartments")}</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -230,7 +236,7 @@ export default function EmpresaDetail({ org, departments, users }: EmpresaDetail
       {/* Departamentos */}
       {departments && users && (
         <div className="mt-8">
-          <h2 className="text-xl font-headline font-bold text-on-surface mb-4">Departamentos</h2>
+          <h2 className="text-xl font-headline font-bold text-on-surface mb-4">{t("manageDepartments")}</h2>
           <DepartamentosList departments={departments} orgId={org.id} users={users} />
         </div>
       )}
@@ -242,17 +248,17 @@ export default function EmpresaDetail({ org, departments, users }: EmpresaDetail
             <div className="rounded-lg bg-surface-bright p-6 text-center space-y-4">
               <span className="material-symbols-outlined text-3xl text-error block">warning</span>
               <h2 className="font-headline text-lg font-bold text-on-surface">
-                ¿Eliminar empresa?
+                {t("deleteConfirmTitle")}
               </h2>
               <p className="text-[12px] text-outline">
-                Esta acción eliminará permanentemente <strong className="text-on-surface">{org.name}</strong> y todos sus datos asociados. Esta acción no se puede deshacer.
+                {t("deleteConfirmBody", { name: org.name })}
               </p>
               <div className="flex gap-3 justify-center pt-2">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
                   className="px-4 py-2 rounded-md text-outline hover:bg-surface-container-high text-[10px] font-bold uppercase tracking-widest transition-colors active:scale-95"
                 >
-                  Cancelar
+                  {t("cancelButton")}
                 </button>
                 <button
                   onClick={handleDelete}
@@ -260,7 +266,7 @@ export default function EmpresaDetail({ org, departments, users }: EmpresaDetail
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-error-container text-error text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform disabled:opacity-50"
                 >
                   {deleting && <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>}
-                  Eliminar
+                  {t("deleteButton")}
                 </button>
               </div>
             </div>

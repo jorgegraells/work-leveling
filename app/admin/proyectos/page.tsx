@@ -31,7 +31,7 @@ export default async function ProyectosPage() {
       user={{ name: user.name, level: user.level, title: user.title ?? "Executive", avatarUrl: user.avatarUrl }}
       breadcrumbs={[
         { label: "Admin", href: "/admin" },
-        { label: "Proyectos" },
+        { label: t("title") },
       ]}
     >
       <div className="flex-1 flex flex-col w-full relative">

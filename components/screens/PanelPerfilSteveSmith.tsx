@@ -111,16 +111,7 @@ const ACCENT_ICON_BG: Record<string, string> = {
   "on-tertiary-container": "bg-on-tertiary-container/20 text-on-tertiary-container",
 }
 
-const SCORE_LABELS: { key: keyof ApprovalScores; label: string; color: string }[] = [
-  { key: "logica", label: "Lógica", color: "primary" },
-  { key: "creatividad", label: "Creatividad", color: "tertiary" },
-  { key: "liderazgo", label: "Liderazgo", color: "secondary" },
-  { key: "negociacion", label: "Negociación", color: "on-tertiary-container" },
-  { key: "estrategia", label: "Estrategia", color: "primary" },
-  { key: "analisis", label: "Análisis", color: "tertiary" },
-  { key: "comunicacion", label: "Comunicación", color: "secondary" },
-  { key: "adaptabilidad", label: "Adaptabilidad", color: "on-tertiary-container" },
-]
+// SCORE_LABELS built inside ProjectCard using tAttr()
 
 // ---------------------------------------------------------------------------
 // ProjectCard expandable
@@ -129,6 +120,18 @@ const SCORE_LABELS: { key: keyof ApprovalScores; label: string; color: string }[
 function ProjectCard({ project }: { project: CompletedProject }) {
   const [expanded, setExpanded] = useState(false)
   const t = useTranslations("perfil")
+  const tAttr = useTranslations("attributes")
+
+  const SCORE_LABELS: { key: keyof ApprovalScores; label: string; color: string }[] = [
+    { key: "logica",         label: tAttr("logica"),         color: "primary" },
+    { key: "creatividad",    label: tAttr("creatividad"),    color: "tertiary" },
+    { key: "liderazgo",      label: tAttr("liderazgo"),      color: "secondary" },
+    { key: "negociacion",    label: tAttr("negociacion"),    color: "on-tertiary-container" },
+    { key: "estrategia",     label: tAttr("estrategia"),     color: "primary" },
+    { key: "analisis",       label: tAttr("analisis"),       color: "tertiary" },
+    { key: "comunicacion",   label: tAttr("comunicacion"),   color: "secondary" },
+    { key: "adaptabilidad",  label: tAttr("adaptabilidad"),  color: "on-tertiary-container" },
+  ]
 
   return (
     <div className={`rounded-xl bg-surface-container-highest p-1 transition-all ${expanded ? "shadow-[0px_20px_40px_rgba(0,0,0,0.4)]" : ""}`}>
@@ -310,7 +313,7 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
 
                 <div className="text-center">
                   <h1 className="text-4xl font-headline font-black tracking-tight text-on-surface uppercase">{user.name}</h1>
-                  <p className="text-primary font-body font-medium tracking-[0.2em] text-xs mt-2 uppercase">{user.title || "Agente"}</p>
+                  <p className="text-primary font-body font-medium tracking-[0.2em] text-xs mt-2 uppercase">{user.title || t("agentTitle")}</p>
                 </div>
               </div>
 

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 
 interface DepartmentMember {
   id: string
@@ -29,6 +30,7 @@ interface DepartamentosListProps {
 
 export default function DepartamentosList({ departments, orgId, users }: DepartamentosListProps) {
   const router = useRouter()
+  const t = useTranslations("departamentos")
 
   // Editing state
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -129,14 +131,14 @@ export default function DepartamentosList({ departments, orgId, users }: Departa
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
                   className="w-full bg-surface-container-lowest rounded-lg px-3 py-2 text-[12px] text-on-surface placeholder:text-outline/40 focus:outline-none focus:ring-1 focus:ring-primary/40"
-                  placeholder="Nombre del departamento"
+                  placeholder={t("namePlaceholder")}
                 />
                 <select
                   value={editManagerId}
                   onChange={(e) => setEditManagerId(e.target.value)}
                   className="w-full bg-surface-container-lowest rounded-lg px-3 py-2 text-[12px] text-on-surface focus:outline-none focus:ring-1 focus:ring-primary/40"
                 >
-                  <option value="">Sin manager</option>
+                  <option value="">{t("noManager")}</option>
                   {users.map((u) => (
                     <option key={u.id} value={u.id}>{u.name}</option>
                   ))}
@@ -148,13 +150,13 @@ export default function DepartamentosList({ departments, orgId, users }: Departa
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform disabled:opacity-50"
                   >
                     {editLoading && <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>}
-                    Guardar
+                    {t("saveButton")}
                   </button>
                   <button
                     onClick={cancelEdit}
                     className="px-3 py-1.5 rounded-md text-outline hover:bg-surface-container-high text-[10px] font-bold uppercase tracking-widest transition-colors active:scale-95"
                   >
-                    Cancelar
+                    {t("cancelButton")}
                   </button>
                 </div>
               </div>
@@ -170,14 +172,14 @@ export default function DepartamentosList({ departments, orgId, users }: Departa
                     <button
                       onClick={() => startEdit(dept)}
                       className="p-1.5 text-outline hover:text-tertiary hover:bg-surface-container-high rounded-md transition-colors active:scale-95"
-                      title="Editar"
+                      title={t("editTitle")}
                     >
                       <span className="material-symbols-outlined text-sm">edit</span>
                     </button>
                     <button
                       onClick={() => setDeletingId(dept.id)}
                       className="p-1.5 text-outline hover:text-error hover:bg-error/10 rounded-md transition-colors active:scale-95"
-                      title="Eliminar"
+                      title={t("deleteTitle")}
                     >
                       <span className="material-symbols-outlined text-sm">delete</span>
                     </button>
@@ -193,7 +195,9 @@ export default function DepartamentosList({ departments, orgId, users }: Departa
                   )}
                   <span className="flex items-center gap-1">
                     <span className="material-symbols-outlined text-sm text-secondary">group</span>
-                    {dept.members.length} miembro{dept.members.length !== 1 ? "s" : ""}
+                    {dept.members.length !== 1
+                      ? t("memberCountPlural", { count: dept.members.length })
+                      : t("memberCount", { count: dept.members.length })}
                   </span>
                 </div>
 
@@ -201,7 +205,7 @@ export default function DepartamentosList({ departments, orgId, users }: Departa
                 {deletingId === dept.id && (
                   <div className="mt-3 bg-error/5 rounded-lg p-3 border border-error/20">
                     <p className="text-[11px] text-error mb-2">
-                      ¿Eliminar <strong>{dept.name}</strong>? Esta accion no se puede deshacer.
+                      {t("deleteConfirm", { name: dept.name })}
                     </p>
                     <div className="flex items-center gap-2">
                       <button
@@ -210,13 +214,13 @@ export default function DepartamentosList({ departments, orgId, users }: Departa
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-error-container text-error text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform disabled:opacity-50"
                       >
                         {deleteLoading && <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>}
-                        Confirmar
+                        {t("confirmButton")}
                       </button>
                       <button
                         onClick={() => setDeletingId(null)}
                         className="px-3 py-1.5 rounded-md text-outline hover:bg-surface-container-high text-[10px] font-bold uppercase tracking-widest transition-colors active:scale-95"
                       >
-                        Cancelar
+                        {t("cancelButton")}
                       </button>
                     </div>
                   </div>
@@ -231,7 +235,7 @@ export default function DepartamentosList({ departments, orgId, users }: Departa
       {departments.length === 0 && (
         <div className="text-center py-6">
           <span className="material-symbols-outlined text-3xl text-outline/30 block mb-2">account_tree</span>
-          <p className="text-[11px] text-outline/60">No hay departamentos creados</p>
+          <p className="text-[11px] text-outline/60">{t("noDepts")}</p>
         </div>
       )}
 
@@ -239,7 +243,7 @@ export default function DepartamentosList({ departments, orgId, users }: Departa
       <div className="rounded-xl bg-surface-container-highest p-1 shadow-card">
         <div className="rounded-lg bg-surface-bright p-4">
           <p className="text-[10px] font-bold uppercase tracking-widest text-outline mb-3">
-            Nuevo departamento
+            {t("title")}
           </p>
           <div className="space-y-3">
             <input
@@ -247,14 +251,14 @@ export default function DepartamentosList({ departments, orgId, users }: Departa
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               className="w-full bg-surface-container-lowest rounded-lg px-3 py-2 text-[12px] text-on-surface placeholder:text-outline/40 focus:outline-none focus:ring-1 focus:ring-primary/40"
-              placeholder="Nombre del departamento"
+              placeholder={t("namePlaceholder")}
             />
             <select
               value={newManagerId}
               onChange={(e) => setNewManagerId(e.target.value)}
               className="w-full bg-surface-container-lowest rounded-lg px-3 py-2 text-[12px] text-on-surface focus:outline-none focus:ring-1 focus:ring-primary/40"
             >
-              <option value="">Seleccionar manager (opcional)</option>
+              <option value="">{t("selectManager")}</option>
               {users.map((u) => (
                 <option key={u.id} value={u.id}>{u.name}</option>
               ))}
@@ -266,7 +270,7 @@ export default function DepartamentosList({ departments, orgId, users }: Departa
             >
               {createLoading && <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>}
               <span className="material-symbols-outlined text-sm">add</span>
-              Crear departamento
+              {t("createButton")}
             </button>
           </div>
         </div>

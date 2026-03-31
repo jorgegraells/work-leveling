@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import type { Role } from "@prisma/client"
 import RoleTree from "./RoleTree"
 
@@ -44,6 +45,8 @@ const ROLES: Role[] = ["SUPER_ADMIN", "ORG_ADMIN", "MANAGER", "MEMBER"]
 
 export default function UsuariosOrg({ orgId, orgName, members, departments }: UsuariosOrgProps) {
   const router = useRouter()
+  const t = useTranslations("usuarios")
+  const tEmpresas = useTranslations("empresas")
   const [view, setView] = useState<"table" | "tree">("table")
   const [showAddModal, setShowAddModal] = useState(false)
   const [editMember, setEditMember] = useState<Member | null>(null)
@@ -84,7 +87,7 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
       setAddDept("")
       router.refresh()
     } catch (err) {
-      setAddError(err instanceof Error ? err.message : "Error desconocido")
+      setAddError(err instanceof Error ? err.message : t("unknownError"))
     } finally {
       setAddLoading(false)
     }
@@ -116,7 +119,7 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
   }
 
   const handleRemove = async (userId: string) => {
-    if (!confirm("¿Quitar este usuario de la organización?")) return
+    if (!confirm(t("removeConfirm"))) return
     setActionLoading(userId)
     try {
       const res = await fetch(`/api/admin/empresas/${orgId}/usuarios/${userId}`, {
@@ -130,6 +133,8 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
     }
   }
 
+  const TABLE_COLS = [t("colUser"), t("colRole"), t("colDept"), t("colLevel"), t("colActions")]
+
   return (
     <div className="min-h-screen bg-surface font-body text-on-surface px-6 py-8 max-w-[1600px] mx-auto">
       {/* Header */}
@@ -138,17 +143,19 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
           <div className="flex items-center gap-3 mb-1">
             <Link href="/admin" className="text-[10px] font-bold uppercase tracking-widest text-outline hover:text-primary transition-colors">Admin</Link>
             <span className="text-outline/40">/</span>
-            <Link href="/admin/empresas" className="text-[10px] font-bold uppercase tracking-widest text-outline hover:text-primary transition-colors">Empresas</Link>
+            <Link href="/admin/empresas" className="text-[10px] font-bold uppercase tracking-widest text-outline hover:text-primary transition-colors">{tEmpresas("breadcrumb")}</Link>
             <span className="text-outline/40">/</span>
             <Link href={`/admin/empresas/${orgId}`} className="text-[10px] font-bold uppercase tracking-widest text-outline hover:text-primary transition-colors">{orgName}</Link>
             <span className="text-outline/40">/</span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-tertiary">Usuarios</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-tertiary">{t("breadcrumb")}</span>
           </div>
           <h1 className="font-headline text-2xl font-bold text-on-surface">
-            Usuarios — {orgName}
+            {t("title", { orgName })}
           </h1>
           <p className="text-[12px] text-outline mt-1">
-            {members.length} miembro{members.length !== 1 ? "s" : ""}
+            {members.length !== 1
+              ? t("memberCountPlural", { count: members.length })
+              : t("memberCount", { count: members.length })}
           </p>
         </div>
 
@@ -172,7 +179,7 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
             className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform"
           >
             <span className="material-symbols-outlined text-sm">person_add</span>
-            Agregar Usuario
+            {t("addUser")}
           </button>
         </div>
       </div>
@@ -185,7 +192,7 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
           <div className="rounded-lg bg-surface-bright overflow-hidden">
             {/* Header row */}
             <div className="grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-6 py-3 bg-surface-container-lowest">
-              {["Usuario", "Rol", "Departamento", "Nivel", "Acciones"].map((col) => (
+              {TABLE_COLS.map((col) => (
                 <p key={col} className="text-[9px] font-bold uppercase tracking-widest text-outline">{col}</p>
               ))}
             </div>
@@ -193,7 +200,7 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
             {members.length === 0 ? (
               <div className="px-6 py-12 text-center">
                 <span className="material-symbols-outlined text-4xl text-outline/40 block mb-3">group</span>
-                <p className="text-[12px] text-outline">Sin miembros en esta organización.</p>
+                <p className="text-[12px] text-outline">{t("noMembers")}</p>
               </div>
             ) : (
               <div className="divide-y divide-surface-container-lowest">
@@ -241,7 +248,7 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
                           onClick={() => openEdit(m)}
                           disabled={actionLoading === m.userId}
                           className="p-1.5 rounded-md text-outline hover:text-tertiary hover:bg-surface-container-high transition-colors active:scale-95 disabled:opacity-40"
-                          title="Cambiar rol"
+                          title={t("changeRole")}
                         >
                           <span className="material-symbols-outlined text-base">edit</span>
                         </button>
@@ -249,7 +256,7 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
                           onClick={() => handleRemove(m.userId)}
                           disabled={actionLoading === m.userId}
                           className="p-1.5 rounded-md text-outline hover:text-error hover:bg-surface-container-high transition-colors active:scale-95 disabled:opacity-40"
-                          title="Quitar de la org"
+                          title={t("removeFromOrg")}
                         >
                           <span className="material-symbols-outlined text-base">
                             {actionLoading === m.userId ? "progress_activity" : "person_remove"}
@@ -271,7 +278,7 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
           <div className="rounded-xl bg-surface-container-highest p-1 shadow-card max-w-sm w-full mx-4">
             <div className="rounded-lg bg-surface-bright p-6">
               <div className="flex items-center justify-between mb-5">
-                <h2 className="font-headline text-base font-bold text-on-surface">Agregar Usuario</h2>
+                <h2 className="font-headline text-base font-bold text-on-surface">{t("addUserTitle")}</h2>
                 <button onClick={() => setShowAddModal(false)} className="p-1 text-outline hover:text-on-surface rounded-md hover:bg-surface-container-high active:scale-95 transition-all">
                   <span className="material-symbols-outlined text-base">close</span>
                 </button>
@@ -284,18 +291,18 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
                   </div>
                 )}
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-1.5">Email del usuario</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-1.5">{t("fieldEmail")}</label>
                   <input
                     type="email"
                     value={addEmail}
                     onChange={(e) => setAddEmail(e.target.value)}
                     required
-                    placeholder="usuario@empresa.com"
+                    placeholder={t("emailPlaceholder")}
                     className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-[12px] text-on-surface placeholder:text-outline/40 outline-none focus:ring-1 focus:ring-primary/40 transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-1.5">Rol</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-1.5">{t("fieldRole")}</label>
                   <select
                     value={addRole}
                     onChange={(e) => setAddRole(e.target.value as Role)}
@@ -307,13 +314,13 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-1.5">Departamento (opcional)</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-1.5">{t("fieldDept")}</label>
                   <select
                     value={addDept}
                     onChange={(e) => setAddDept(e.target.value)}
                     className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-[12px] text-on-surface outline-none focus:ring-1 focus:ring-primary/40 transition-all"
                   >
-                    <option value="">Sin departamento</option>
+                    <option value="">{t("noDeptOption")}</option>
                     {departments.map((d) => (
                       <option key={d.id} value={d.id}>{d.name}</option>
                     ))}
@@ -321,11 +328,11 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 px-3 py-2 rounded-md text-outline hover:bg-surface-container-high text-[10px] font-bold uppercase tracking-widest transition-colors active:scale-95">
-                    Cancelar
+                    {t("cancelButton")}
                   </button>
                   <button type="submit" disabled={addLoading} className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform disabled:opacity-50">
                     {addLoading && <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>}
-                    Agregar
+                    {t("addButton")}
                   </button>
                 </div>
               </form>
@@ -340,7 +347,7 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
           <div className="rounded-xl bg-surface-container-highest p-1 shadow-card max-w-sm w-full mx-4">
             <div className="rounded-lg bg-surface-bright p-6">
               <div className="flex items-center justify-between mb-5">
-                <h2 className="font-headline text-base font-bold text-on-surface">Cambiar Rol</h2>
+                <h2 className="font-headline text-base font-bold text-on-surface">{t("changeRoleTitle")}</h2>
                 <button onClick={() => setEditMember(null)} className="p-1 text-outline hover:text-on-surface rounded-md hover:bg-surface-container-high active:scale-95 transition-all">
                   <span className="material-symbols-outlined text-base">close</span>
                 </button>
@@ -348,7 +355,7 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
               <p className="text-[12px] text-outline mb-4">{editMember.user.name} · {editMember.user.email}</p>
               <form onSubmit={handleEditRole} className="space-y-4">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-1.5">Rol</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-1.5">{t("fieldRole")}</label>
                   <select
                     value={editRole}
                     onChange={(e) => setEditRole(e.target.value as Role)}
@@ -360,13 +367,13 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-1.5">Departamento</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-outline mb-1.5">{t("colDept")}</label>
                   <select
                     value={editDept}
                     onChange={(e) => setEditDept(e.target.value)}
                     className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-[12px] text-on-surface outline-none focus:ring-1 focus:ring-primary/40 transition-all"
                   >
-                    <option value="">Sin departamento</option>
+                    <option value="">{t("noDeptOption")}</option>
                     {departments.map((d) => (
                       <option key={d.id} value={d.id}>{d.name}</option>
                     ))}
@@ -374,11 +381,11 @@ export default function UsuariosOrg({ orgId, orgName, members, departments }: Us
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={() => setEditMember(null)} className="flex-1 px-3 py-2 rounded-md text-outline hover:bg-surface-container-high text-[10px] font-bold uppercase tracking-widest transition-colors active:scale-95">
-                    Cancelar
+                    {t("cancelButton")}
                   </button>
                   <button type="submit" disabled={actionLoading === editMember.userId} className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md bg-surface-container-high text-on-surface text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform disabled:opacity-50">
                     {actionLoading === editMember.userId && <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>}
-                    Guardar
+                    {t("saveButton")}
                   </button>
                 </div>
               </form>

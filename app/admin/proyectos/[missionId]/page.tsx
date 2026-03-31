@@ -3,6 +3,7 @@ import SidebarLayout from "@/components/layout/SidebarLayout"
 import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
+import { getTranslations } from "next-intl/server"
 
 interface Props {
   params: Promise<{ missionId: string }>
@@ -11,6 +12,7 @@ interface Props {
 export default async function ProyectoDetailPage({ params }: Props) {
   const { missionId } = await params
   const user = await requireCurrentUser()
+  const t = await getTranslations("admin")
 
   const mission = await prisma.mission.findUnique({
     where: { id: missionId },
@@ -33,7 +35,7 @@ export default async function ProyectoDetailPage({ params }: Props) {
       user={{ name: user.name, level: user.level, title: user.title ?? "Executive", avatarUrl: user.avatarUrl }}
       breadcrumbs={[
         { label: "Admin", href: "/admin" },
-        { label: "Proyectos", href: "/admin/proyectos" },
+        { label: t("breadcrumbProjects"), href: "/admin/proyectos" },
         { label: mission.title },
       ]}
     >

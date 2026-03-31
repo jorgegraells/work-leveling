@@ -45,13 +45,7 @@ interface Props {
   missionStats: MissionStats
 }
 
-const MODULE_LABEL: Record<string, string> = {
-  VENTAS_LEADS: "Ventas",
-  PROYECTOS_CRONOGRAMA: "Proyectos",
-  ALIANZAS_CONTRATOS: "Alianzas",
-  INFORMES_CUMPLIMIENTO: "Informes",
-  ESTRATEGIA_EXPANSION: "Estrategia",
-}
+// MODULE_LABEL built inside component using tCommon()
 
 const MODULE_COLOR: Record<string, string> = {
   VENTAS_LEADS: "#78dc77",
@@ -70,12 +64,7 @@ const STATUS_COLOR: Record<string, string> = {
   ARCHIVED: "#353535",
 }
 
-const ROLE_LABEL: Record<string, string> = {
-  ORG_ADMIN: "Admin",
-  MANAGER: "Manager",
-  MEMBER: "Miembro",
-  SUPER_ADMIN: "Super Admin",
-}
+// ROLE_LABEL built inside component using t()
 
 function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: { name: string; value: number }[]; label?: string }) {
   if (!active || !payload?.length) return null
@@ -101,7 +90,23 @@ function PieTooltip({ active, payload, missionLabel }: { active?: boolean; paylo
 
 export default function EmpresaDashboard({ org, departments, members, missionStats }: Props) {
   const t = useTranslations("empresa")
+  const tCommon = useTranslations("common")
   const [selectedDept, setSelectedDept] = useState<string | null>(null)
+
+  const MODULE_LABEL: Record<string, string> = {
+    VENTAS_LEADS: tCommon("moduleVentas"),
+    PROYECTOS_CRONOGRAMA: tCommon("moduleProyectos"),
+    ALIANZAS_CONTRATOS: tCommon("moduleAlianzas"),
+    INFORMES_CUMPLIMIENTO: tCommon("moduleInformes"),
+    ESTRATEGIA_EXPANSION: tCommon("moduleEstrategia"),
+  }
+
+  const ROLE_LABEL: Record<string, string> = {
+    ORG_ADMIN: "Admin",
+    MANAGER: "Manager",
+    MEMBER: t("roleMember"),
+    SUPER_ADMIN: "Super Admin",
+  }
 
   const STATUS_LABEL: Record<string, string> = {
     PENDING: t("statusPending"),
@@ -311,7 +316,7 @@ export default function EmpresaDashboard({ org, departments, members, missionSta
                     allowDecimals={false}
                   />
                   <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
-                  <Bar dataKey="count" name="Misiones" radius={[4, 4, 0, 0]}>
+                  <Bar dataKey="count" name={t("chartMissions")} radius={[4, 4, 0, 0]}>
                     {moduleData.map((entry, i) => (
                       <Cell key={i} fill={entry.fill} />
                     ))}

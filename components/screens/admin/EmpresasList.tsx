@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import type { Plan, SubscriptionStatus } from "@prisma/client"
 
 interface EmpresaRow {
@@ -26,15 +27,26 @@ const PLAN_BADGE: Record<Plan, { label: string; classes: string }> = {
   ENTERPRISE:   { label: "Enterprise",   classes: "bg-primary/20 text-primary" },
 }
 
-const SUB_BADGE: Record<SubscriptionStatus, { label: string; classes: string }> = {
-  TRIALING:  { label: "Trial",    classes: "bg-tertiary/20 text-tertiary" },
-  ACTIVE:    { label: "Activa",   classes: "bg-secondary/20 text-secondary" },
-  PAST_DUE:  { label: "Vencida",  classes: "bg-error/20 text-error" },
-  CANCELED:  { label: "Cancelada",classes: "bg-outline/20 text-outline" },
-  PAUSED:    { label: "Pausada",  classes: "bg-primary/20 text-primary" },
-}
-
 export default function EmpresasList({ empresas }: EmpresasListProps) {
+  const t = useTranslations("empresas")
+
+  const SUB_BADGE: Record<SubscriptionStatus, { label: string; classes: string }> = {
+    TRIALING:  { label: "Trial",           classes: "bg-tertiary/20 text-tertiary" },
+    ACTIVE:    { label: t("subActive"),    classes: "bg-secondary/20 text-secondary" },
+    PAST_DUE:  { label: t("subPastDue"),   classes: "bg-error/20 text-error" },
+    CANCELED:  { label: t("subCanceled"),  classes: "bg-outline/20 text-outline" },
+    PAUSED:    { label: t("subPaused"),    classes: "bg-primary/20 text-primary" },
+  }
+
+  const TABLE_COLS = [
+    t("colName"),
+    t("colPlan"),
+    t("colUsers"),
+    t("colDepts"),
+    t("colSubscription"),
+    t("colActions"),
+  ]
+
   return (
     <div className="min-h-screen bg-surface font-body text-on-surface px-6 py-8 max-w-[1600px] mx-auto">
       {/* Header */}
@@ -49,14 +61,16 @@ export default function EmpresasList({ empresas }: EmpresasListProps) {
             </Link>
             <span className="text-outline/40">/</span>
             <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
-              Empresas
+              {t("breadcrumb")}
             </span>
           </div>
           <h1 className="font-headline text-2xl font-bold text-on-surface">
-            Gestión de Empresas
+            {t("title")}
           </h1>
           <p className="text-[12px] text-outline mt-1">
-            {empresas.length} empresa{empresas.length !== 1 ? "s" : ""} registrada{empresas.length !== 1 ? "s" : ""}
+            {empresas.length !== 1
+              ? t("registeredCountPlural", { count: empresas.length })
+              : t("registeredCount", { count: empresas.length })}
           </p>
         </div>
         <Link
@@ -64,7 +78,7 @@ export default function EmpresasList({ empresas }: EmpresasListProps) {
           className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform self-start sm:self-auto"
         >
           <span className="material-symbols-outlined text-sm">add_business</span>
-          Nueva Empresa
+          {t("newCompany")}
         </Link>
       </div>
 
@@ -73,7 +87,7 @@ export default function EmpresasList({ empresas }: EmpresasListProps) {
         <div className="rounded-lg bg-surface-bright overflow-hidden">
           {/* Table header */}
           <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] gap-4 px-6 py-3 bg-surface-container-lowest">
-            {["Empresa", "Plan", "Usuarios", "Depts.", "Suscripción", "Acciones"].map((col) => (
+            {TABLE_COLS.map((col) => (
               <p key={col} className="text-[9px] font-bold uppercase tracking-widest text-outline">
                 {col}
               </p>
@@ -85,13 +99,13 @@ export default function EmpresasList({ empresas }: EmpresasListProps) {
               <span className="material-symbols-outlined text-4xl text-outline/40 block mb-3">
                 corporate_fare
               </span>
-              <p className="text-[12px] text-outline">No hay empresas registradas aún.</p>
+              <p className="text-[12px] text-outline">{t("noCompanies")}</p>
               <Link
                 href="/admin/empresas/nueva"
                 className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-md bg-surface-container-high text-primary text-[10px] font-bold uppercase tracking-widest hover:bg-surface-variant active:scale-95 transition-transform"
               >
                 <span className="material-symbols-outlined text-sm">add</span>
-                Crear primera empresa
+                {t("createFirst")}
               </Link>
             </div>
           ) : (
@@ -154,14 +168,14 @@ export default function EmpresasList({ empresas }: EmpresasListProps) {
                       <Link
                         href={`/admin/empresas/${emp.id}`}
                         className="p-1.5 rounded-md text-outline hover:text-primary hover:bg-surface-container-high transition-colors active:scale-95"
-                        title="Ver detalle"
+                        title={t("viewDetail")}
                       >
                         <span className="material-symbols-outlined text-base">visibility</span>
                       </Link>
                       <Link
                         href={`/admin/empresas/${emp.id}/usuarios`}
                         className="p-1.5 rounded-md text-outline hover:text-tertiary hover:bg-surface-container-high transition-colors active:scale-95"
-                        title="Gestionar usuarios"
+                        title={t("manageUsers")}
                       >
                         <span className="material-symbols-outlined text-base">manage_accounts</span>
                       </Link>

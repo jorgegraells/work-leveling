@@ -12,41 +12,30 @@ interface ProyectoDetailProps {
   assignments: UserMissionWithUser[]
 }
 
-const MODULE_META: Record<
-  MissionModule,
-  { label: string; colorClass: string; bgClass: string }
-> = {
-  VENTAS_LEADS: {
-    label: "Ventas & Leads",
-    colorClass: "text-secondary",
-    bgClass: "bg-secondary-container/30",
-  },
-  PROYECTOS_CRONOGRAMA: {
-    label: "Proyectos & Cronograma",
-    colorClass: "text-tertiary",
-    bgClass: "bg-tertiary-container/30",
-  },
-  ALIANZAS_CONTRATOS: {
-    label: "Alianzas & Contratos",
-    colorClass: "text-primary",
-    bgClass: "bg-primary-container/30",
-  },
-  INFORMES_CUMPLIMIENTO: {
-    label: "Informes & Cumplimiento",
-    colorClass: "text-on-tertiary-container",
-    bgClass: "bg-tertiary-container/20",
-  },
-  ESTRATEGIA_EXPANSION: {
-    label: "Estrategia & Expansión",
-    colorClass: "text-outline",
-    bgClass: "bg-surface-container-high",
-  },
+// MODULE_META labels built inside component using tCommon()
+const MODULE_STYLE: Record<MissionModule, { colorClass: string; bgClass: string }> = {
+  VENTAS_LEADS:          { colorClass: "text-secondary",             bgClass: "bg-secondary-container/30" },
+  PROYECTOS_CRONOGRAMA:  { colorClass: "text-tertiary",              bgClass: "bg-tertiary-container/30" },
+  ALIANZAS_CONTRATOS:    { colorClass: "text-primary",               bgClass: "bg-primary-container/30" },
+  INFORMES_CUMPLIMIENTO: { colorClass: "text-on-tertiary-container", bgClass: "bg-tertiary-container/20" },
+  ESTRATEGIA_EXPANSION:  { colorClass: "text-outline",               bgClass: "bg-surface-container-high" },
 }
 
 export default function ProyectoDetail({ mission, assignments }: ProyectoDetailProps) {
   const t = useTranslations("proyectos")
+  const tCommon = useTranslations("common")
   const [showAsignModal, setShowAsignModal] = useState(false)
-  const mod = MODULE_META[mission.module]
+
+  const MODULE_LABEL: Record<MissionModule, string> = {
+    VENTAS_LEADS: tCommon("moduleVentas"),
+    PROYECTOS_CRONOGRAMA: tCommon("moduleProyectos"),
+    ALIANZAS_CONTRATOS: tCommon("moduleAlianzas"),
+    INFORMES_CUMPLIMIENTO: tCommon("moduleInformes"),
+    ESTRATEGIA_EXPANSION: tCommon("moduleEstrategia"),
+  }
+
+  const modStyle = MODULE_STYLE[mission.module]
+  const mod = { label: MODULE_LABEL[mission.module], ...modStyle }
 
   const STATUS_BADGE: Record<string, { label: string; classes: string }> = {
     PENDING: {
@@ -85,7 +74,7 @@ export default function ProyectoDetail({ mission, assignments }: ProyectoDetailP
             {mission.title}
           </h1>
           <span className="text-[9px] text-outline">
-            {t("createdBy", { name: mission.createdBy?.name ?? "Sistema" })}
+            {t("createdBy", { name: mission.createdBy?.name ?? t("systemCreator") })}
           </span>
         </div>
         <div className="flex gap-2">

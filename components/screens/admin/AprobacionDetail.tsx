@@ -62,13 +62,7 @@ const MODULE_BG: Record<MissionModule, string> = {
   ESTRATEGIA_EXPANSION: "bg-outline/20",
 }
 
-const MODULE_LABEL: Record<MissionModule, string> = {
-  VENTAS_LEADS: "Ventas & Leads",
-  PROYECTOS_CRONOGRAMA: "Proyectos & Cronograma",
-  ALIANZAS_CONTRATOS: "Alianzas & Contratos",
-  INFORMES_CUMPLIMIENTO: "Informes & Cumplimiento",
-  ESTRATEGIA_EXPANSION: "Estrategia & Expansion",
-}
+// MODULE_LABEL and ATTRIBUTES built inside component using t() for localization
 
 type ScoreKey =
   | "scoreLogica"
@@ -87,29 +81,39 @@ interface AttributeConfig {
   bgColor: string
 }
 
-const LEFT_ATTRIBUTES: AttributeConfig[] = [
-  { key: "scoreLogica", label: "Logica", color: "bg-primary", bgColor: "bg-primary/30" },
-  { key: "scoreCreatividad", label: "Creatividad", color: "bg-tertiary", bgColor: "bg-tertiary/30" },
-  { key: "scoreLiderazgo", label: "Liderazgo", color: "bg-secondary", bgColor: "bg-secondary/30" },
-  { key: "scoreNegociacion", label: "Negociacion", color: "bg-on-tertiary-container", bgColor: "bg-on-tertiary-container/30" },
-]
-
-const RIGHT_ATTRIBUTES: AttributeConfig[] = [
-  { key: "scoreEstrategia", label: "Estrategia", color: "bg-outline", bgColor: "bg-outline/30" },
-  { key: "scoreAnalisis", label: "Analisis", color: "bg-tertiary", bgColor: "bg-tertiary/30" },
-  { key: "scoreComunicacion", label: "Comunicacion", color: "bg-secondary", bgColor: "bg-secondary/30" },
-  { key: "scoreAdaptabilidad", label: "Adaptabilidad", color: "bg-primary", bgColor: "bg-primary/30" },
-]
-
 export default function AprobacionDetail({
   approval,
 }: {
   approval: ApprovalWithFullDetails
 }) {
   const t = useTranslations("aprobaciones")
+  const tCommon = useTranslations("common")
+  const tAttr = useTranslations("attributes")
   const router = useRouter()
   const { userMission } = approval
   const { user, mission } = userMission
+
+  const MODULE_LABEL: Record<MissionModule, string> = {
+    VENTAS_LEADS: tCommon("moduleVentas"),
+    PROYECTOS_CRONOGRAMA: tCommon("moduleProyectos"),
+    ALIANZAS_CONTRATOS: tCommon("moduleAlianzas"),
+    INFORMES_CUMPLIMIENTO: tCommon("moduleInformes"),
+    ESTRATEGIA_EXPANSION: tCommon("moduleEstrategia"),
+  }
+
+  const LEFT_ATTRIBUTES: AttributeConfig[] = [
+    { key: "scoreLogica",      label: tAttr("logica"),      color: "bg-primary",               bgColor: "bg-primary/30" },
+    { key: "scoreCreatividad", label: tAttr("creatividad"), color: "bg-tertiary",              bgColor: "bg-tertiary/30" },
+    { key: "scoreLiderazgo",   label: tAttr("liderazgo"),   color: "bg-secondary",             bgColor: "bg-secondary/30" },
+    { key: "scoreNegociacion", label: tAttr("negociacion"), color: "bg-on-tertiary-container", bgColor: "bg-on-tertiary-container/30" },
+  ]
+
+  const RIGHT_ATTRIBUTES: AttributeConfig[] = [
+    { key: "scoreEstrategia",    label: tAttr("estrategia"),    color: "bg-outline",   bgColor: "bg-outline/30" },
+    { key: "scoreAnalisis",      label: tAttr("analisis"),      color: "bg-tertiary",  bgColor: "bg-tertiary/30" },
+    { key: "scoreComunicacion",  label: tAttr("comunicacion"),  color: "bg-secondary", bgColor: "bg-secondary/30" },
+    { key: "scoreAdaptabilidad", label: tAttr("adaptabilidad"), color: "bg-primary",   bgColor: "bg-primary/30" },
+  ]
 
   const [scores, setScores] = useState<Record<ScoreKey, number>>({
     scoreLogica: 3,

@@ -72,13 +72,13 @@ export default function Settings({ user, currentLocale }: SettingsProps) {
 
       if (!res.ok) {
         const data = await res.json()
-        throw new Error(data.error ?? "Error al guardar")
+        throw new Error(data.error ?? t("errorSave"))
       }
 
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error desconocido")
+      setError(err instanceof Error ? err.message : t("errorUnknown"))
     } finally {
       setSaving(false)
     }
@@ -145,7 +145,7 @@ export default function Settings({ user, currentLocale }: SettingsProps) {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Ej: Architect of the Atelier"
+              placeholder={t("titlePlaceholder")}
               className="w-full bg-surface-container-lowest text-on-surface rounded-md px-4 py-2.5 text-sm font-body focus:outline-none focus:ring-1 focus:ring-primary/50 border border-outline-variant/15 placeholder:text-outline/50"
             />
           </div>

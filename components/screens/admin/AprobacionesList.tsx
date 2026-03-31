@@ -50,13 +50,7 @@ const MODULE_BG: Record<MissionModule, string> = {
   ESTRATEGIA_EXPANSION: "bg-outline/20",
 }
 
-const MODULE_LABEL: Record<MissionModule, string> = {
-  VENTAS_LEADS: "Ventas & Leads",
-  PROYECTOS_CRONOGRAMA: "Proyectos",
-  ALIANZAS_CONTRATOS: "Alianzas",
-  INFORMES_CUMPLIMIENTO: "Informes",
-  ESTRATEGIA_EXPANSION: "Estrategia",
-}
+// MODULE_LABEL built inside component using tCommon()
 
 const STATUS_STYLE: Record<ApprovalStatus, string> = {
   PENDING: "bg-primary/20 text-primary",
@@ -64,15 +58,15 @@ const STATUS_STYLE: Record<ApprovalStatus, string> = {
   REJECTED: "bg-error/20 text-error",
 }
 
-function timeAgo(dateStr: string) {
+function timeAgo(dateStr: string, t: (key: string, values?: Record<string, number>) => string) {
   const diff = Date.now() - new Date(dateStr).getTime()
   const mins = Math.floor(diff / 60000)
-  if (mins < 1) return "Justo ahora"
-  if (mins < 60) return `Hace ${mins}m`
+  if (mins < 1) return t("justNow")
+  if (mins < 60) return t("minutesAgo", { mins })
   const hours = Math.floor(mins / 60)
-  if (hours < 24) return `Hace ${hours}h`
+  if (hours < 24) return t("hoursAgo", { hours })
   const days = Math.floor(hours / 24)
-  return `Hace ${days}d`
+  return t("daysAgo", { days })
 }
 
 export default function AprobacionesList({
@@ -81,6 +75,16 @@ export default function AprobacionesList({
   approvals: ApprovalWithDetails[]
 }) {
   const t = useTranslations("aprobaciones")
+  const tCommon = useTranslations("common")
+  const tNotif = useTranslations("notificaciones")
+
+  const MODULE_LABEL: Record<MissionModule, string> = {
+    VENTAS_LEADS: tCommon("moduleVentas"),
+    PROYECTOS_CRONOGRAMA: tCommon("moduleProyectos"),
+    ALIANZAS_CONTRATOS: tCommon("moduleAlianzas"),
+    INFORMES_CUMPLIMIENTO: tCommon("moduleInformes"),
+    ESTRATEGIA_EXPANSION: tCommon("moduleEstrategia"),
+  }
 
   const STATUS_LABEL: Record<ApprovalStatus, string> = {
     PENDING: t("pending"),
@@ -190,7 +194,7 @@ export default function AprobacionesList({
                   </span>
                 </div>
                 <span className="text-[10px] text-outline">
-                  {timeAgo(approval.createdAt)}
+                  {timeAgo(approval.createdAt, tNotif)}
                 </span>
               </div>
             </div>

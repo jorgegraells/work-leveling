@@ -1,10 +1,12 @@
 import { requireAdminAccess } from "@/lib/auth-helpers"
+import { getTranslations } from "next-intl/server"
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const t = await getTranslations("admin")
   const result = await requireAdminAccess()
 
   // requireSuperAdmin returns a Response (403) or the User object
@@ -17,18 +19,17 @@ export default async function AdminLayout({
               lock
             </span>
             <h1 className="font-headline text-xl font-bold text-on-surface">
-              Acceso Denegado
+              {t("accessDenied")}
             </h1>
             <p className="text-[12px] text-outline">
-              No tienes permisos para acceder al panel de administración.
-              Esta sección requiere privilegios de Super Admin.
+              {t("accessDeniedDesc")}
             </p>
             <a
               href="/dashboard"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform"
             >
               <span className="material-symbols-outlined text-sm">home</span>
-              Volver al Dashboard
+              {t("backToDashboard")}
             </a>
           </div>
         </div>

@@ -57,7 +57,7 @@ export default async function AprobacionesPage() {
       user={{ name: user.name, level: user.level, title: user.title ?? "Executive", avatarUrl: user.avatarUrl }}
       breadcrumbs={[
         { label: "Admin", href: "/admin" },
-        { label: "Aprobaciones" },
+        { label: t("pendingTitle") },
       ]}
     >
       <div className="flex-1 flex flex-col w-full relative">

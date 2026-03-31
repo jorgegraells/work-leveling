@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import type { MissionWithStats } from "@/types/proyectos"
 import type { MissionModule } from "@prisma/client"
 
@@ -9,49 +10,37 @@ interface ProyectosListProps {
   missions: MissionWithStats[]
 }
 
-const MODULE_META: Record<
-  MissionModule,
-  { label: string; colorClass: string; bgClass: string }
-> = {
-  VENTAS_LEADS: {
-    label: "Ventas & Leads",
-    colorClass: "text-secondary",
-    bgClass: "bg-secondary-container/30",
-  },
-  PROYECTOS_CRONOGRAMA: {
-    label: "Proyectos & Cronograma",
-    colorClass: "text-tertiary",
-    bgClass: "bg-tertiary-container/30",
-  },
-  ALIANZAS_CONTRATOS: {
-    label: "Alianzas & Contratos",
-    colorClass: "text-primary",
-    bgClass: "bg-primary-container/30",
-  },
-  INFORMES_CUMPLIMIENTO: {
-    label: "Informes & Cumplimiento",
-    colorClass: "text-on-tertiary-container",
-    bgClass: "bg-tertiary-container/20",
-  },
-  ESTRATEGIA_EXPANSION: {
-    label: "Estrategia & Expansión",
-    colorClass: "text-outline",
-    bgClass: "bg-surface-container-high",
-  },
-}
-
-const PRIORITY_BADGE: Record<string, { label: string; classes: string }> = {
-  ALTA: { label: "Alta", classes: "bg-error-container/30 text-error" },
-  NORMAL: { label: "Normal", classes: "bg-surface-container-high text-on-surface-variant" },
-  BAJA: { label: "Baja", classes: "bg-secondary-container/20 text-secondary" },
+// MODULE_META labels built inside component using tCommon()
+const MODULE_STYLE: Record<MissionModule, { colorClass: string; bgClass: string }> = {
+  VENTAS_LEADS:          { colorClass: "text-secondary",             bgClass: "bg-secondary-container/30" },
+  PROYECTOS_CRONOGRAMA:  { colorClass: "text-tertiary",              bgClass: "bg-tertiary-container/30" },
+  ALIANZAS_CONTRATOS:    { colorClass: "text-primary",               bgClass: "bg-primary-container/30" },
+  INFORMES_CUMPLIMIENTO: { colorClass: "text-on-tertiary-container", bgClass: "bg-tertiary-container/20" },
+  ESTRATEGIA_EXPANSION:  { colorClass: "text-outline",               bgClass: "bg-surface-container-high" },
 }
 
 export default function ProyectosList({ missions }: ProyectosListProps) {
+  const t = useTranslations("proyectosList")
+  const tCommon = useTranslations("common")
   const [archiving, setArchiving] = useState<string | null>(null)
+
+  const MODULE_META: Record<MissionModule, { label: string; colorClass: string; bgClass: string }> = {
+    VENTAS_LEADS:          { label: tCommon("moduleVentas"),    ...MODULE_STYLE.VENTAS_LEADS },
+    PROYECTOS_CRONOGRAMA:  { label: tCommon("moduleProyectos"), ...MODULE_STYLE.PROYECTOS_CRONOGRAMA },
+    ALIANZAS_CONTRATOS:    { label: tCommon("moduleAlianzas"),  ...MODULE_STYLE.ALIANZAS_CONTRATOS },
+    INFORMES_CUMPLIMIENTO: { label: tCommon("moduleInformes"),  ...MODULE_STYLE.INFORMES_CUMPLIMIENTO },
+    ESTRATEGIA_EXPANSION:  { label: tCommon("moduleEstrategia"),...MODULE_STYLE.ESTRATEGIA_EXPANSION },
+  }
   const [localMissions, setLocalMissions] = useState(missions)
 
+  const PRIORITY_BADGE: Record<string, { label: string; classes: string }> = {
+    ALTA:   { label: t("priorityAlta"),   classes: "bg-error-container/30 text-error" },
+    NORMAL: { label: t("priorityNormal"), classes: "bg-surface-container-high text-on-surface-variant" },
+    BAJA:   { label: t("priorityBaja"),   classes: "bg-secondary-container/20 text-secondary" },
+  }
+
   async function handleArchive(missionId: string) {
-    if (!confirm("¿Archivar este proyecto? Se archivará para todos los usuarios asignados.")) return
+    if (!confirm(t("archiveConfirm"))) return
     setArchiving(missionId)
     try {
       const res = await fetch(`/api/admin/misiones/${missionId}`, { method: "DELETE" })
@@ -69,13 +58,13 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
       <div className="flex items-center justify-between">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-            Admin
+            {t("adminLabel")}
           </p>
           <h1 className="font-headline text-2xl font-bold text-on-surface mt-0.5">
-            Proyectos
+            {t("title")}
           </h1>
           <p className="text-[11px] text-on-surface-variant mt-1">
-            Cada proyecto contiene misiones diarias que los empleados completan
+            {t("subtitle")}
           </p>
         </div>
         <Link
@@ -83,7 +72,7 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
           className="flex items-center gap-2 px-4 py-2.5 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-[0.98] transition-transform shadow-[0px_20px_40px_rgba(0,0,0,0.4)]"
         >
           <span className="material-symbols-outlined text-base">add</span>
-          Nuevo Proyecto
+          {t("newProject")}
         </Link>
       </div>
 
@@ -97,10 +86,10 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
             </div>
             <div className="space-y-1">
               <p className="text-on-surface font-headline font-bold text-base">
-                No hay proyectos creados
+                {t("noProjects")}
               </p>
               <p className="text-on-surface-variant text-sm">
-                Crea tu primer proyecto con misiones diarias para tu equipo.
+                {t("noProjectsHint")}
               </p>
             </div>
             <Link
@@ -108,7 +97,7 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-[0.98] transition-transform"
             >
               <span className="material-symbols-outlined text-base">add_circle</span>
-              Crear primer proyecto
+              {t("createFirst")}
             </Link>
           </div>
         </div>
@@ -153,7 +142,7 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
                         {mission.title}
                       </h3>
                       <span className="text-[9px] text-outline">
-                        Creado por {mission.createdBy?.name ?? "Sistema"}
+                        {t("createdBy", { name: mission.createdBy?.name ?? tCommon("unknown") })}
                       </span>
                     </div>
                   </div>
@@ -173,7 +162,7 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
                         groups
                       </span>
                       <span className="text-[10px] font-bold text-on-surface-variant">
-                        {total} asignados
+                        {t("assignedBadge", { count: total })}
                       </span>
                     </div>
                     <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-lowest">
@@ -181,7 +170,7 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
                         check_circle
                       </span>
                       <span className="text-[10px] font-bold text-secondary">
-                        {completed} completados
+                        {t("completedBadge", { count: completed })}
                       </span>
                     </div>
                   </div>
@@ -190,7 +179,7 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
                   <div className="space-y-1.5">
                     <div className="flex justify-between items-center">
                       <span className="text-[10px] text-outline uppercase tracking-widest">
-                        Progreso
+                        {t("progress")}
                       </span>
                       <span className="text-[11px] font-bold text-on-surface">
                         {pct}%
@@ -211,14 +200,14 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
                       className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform"
                     >
                       <span className="material-symbols-outlined text-base">visibility</span>
-                      Detalle
+                      {t("detail")}
                     </Link>
                     <Link
                       href={`/admin/proyectos/${mission.id}`}
                       className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md bg-surface-container-high text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-container-highest transition-colors active:scale-95"
                     >
                       <span className="material-symbols-outlined text-base">edit</span>
-                      Editar
+                      {t("edit")}
                     </Link>
                     <button
                       type="button"

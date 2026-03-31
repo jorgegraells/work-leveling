@@ -25,13 +25,7 @@ interface ArchivedMission {
   } | null
 }
 
-const MODULE_LABELS: Record<MissionModule, string> = {
-  VENTAS_LEADS: "Ventas & Leads",
-  PROYECTOS_CRONOGRAMA: "Proyectos",
-  ALIANZAS_CONTRATOS: "Alianzas",
-  INFORMES_CUMPLIMIENTO: "Informes",
-  ESTRATEGIA_EXPANSION: "Estrategia",
-}
+// MODULE_LABELS built inside component using t() for localization
 
 const MODULE_COLOR: Record<MissionModule, { text: string; bg: string }> = {
   VENTAS_LEADS:          { text: "text-secondary",               bg: "bg-secondary/10" },
@@ -44,7 +38,16 @@ const MODULE_COLOR: Record<MissionModule, { text: string; bg: string }> = {
 
 export default function Archivados({ archivedMissions }: { archivedMissions: ArchivedMission[] }) {
   const t = useTranslations("archivados")
+  const tCommon = useTranslations("common")
   const [expanded, setExpanded] = useState<string | null>(null)
+
+  const MODULE_LABELS: Record<MissionModule, string> = {
+    VENTAS_LEADS: tCommon("moduleVentas"),
+    PROYECTOS_CRONOGRAMA: tCommon("moduleProyectos"),
+    ALIANZAS_CONTRATOS: tCommon("moduleAlianzas"),
+    INFORMES_CUMPLIMIENTO: tCommon("moduleInformes"),
+    ESTRATEGIA_EXPANSION: tCommon("moduleEstrategia"),
+  }
 
   const approvalStyle: Record<ApprovalStatus, { label: string; icon: string; className: string }> = {
     APPROVED: { label: t("approved"), icon: "check_circle", className: "text-secondary" },
@@ -109,7 +112,7 @@ export default function Archivados({ archivedMissions }: { archivedMissions: Arc
                   <p className="text-sm font-semibold text-on-surface truncate">{um.mission.title}</p>
                   <p className="text-[11px] text-on-surface/50 mt-0.5">
                     {um.approval?.status === "APPROVED" ? `+${um.mission.xpReward} XP · ` : ""}
-                    Archivado el {date}
+                    {t("archivedOn", { date })}
                   </p>
                 </div>
 
@@ -124,15 +127,15 @@ export default function Archivados({ archivedMissions }: { archivedMissions: Arc
                   <div className="mt-3 p-3 bg-surface-container-lowest rounded-lg space-y-2">
                     {um.approval.approver && (
                       <p className="text-[10px] text-outline">
-                        Revisado por <span className="text-on-surface font-semibold">{um.approval.approver.name}</span>
+                        {t("reviewedBy")} <span className="text-on-surface font-semibold">{um.approval.approver.name}</span>
                         {um.approval.reviewedAt && (
-                          <> el {new Date(um.approval.reviewedAt).toLocaleDateString("es-ES")}</>
+                          <> {t("reviewedOn")} {new Date(um.approval.reviewedAt).toLocaleDateString()}</>
                         )}
                       </p>
                     )}
                     {um.approval.note && (
                       <div>
-                        <p className="text-[9px] font-bold uppercase tracking-widest text-outline mb-1">Nota del revisor</p>
+                        <p className="text-[9px] font-bold uppercase tracking-widest text-outline mb-1">{t("reviewerNote")}</p>
                         <p className="text-sm text-on-surface">{um.approval.note}</p>
                       </div>
                     )}

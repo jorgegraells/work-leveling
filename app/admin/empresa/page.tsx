@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic"
 
+import { getTranslations } from "next-intl/server"
 import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
@@ -9,6 +10,7 @@ import EmpresaDashboard from "@/components/screens/EmpresaDashboard"
 
 export default async function EmpresaDashboardPage() {
   const user = await requireCurrentUser()
+  const t = await getTranslations("admin")
 
   const cookieStore = await cookies()
   const selectedOrgId = cookieStore.get("selected-org-id")?.value
@@ -127,7 +129,7 @@ export default async function EmpresaDashboardPage() {
       }}
       breadcrumbs={[
         { label: "Admin", href: "/admin" },
-        { label: "Dashboard Empresa" },
+        { label: t("breadcrumbCompanyDashboard") },
       ]}
     >
       <div className="flex-1 flex flex-col w-full relative">

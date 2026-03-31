@@ -2,8 +2,10 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { useTranslations } from "next-intl"
 
 export default function NotificationBell() {
+  const t = useTranslations("notificaciones")
   const [unread, setUnread] = useState(0)
 
   useEffect(() => {
@@ -28,7 +30,7 @@ export default function NotificationBell() {
     <Link
       href="/notificaciones"
       className="relative p-1.5 text-outline hover:text-on-surface transition-colors flex-shrink-0 bg-surface-container-high rounded-md active:scale-95"
-      aria-label="Notificaciones"
+      aria-label={t("ariaLabel")}
     >
       <span className="material-symbols-outlined text-lg">notifications</span>
       {unread > 0 && (

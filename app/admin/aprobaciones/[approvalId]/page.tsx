@@ -3,6 +3,7 @@ import SidebarLayout from "@/components/layout/SidebarLayout"
 import AprobacionDetail from "@/components/screens/admin/AprobacionDetail"
 import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
+import { getTranslations } from "next-intl/server"
 
 export default async function AprobacionDetailPage({
   params,
@@ -11,6 +12,7 @@ export default async function AprobacionDetailPage({
 }) {
   const { approvalId } = await params
   const user = await requireCurrentUser()
+  const t = await getTranslations("admin")
 
   const approval = await prisma.missionApproval.findUnique({
     where: { id: approvalId },
@@ -49,7 +51,7 @@ export default async function AprobacionDetailPage({
       user={{ name: user.name, level: user.level, title: user.title ?? "Executive", avatarUrl: user.avatarUrl }}
       breadcrumbs={[
         { label: "Admin", href: "/admin" },
-        { label: "Aprobaciones", href: "/admin/aprobaciones" },
+        { label: t("breadcrumbApprovals"), href: "/admin/aprobaciones" },
         { label: missionTitle },
       ]}
     >

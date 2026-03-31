@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import type { Role } from "@prisma/client"
 
 interface Member {
@@ -28,10 +29,10 @@ interface RoleTreeProps {
 }
 
 const ROLE_BADGE: Record<Role, { label: string; classes: string; dotClass: string }> = {
-  SUPER_ADMIN: { label: "Super Admin", classes: "bg-primary/20 text-primary",   dotClass: "bg-primary" },
-  ORG_ADMIN:   { label: "Org Admin",   classes: "bg-tertiary/20 text-tertiary", dotClass: "bg-tertiary" },
+  SUPER_ADMIN: { label: "Super Admin", classes: "bg-primary/20 text-primary",    dotClass: "bg-primary" },
+  ORG_ADMIN:   { label: "Org Admin",   classes: "bg-tertiary/20 text-tertiary",  dotClass: "bg-tertiary" },
   MANAGER:     { label: "Manager",     classes: "bg-secondary/20 text-secondary",dotClass: "bg-secondary" },
-  MEMBER:      { label: "Member",      classes: "bg-outline/20 text-outline",   dotClass: "bg-outline" },
+  MEMBER:      { label: "Member",      classes: "bg-outline/20 text-outline",    dotClass: "bg-outline" },
 }
 
 function UserCard({ member }: { member: Member }) {
@@ -60,6 +61,8 @@ function UserCard({ member }: { member: Member }) {
 }
 
 export default function RoleTree({ members, departments }: RoleTreeProps) {
+  const t = useTranslations("roletree")
+
   // Admins (no department or ORG_ADMIN)
   const orgAdmins = members.filter((m) => m.role === "ORG_ADMIN" || m.role === "SUPER_ADMIN")
   const unassigned = members.filter((m) => !m.department && m.role !== "ORG_ADMIN" && m.role !== "SUPER_ADMIN")
@@ -78,7 +81,7 @@ export default function RoleTree({ members, departments }: RoleTreeProps) {
           <div className="rounded-lg bg-surface-bright p-5">
             <div className="flex items-center gap-2 mb-3">
               <span className="material-symbols-outlined text-primary text-base">shield_person</span>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Administradores</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary">{t("admins")}</p>
               <span className="ml-auto text-[9px] text-outline/60">{orgAdmins.length}</span>
             </div>
             <div className="space-y-2 pl-4 border-l-2 border-primary/20">
@@ -99,16 +102,16 @@ export default function RoleTree({ members, departments }: RoleTreeProps) {
               <div className="flex items-center gap-2 mb-3">
                 <span className="material-symbols-outlined text-tertiary text-base">account_tree</span>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-tertiary">{dept.name}</p>
-                <span className="ml-auto text-[9px] text-outline/60">{deptMembers.length} miembro{deptMembers.length !== 1 ? "s" : ""}</span>
+                <span className="ml-auto text-[9px] text-outline/60">{deptMembers.length}</span>
               </div>
 
               {deptMembers.length === 0 ? (
-                <p className="text-[11px] text-outline/50 text-center py-3">Sin miembros asignados</p>
+                <p className="text-[11px] text-outline/50 text-center py-3">{t("noMembers")}</p>
               ) : (
                 <div className="pl-4 border-l-2 border-tertiary/20 space-y-3">
                   {managers.length > 0 && (
                     <div>
-                      <p className="text-[9px] font-bold uppercase tracking-widest text-secondary mb-1.5">Managers</p>
+                      <p className="text-[9px] font-bold uppercase tracking-widest text-secondary mb-1.5">{t("managers")}</p>
                       <div className="space-y-1.5">
                         {managers.map((m) => <UserCard key={m.id} member={m} />)}
                       </div>
@@ -116,7 +119,7 @@ export default function RoleTree({ members, departments }: RoleTreeProps) {
                   )}
                   {rest.length > 0 && (
                     <div>
-                      <p className="text-[9px] font-bold uppercase tracking-widest text-outline mb-1.5">Miembros</p>
+                      <p className="text-[9px] font-bold uppercase tracking-widest text-outline mb-1.5">{t("members")}</p>
                       <div className="space-y-1.5">
                         {rest.map((m) => <UserCard key={m.id} member={m} />)}
                       </div>
@@ -135,7 +138,7 @@ export default function RoleTree({ members, departments }: RoleTreeProps) {
           <div className="rounded-lg bg-surface-bright p-5">
             <div className="flex items-center gap-2 mb-3">
               <span className="material-symbols-outlined text-outline text-base">person_off</span>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-outline">Sin Departamento</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-outline">{t("noDepartment")}</p>
               <span className="ml-auto text-[9px] text-outline/60">{unassigned.length}</span>
             </div>
             <div className="space-y-2 pl-4 border-l-2 border-outline/20">

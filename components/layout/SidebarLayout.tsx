@@ -47,6 +47,7 @@ export default function SidebarLayout({
   breadcrumbs?: { label: string; href?: string }[]
 }) {
   const t = useTranslations("nav")
+  const tCommon = useTranslations("common")
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(true)
   const { user: clerkUser } = useUser()
@@ -102,7 +103,7 @@ export default function SidebarLayout({
             <div className="w-10 h-10 rounded-lg border border-primary/30 overflow-hidden shadow-lg flex-shrink-0 flex items-center justify-center bg-surface-container-lowest">
               {(clerkUser?.imageUrl ?? user?.avatarUrl) ? (
                 <img
-                  alt={user?.name ?? "Usuario"}
+                  alt={user?.name ?? tCommon("userAlt")}
                   className="w-full h-full object-cover"
                   src={clerkUser?.imageUrl ?? user?.avatarUrl ?? ""}
                 />
@@ -115,7 +116,7 @@ export default function SidebarLayout({
                 {user ? user.name : "Steve Smith"}
               </h2>
               <p className="text-[9px] text-primary mt-1 truncate">
-                Nivel {user ? user.level : 42} {user ? user.title.split(" ")[0] : "Architect"}
+                {tCommon("level")} {user ? user.level : 42} {user ? user.title.split(" ")[0] : "Architect"}
               </p>
               {currentOrg && (
                 <p className="text-[9px] text-on-surface/40 uppercase tracking-widest truncate mt-0.5">

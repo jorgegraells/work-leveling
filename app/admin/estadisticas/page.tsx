@@ -3,9 +3,12 @@ import AdminEstadisticas from "@/components/screens/admin/AdminEstadisticas"
 import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
+import { getTranslations } from "next-intl/server"
 
 export default async function AdminEstadisticasPage() {
   const user = await requireCurrentUser()
+  const t = await getTranslations("adminEstadisticas")
+  const tCommon = await getTranslations("common")
 
   // Check authorization: super admin or org admin
   if (!user.isSuperAdmin) {
@@ -20,20 +23,20 @@ export default async function AdminEstadisticasPage() {
 
   const orgId = user.organizationId
 
+  const MODULE_LABEL: Record<string, string> = {
+    VENTAS_LEADS:          tCommon("moduleVentas"),
+    PROYECTOS_CRONOGRAMA:  tCommon("moduleProyectos"),
+    ALIANZAS_CONTRATOS:    tCommon("moduleAlianzas"),
+    INFORMES_CUMPLIMIENTO: tCommon("moduleInformes"),
+    ESTRATEGIA_EXPANSION:  tCommon("moduleEstrategia"),
+  }
+
   // Get org user IDs
   const orgUsers = await prisma.user.findMany({
     where: { organizationId: orgId },
     select: { id: true },
   })
   const orgUserIds = orgUsers.map((u) => u.id)
-
-  const MODULE_LABEL: Record<string, string> = {
-    VENTAS_LEADS: "Ventas & Leads",
-    PROYECTOS_CRONOGRAMA: "Proyectos & Cronograma",
-    ALIANZAS_CONTRATOS: "Alianzas & Contratos",
-    INFORMES_CUMPLIMIENTO: "Informes & Cumplimiento",
-    ESTRATEGIA_EXPANSION: "Estrategia & Expansion",
-  }
 
   const [totalMissions, totalAssigned, totalCompleted, pendingApprovals] = await Promise.all([
     prisma.mission.count({
@@ -91,7 +94,7 @@ export default async function AdminEstadisticasPage() {
       user={{ name: user.name, level: user.level, title: user.title ?? "Admin", avatarUrl: user.avatarUrl }}
       breadcrumbs={[
         { label: "Admin", href: "/admin" },
-        { label: "Estadisticas" },
+        { label: t("title") },
       ]}
     >
       <AdminEstadisticas
