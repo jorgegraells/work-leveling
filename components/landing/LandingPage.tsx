@@ -72,15 +72,15 @@ function HeroSection() {
         <h1 className="font-headline text-4xl font-extrabold leading-tight tracking-tight text-on-surface sm:text-5xl lg:text-6xl">
           El 87% de tus empleados{" "}
           <span className="bg-gradient-to-r from-primary to-primary-fixed bg-clip-text text-transparent">
-            no saben si lo estan haciendo bien
+            no saben si lo están haciendo bien
           </span>
         </h1>
 
         {/* Subtitle */}
         <p className="mt-6 max-w-2xl font-body text-lg text-on-surface-variant sm:text-xl">
           Las revisiones trimestrales llegan tarde. Los Excel se pierden. El
-          talento se va sin que sepas por que. Work Leveling convierte cada
-          objetivo en una mision con progreso visible, feedback real y datos que
+          talento se va sin que sepas por qué. Work Leveling convierte cada
+          objetivo en una misión con progreso visible, feedback real y datos que
           no mienten.
         </p>
 
@@ -102,14 +102,14 @@ function HeroSection() {
             }
             className="flex items-center gap-2 rounded-md px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface transition-colors hover:bg-surface-container-high active:scale-[0.98]"
           >
-            Como funciona
+            Cómo funciona
             <Icon name="arrow_downward" className="text-base" />
           </button>
         </div>
 
         {/* Trust line */}
         <p className="mt-8 font-body text-xs text-on-surface-variant/50">
-          Sin tarjeta de credito &middot; Implementacion en minutos &middot;
+          Sin tarjeta de crédito &middot; Implementación en minutos &middot;
           Datos tuyos, siempre
         </p>
       </div>
@@ -136,7 +136,7 @@ const painPoints = [
     bg: "bg-outline/10",
     title: "Feedback que llega tarde",
     description:
-      "Un Excel compartido. Tres versiones distintas. Nadie sabe cual es la buena. Cuando el manager da feedback, el empleado ya ni recuerda el proyecto.",
+      "Un Excel compartido. Tres versiones distintas. Nadie sabe cuál es la buena. Cuando el manager da feedback, el empleado ya ni recuerda el proyecto.",
   },
   {
     icon: "trending_down",
@@ -144,7 +144,7 @@ const painPoints = [
     bg: "bg-error/10",
     title: "Talento que se va en silencio",
     description:
-      "No se fueron por el sueldo. Se fueron porque nadie les dijo que estaban creciendo. Porque ningun sistema les mostro su progreso.",
+      "No se fueron por el sueldo. Se fueron porque nadie les dijo que estaban creciendo. Porque ningún sistema les mostró su progreso.",
   },
   {
     icon: "gavel",
@@ -152,7 +152,23 @@ const painPoints = [
     bg: "bg-outline/10",
     title: "Decisiones sin datos",
     description:
-      "Ascender a Maria o a Carlos? Sin datos objetivos, es intuicion. Y la intuicion no se defiende ante un comite.",
+      "Ascender a María o a Carlos? Sin datos objetivos, es intuición. Y la intuición no se defiende ante un comité.",
+  },
+  {
+    icon: "mood_bad",
+    color: "text-error",
+    bg: "bg-error/10",
+    title: "Herramientas que desmotivan",
+    description:
+      "Los programas de gestión actuales son fríos, burocráticos y aburridos. Tu equipo los usa por obligación, no por motivación. El resultado: más rechazo que adopción.",
+  },
+  {
+    icon: "help_center",
+    color: "text-outline",
+    bg: "bg-outline/10",
+    title: "Demasiadas tareas, cero prioridad",
+    description:
+      "Cada semana llegan más proyectos. Sin un sistema claro de misiones y prioridades, tu equipo no sabe por dónde empezar. Y lo urgente siempre aplasta lo importante.",
   },
 ]
 
@@ -173,10 +189,10 @@ function ProblemSection() {
           La realidad
         </span>
         <h2 className="mb-16 text-center font-headline text-2xl font-bold text-on-surface sm:text-3xl">
-          Esto pasa cada dia en tu empresa
+          Esto pasa cada día en tu empresa
         </h2>
 
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {painPoints.map((p, i) => (
             <div
               key={i}
@@ -207,14 +223,14 @@ function ProblemSection() {
 }
 
 // ---------------------------------------------------------------------------
-// SECTION 3 — La Transformacion (resultados, no features)
+// SECTION 3 — La Transformación (resultados, no features)
 // ---------------------------------------------------------------------------
 
 const results = [
   {
-    metric: "3x mas feedback",
+    metric: "3x más feedback",
     description:
-      "Cada mision completada genera una evaluacion de 8 atributos. Tu equipo recibe feedback continuo, no anual.",
+      "Cada misión completada genera una evaluación de 8 atributos. Tu equipo recibe feedback continuo, no anual.",
     icon: "rate_review",
     color: "text-primary",
     bg: "bg-primary/10",
@@ -222,7 +238,7 @@ const results = [
   {
     metric: "100% trazabilidad",
     description:
-      "Quien creo el proyecto. Quien lo completo. Quien lo aprobo. Con que puntuacion. Que nota dejo. Todo documentado.",
+      "Quién creó el proyecto. Quién lo completó. Quién lo aprobó. Con qué puntuación. Qué nota dejó. Todo documentado.",
     icon: "verified_user",
     color: "text-secondary",
     bg: "bg-secondary/10",
@@ -262,7 +278,7 @@ function TransformationSection() {
           Resultados
         </span>
         <h2 className="mb-16 text-center font-headline text-2xl font-bold text-on-surface sm:text-3xl">
-          Que pasa cuando tu equipo tiene misiones claras
+          Qué pasa cuando tu equipo tiene misiones claras
         </h2>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -294,7 +310,7 @@ function TransformationSection() {
 }
 
 // ---------------------------------------------------------------------------
-// SECTION 4 — Como funciona (timeline)
+// SECTION 4 — Cómo funciona (timeline)
 // ---------------------------------------------------------------------------
 
 const steps = [
@@ -307,8 +323,8 @@ const steps = [
   {
     title: "Lo asigna al equipo",
     description:
-      "Cada empleado recibe notificacion. El primer objetivo se desbloquea automaticamente.",
-    detail: "Asignacion individual o por departamento",
+      "Cada empleado recibe notificación. El primer objetivo se desbloquea automáticamente.",
+    detail: "Asignación individual o por departamento",
   },
   {
     title: "El empleado completa misiones",
@@ -317,16 +333,16 @@ const steps = [
     detail: "Sistema de bloqueo secuencial — sin saltarse pasos",
   },
   {
-    title: "El manager aprueba y evalua",
+    title: "El manager aprueba y evalúa",
     description:
-      "Puntua 8 atributos del 1 al 5. Deja una nota personal. Puede rechazar con feedback constructivo.",
+      "Puntúa 8 atributos del 1 al 5. Deja una nota personal. Puede rechazar con feedback constructivo.",
     detail: "El rechazo no penaliza — mantiene el 80% del progreso",
   },
   {
     title: "El empleado sube de nivel",
     description:
-      "Gana XP, sus atributos crecen, su perfil refleja su evolucion real. Todo visible, todo medible.",
-    detail: "Curva exponencial — niveles iniciales rapidos, niveles altos prestigiosos",
+      "Gana XP, sus atributos crecen, su perfil refleja su evolución real. Todo visible, todo medible.",
+    detail: "Curva exponencial — niveles iniciales rápidos, niveles altos prestigiosos",
   },
 ]
 
@@ -348,7 +364,7 @@ function HowItWorksSection() {
           Flujo de trabajo
         </span>
         <h2 className="mb-16 text-center font-headline text-2xl font-bold text-on-surface sm:text-3xl">
-          Asi funciona, en la practica
+          Así funciona, en la práctica
         </h2>
 
         {/* Desktop: horizontal timeline */}
@@ -439,14 +455,14 @@ const roles = [
   {
     icon: "shield_person",
     title: "CEO / Director",
-    subtitle: "Visibilidad total sin microgestion",
+    subtitle: "Visibilidad total sin microgestión",
     color: "text-primary",
     borderColor: "border-primary/20",
     bg: "bg-primary/10",
     points: [
       "Dashboard con KPIs por empresa y departamento",
       "Tasa de completado, puntualidad y rendimiento en tiempo real",
-      "Gestion de multiples empresas desde una sola cuenta",
+      "Gestión de múltiples empresas desde una sola cuenta",
       "Datos para presentar al consejo, no intuiciones",
     ],
   },
@@ -460,20 +476,20 @@ const roles = [
     points: [
       "Aprueba misiones puntuando 8 atributos profesionales",
       "Deja notas personalizadas que el empleado realmente lee",
-      "Ve quien esta bloqueado sin preguntar 'como vas'",
+      "Ve quién está bloqueado sin preguntar 'cómo vas'",
       "Crea proyectos con objetivos claros en minutos",
     ],
   },
   {
     icon: "person",
     title: "Empleado",
-    subtitle: "Saber exactamente donde estas y hacia donde vas",
+    subtitle: "Saber exactamente dónde estás y hacia dónde vas",
     color: "text-secondary",
     borderColor: "border-secondary/20",
     bg: "bg-secondary/10",
     points: [
-      "Perfil profesional con atributos que crecen con cada mision",
-      "Feedback real despues de cada proyecto, no una vez al ano",
+      "Perfil profesional con atributos que crecen con cada misión",
+      "Feedback real después de cada proyecto, no una vez al año",
       "Nivel, XP y skills visibles — tu crecimiento tiene forma",
       "Notificaciones cuando se aprueba tu trabajo, con la nota del manager",
     ],
@@ -494,10 +510,10 @@ function RolesSection() {
     >
       <div className="mx-auto max-w-[1600px]">
         <span className="mb-4 block text-center text-[10px] font-bold uppercase tracking-widest text-primary font-label">
-          Para tu organizacion
+          Para tu organización
         </span>
         <h2 className="mb-16 text-center font-headline text-2xl font-bold text-on-surface sm:text-3xl">
-          Disenado para cada persona de tu organizacion
+          Diseñado para cada persona de tu organización
         </h2>
 
         <div className="grid gap-6 lg:grid-cols-3">
