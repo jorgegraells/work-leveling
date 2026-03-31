@@ -68,13 +68,46 @@ function HeroSection() {
           loaded ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
         }`}
       >
+        {/* Brand */}
+        <div className="mb-12">
+          <h1
+            className="font-headline text-6xl font-black uppercase tracking-[0.3em] sm:text-7xl lg:text-8xl"
+            style={{
+              background: "linear-gradient(135deg, #e9c400 0%, #ffe16d 40%, #e9c400 60%, #b69900 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              animation: "glow-text 3s ease-in-out infinite alternate",
+            }}
+          >
+            WORK LEVELING
+          </h1>
+          <style>{`
+            @keyframes glow-text {
+              0% { filter: drop-shadow(0 0 20px rgba(233,196,0,0.2)); }
+              100% { filter: drop-shadow(0 0 40px rgba(233,196,0,0.4)); }
+            }
+          `}</style>
+        </div>
+
+        {/* Philosophy */}
+        <p className="max-w-3xl font-body text-xl text-on-surface-variant sm:text-2xl leading-relaxed">
+          Nos motiva más trabajar en un juego por dinero ficticio que trabajar en
+          la vida real por dinero real.{" "}
+          <span className="text-primary font-semibold">
+            Nosotros fusionamos ambos mundos.
+          </span>
+        </p>
+
+        {/* Divider */}
+        <div className="my-12 h-px w-24 bg-primary/30" />
+
         {/* Headline */}
-        <h1 className="font-headline text-4xl font-extrabold leading-tight tracking-tight text-on-surface sm:text-5xl lg:text-6xl">
+        <h2 className="font-headline text-3xl font-extrabold leading-tight tracking-tight text-on-surface sm:text-4xl lg:text-5xl">
           El 87% de tus empleados{" "}
           <span className="bg-gradient-to-r from-primary to-primary-fixed bg-clip-text text-transparent">
             no saben si lo están haciendo bien
           </span>
-        </h1>
+        </h2>
 
         {/* Subtitle */}
         <p className="mt-6 max-w-2xl font-body text-lg text-on-surface-variant sm:text-xl">

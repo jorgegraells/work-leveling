@@ -792,7 +792,7 @@ function Footer() {
 export default function LandingBottom() {
   return (
     <>
-      <MockupSection />
+      {/* Mockup section removed — screenshots pendientes */}
       <DeepArgumentsSection />
       <AwkwardQuestionsSection />
       <CtaSection />
