@@ -69,17 +69,27 @@ function HeroSection() {
         }`}
       >
         {/* Brand */}
-        <div className="mb-12">
-          <h1
-            className="font-headline text-6xl font-black uppercase tracking-[0.3em] sm:text-7xl lg:text-8xl"
-            style={{
-              background: "linear-gradient(135deg, #e9c400 0%, #ffe16d 40%, #e9c400 60%, #b69900 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              animation: "glow-text 3s ease-in-out infinite alternate",
-            }}
-          >
-            WORK LEVELING
+        <div className="mb-10">
+          <h1 className="font-headline text-6xl font-black uppercase tracking-tight sm:text-7xl lg:text-8xl">
+            <span
+              style={{
+                background: "linear-gradient(135deg, #c4c7c7 0%, #e4e2e1 40%, #c4c7c7 70%, #8e9192 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              WORK
+            </span>{" "}
+            <span
+              style={{
+                background: "linear-gradient(135deg, #e9c400 0%, #ffe16d 40%, #e9c400 60%, #b69900 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                animation: "glow-text 3s ease-in-out infinite alternate",
+              }}
+            >
+              LEVELING
+            </span>
           </h1>
           <style>{`
             @keyframes glow-text {
@@ -97,11 +107,28 @@ function HeroSection() {
             Nosotros fusionamos ambos mundos.
           </span>
         </p>
+      </div>
+    </section>
+  )
+}
 
-        {/* Divider */}
-        <div className="my-12 h-px w-24 bg-primary/30" />
+// ---------------------------------------------------------------------------
+// SECTION 1B — Second hero (the 87% message)
+// ---------------------------------------------------------------------------
 
-        {/* Headline */}
+function SecondHeroSection() {
+  const { ref, visible } = useScrollReveal()
+
+  return (
+    <section className="relative bg-surface py-32 overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,rgba(233,196,0,0.05),transparent_70%)]" />
+
+      <div
+        ref={ref}
+        className={`relative z-10 mx-auto flex max-w-[1600px] flex-col items-center px-6 text-center transition-all duration-1000 ${
+          visible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+        }`}
+      >
         <h2 className="font-headline text-3xl font-extrabold leading-tight tracking-tight text-on-surface sm:text-4xl lg:text-5xl">
           El 87% de tus empleados{" "}
           <span className="bg-gradient-to-r from-primary to-primary-fixed bg-clip-text text-transparent">
@@ -109,7 +136,6 @@ function HeroSection() {
           </span>
         </h2>
 
-        {/* Subtitle */}
         <p className="mt-6 max-w-2xl font-body text-lg text-on-surface-variant sm:text-xl">
           Las revisiones trimestrales llegan tarde. Los Excel se pierden. El
           talento se va sin que sepas por qué. Work Leveling convierte cada
@@ -608,6 +634,7 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-surface">
       <HeroSection />
+      <SecondHeroSection />
       <ProblemSection />
       <TransformationSection />
       <HowItWorksSection />
