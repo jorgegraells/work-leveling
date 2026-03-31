@@ -148,17 +148,16 @@ function EuropeBarChart() {
           {EUROPE_COUNTRIES.map((c, i) => (
             <div key={c.name} className="flex items-center gap-3">
               <span className="text-[10px] font-bold text-on-surface w-28 text-right truncate">{c.name}</span>
-              <div className="flex-1 h-5 bg-surface-container-lowest rounded-full overflow-hidden">
+              <div className="flex-1 h-6 bg-surface-container-lowest rounded-full overflow-hidden relative">
                 <div
-                  className={`h-full ${c.color} rounded-full transition-all duration-1000 ease-out flex items-center justify-end pr-2`}
+                  className={`h-full ${c.color} rounded-full transition-all duration-1000 ease-out`}
                   style={{
                     width: visible ? `${(c.value / 40) * 100}%` : "0%",
                     transitionDelay: `${i * 80}ms`,
                   }}
-                >
-                  <span className="text-[9px] font-black text-on-primary">{c.value}%</span>
-                </div>
+                />
               </div>
+              <span className="text-[10px] font-black text-on-surface w-10">{c.value}%</span>
             </div>
           ))}
         </div>
@@ -186,19 +185,18 @@ function FeedbackChart() {
         <h4 className="font-headline font-bold text-on-surface text-lg mb-1">Frecuencia del feedback</h4>
         <p className="text-xs text-outline mb-6">Empleados engaged según frecuencia de feedback recibido</p>
 
-        <div className="flex items-end gap-4 h-44 justify-center">
+        <div className="flex items-end gap-6 justify-center">
           {data.map((d, i) => (
             <div key={d.label} className="flex flex-col items-center gap-2 flex-1 max-w-[120px]">
               <span className="text-2xl font-headline font-black text-on-surface">
                 {visible ? `${d.engaged}%` : "—"}
               </span>
-              <div className="w-full bg-surface-container-lowest rounded-t-lg overflow-hidden" style={{ height: 120 }}>
+              <div className="w-full flex flex-col justify-end bg-surface-container-lowest rounded-t-lg" style={{ height: 140 }}>
                 <div
                   className={`w-full ${d.color} rounded-t-lg transition-all duration-1000 ease-out`}
                   style={{
-                    height: visible ? `${(d.engaged / 65) * 100}%` : "0%",
+                    height: visible ? `${(d.engaged / 70) * 100}%` : "0%",
                     transitionDelay: `${i * 150}ms`,
-                    marginTop: visible ? `${100 - (d.engaged / 65) * 100}%` : "100%",
                   }}
                 />
               </div>
@@ -245,7 +243,7 @@ function TurnoverCost() {
                 <div
                   className={`h-full ${r.color} rounded-full transition-all duration-1000 ease-out`}
                   style={{
-                    width: visible ? `${(r.pct / 220) * 100}%` : "0%",
+                    width: visible ? `${(r.pct / 210) * 100}%` : "0%",
                     transitionDelay: `${i * 150}ms`,
                   }}
                 />
@@ -290,24 +288,23 @@ function TenureChart() {
         <h4 className="font-headline font-bold text-on-surface text-lg mb-1">¿Cuánto dura un empleado?</h4>
         <p className="text-xs text-outline mb-6">Antigüedad media por rango de edad (EE.UU. 2024)</p>
 
-        <div className="flex items-end gap-3 h-40 justify-center">
+        <div className="flex items-end gap-4 justify-center">
           {data.map((d, i) => (
-            <div key={d.age} className="flex flex-col items-center gap-2 flex-1">
+            <div key={d.age} className="flex flex-col items-center gap-1 flex-1 max-w-[100px]">
               <span className="text-lg font-headline font-black text-on-surface">
                 {visible ? `${d.years}` : "—"}
               </span>
               <span className="text-[8px] text-outline">años</span>
-              <div className="w-full bg-surface-container-lowest rounded-t-lg overflow-hidden" style={{ height: 80 }}>
+              <div className="w-full flex flex-col justify-end bg-surface-container-lowest rounded-t-lg" style={{ height: 120 }}>
                 <div
                   className={`w-full ${d.color} rounded-t-lg transition-all duration-1000 ease-out`}
                   style={{
-                    height: visible ? `${(d.years / 10) * 100}%` : "0%",
+                    height: visible ? `${(d.years / 12) * 100}%` : "0%",
                     transitionDelay: `${i * 150}ms`,
-                    marginTop: visible ? `${100 - (d.years / 10) * 100}%` : "100%",
                   }}
                 />
               </div>
-              <span className="text-[10px] font-bold text-outline">{d.age}</span>
+              <span className="text-[10px] font-bold text-outline mt-1">{d.age}</span>
             </div>
           ))}
         </div>
