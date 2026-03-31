@@ -47,14 +47,7 @@ function AnimatedNumber({ target, suffix = "", prefix = "" }: { target: number; 
 // Engagement trend chart (Gallup 2020-2024)
 // ---------------------------------------------------------------------------
 
-const ENGAGEMENT_DATA = [
-  { period: "2020", us: 36, europe: 11, label: "Pico" },
-  { period: "2021", us: 34, europe: 11, label: "" },
-  { period: "2022", us: 32, europe: 13, label: "" },
-  { period: "2023", us: 33, europe: 13, label: "" },
-  { period: "2024", us: 30, europe: 13, label: "Caída" },
-]
-
+// Average 2020-2024: US = (36+34+32+33+30)/5 = 33%, Europe = (11+11+13+13+13)/5 = 12.2% ≈ 12%
 function EngagementChart() {
   const { ref, visible } = useScrollReveal()
 
@@ -65,53 +58,43 @@ function EngagementChart() {
           <h4 className="font-headline font-bold text-on-surface text-lg">Empleados comprometidos</h4>
           <span className="text-[9px] font-bold uppercase tracking-widest text-outline">Fuente: Gallup</span>
         </div>
-        <p className="text-xs text-outline mb-4">EE.UU. vs Europa — 2020 a 2024 (sobre 100%)</p>
+        <p className="text-xs text-outline mb-4">Media 2020–2024 — EE.UU. vs Europa (sobre 100%)</p>
         <p className="text-[9px] text-on-surface-variant/60 mb-6 italic">
           «Engaged» = empleados emocionalmente involucrados y motivados en su trabajo. El resto está desconectado o activamente desmotivado.
         </p>
 
-        <div className="flex items-end gap-4 sm:gap-6">
-          {ENGAGEMENT_DATA.map((d, i) => (
-            <div key={d.period} className="flex-1 flex flex-col items-center">
-              <div className="flex gap-2 mb-1 justify-center">
-                <span className="text-[10px] font-bold text-primary">{visible ? `${d.us}%` : ""}</span>
-                <span className="text-[10px] font-bold text-error">{visible ? `${d.europe}%` : ""}</span>
-              </div>
-              <div className="w-full flex gap-1 justify-center h-44">
-                <div className="flex-1 flex flex-col justify-end max-w-[40px]">
-                  <div
-                    className="w-full bg-primary rounded-t transition-all duration-1000 ease-out"
-                    style={{ height: visible ? `${d.us}%` : "0%", transitionDelay: `${i * 120}ms` }}
-                  />
-                </div>
-                <div className="flex-1 flex flex-col justify-end max-w-[40px]">
-                  <div
-                    className="w-full bg-error/70 rounded-t transition-all duration-1000 ease-out"
-                    style={{ height: visible ? `${d.europe}%` : "0%", transitionDelay: `${i * 120 + 60}ms` }}
-                  />
-                </div>
-              </div>
-              {/* Period label */}
-              <span className="text-[9px] sm:text-[10px] font-bold text-outline mt-2">{d.period}</span>
-              {d.label && <span className="text-[8px] text-on-surface-variant">{d.label}</span>}
+        <div className="flex items-end gap-8 sm:gap-12 justify-center">
+          {/* US */}
+          <div className="flex flex-col items-center gap-2 w-32">
+            <span className="text-3xl font-headline font-black text-primary">
+              {visible ? "33%" : "—"}
+            </span>
+            <div className="w-full flex flex-col justify-end bg-surface-container-lowest rounded-t-lg" style={{ height: 200 }}>
+              <div
+                className="w-full bg-primary rounded-t-lg transition-all duration-1000 ease-out"
+                style={{ height: visible ? "33%" : "0%" }}
+              />
             </div>
-          ))}
+            <span className="text-[10px] font-bold text-outline uppercase tracking-widest">EE.UU.</span>
+          </div>
+
+          {/* Europe */}
+          <div className="flex flex-col items-center gap-2 w-32">
+            <span className="text-3xl font-headline font-black text-error">
+              {visible ? "12%" : "—"}
+            </span>
+            <div className="w-full flex flex-col justify-end bg-surface-container-lowest rounded-t-lg" style={{ height: 200 }}>
+              <div
+                className="w-full bg-error/70 rounded-t-lg transition-all duration-1000 ease-out"
+                style={{ height: visible ? "12%" : "0%", transitionDelay: "150ms" }}
+              />
+            </div>
+            <span className="text-[10px] font-bold text-outline uppercase tracking-widest">Europa</span>
+          </div>
         </div>
 
-        {/* Legend */}
-        <div className="flex gap-6 mt-5 justify-center flex-wrap">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-sm bg-primary" />
-            <span className="text-[10px] text-outline">EE.UU.</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-sm bg-error/70" />
-            <span className="text-[10px] text-outline">Europa</span>
-          </div>
-        </div>
-
-        <p className="text-[9px] text-outline mt-3 text-center">
-          EE.UU. cayó del 36% al 30% en 4 años. Europa no supera el 13%. <span className="text-error font-bold">El 70–87% de empleados está desconectado.</span>
+        <p className="text-[9px] text-outline mt-6 text-center max-w-lg mx-auto">
+          De media, solo 1 de cada 3 empleados en EE.UU. está comprometido. En Europa, apenas 1 de cada 8. <span className="text-error font-bold">El resto está desconectado o activamente desmotivado.</span>
         </p>
       </div>
     </div>
