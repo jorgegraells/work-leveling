@@ -57,7 +57,6 @@ const ENGAGEMENT_DATA = [
 
 function EngagementChart() {
   const { ref, visible } = useScrollReveal()
-  const maxVal = 30
 
   return (
     <div ref={ref} className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
@@ -66,47 +65,38 @@ function EngagementChart() {
           <h4 className="font-headline font-bold text-on-surface text-lg">Empleados comprometidos</h4>
           <span className="text-[9px] font-bold uppercase tracking-widest text-outline">Fuente: Gallup 2025</span>
         </div>
-        <p className="text-xs text-outline mb-6">Porcentaje de empleados engaged en su trabajo</p>
+        <p className="text-xs text-outline mb-4">Porcentaje de empleados comprometidos con su trabajo (sobre 100%)</p>
+        <p className="text-[9px] text-on-surface-variant/60 mb-6 italic">
+          «Engaged» = empleados emocionalmente involucrados y motivados en su trabajo, según la metodología Gallup.
+        </p>
 
         <div className="flex gap-4">
           {ENGAGEMENT_DATA.map((d, i) => (
             <div key={d.year} className="flex-1 flex flex-col items-center">
-              {/* Labels */}
               <div className="flex gap-1 w-full justify-center mb-1">
                 <span className="text-[9px] font-bold text-primary">{visible ? `${d.global}%` : ""}</span>
                 <span className="text-[9px] font-bold text-error">{visible ? `${d.europe}%` : ""}</span>
               </div>
-              {/* Bars container */}
-              <div className="flex gap-1 w-full justify-center h-36">
-                {/* Global bar */}
+              <div className="flex gap-1 w-full justify-center h-44">
                 <div className="flex-1 flex flex-col justify-end">
                   <div
                     className="w-full bg-primary rounded-t transition-all duration-1000 ease-out"
-                    style={{
-                      height: visible ? `${(d.global / maxVal) * 100}%` : "0%",
-                      transitionDelay: `${i * 100}ms`,
-                    }}
+                    style={{ height: visible ? `${d.global}%` : "0%", transitionDelay: `${i * 100}ms` }}
                   />
                 </div>
-                {/* Europe bar */}
                 <div className="flex-1 flex flex-col justify-end">
                   <div
                     className="w-full bg-error/70 rounded-t transition-all duration-1000 ease-out"
-                    style={{
-                      height: visible ? `${(d.europe / maxVal) * 100}%` : "0%",
-                      transitionDelay: `${i * 100 + 50}ms`,
-                    }}
+                    style={{ height: visible ? `${d.europe}%` : "0%", transitionDelay: `${i * 100 + 50}ms` }}
                   />
                 </div>
               </div>
-              {/* Year label */}
               <span className="text-[10px] font-bold text-outline mt-2">{d.year}</span>
               {d.label && <span className="text-[8px] text-on-surface-variant">{d.label}</span>}
             </div>
           ))}
         </div>
 
-        {/* Legend */}
         <div className="flex gap-6 mt-4 justify-center">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-sm bg-primary" />
@@ -142,7 +132,10 @@ function EuropeBarChart() {
     <div ref={ref} className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
       <div className="rounded-lg bg-surface-bright p-6">
         <h4 className="font-headline font-bold text-on-surface text-lg mb-1">Europa: la región menos comprometida</h4>
-        <p className="text-xs text-outline mb-6">Empleados engaged por país (2024)</p>
+        <p className="text-xs text-outline mb-4">Porcentaje de empleados comprometidos por país (sobre 100%)</p>
+        <p className="text-[9px] text-on-surface-variant/60 mb-6 italic">
+          Solo cuentan como «comprometidos» los empleados que muestran alta motivación e implicación activa.
+        </p>
 
         <div className="space-y-3">
           {EUROPE_COUNTRIES.map((c, i) => (
@@ -152,7 +145,7 @@ function EuropeBarChart() {
                 <div
                   className={`h-full ${c.color} rounded-full transition-all duration-1000 ease-out`}
                   style={{
-                    width: visible ? `${(c.value / 40) * 100}%` : "0%",
+                    width: visible ? `${c.value}%` : "0%",
                     transitionDelay: `${i * 80}ms`,
                   }}
                 />
@@ -183,7 +176,10 @@ function FeedbackChart() {
     <div ref={ref} className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
       <div className="rounded-lg bg-surface-bright p-6">
         <h4 className="font-headline font-bold text-on-surface text-lg mb-1">Frecuencia del feedback</h4>
-        <p className="text-xs text-outline mb-6">Empleados engaged según frecuencia de feedback recibido</p>
+        <p className="text-xs text-outline mb-4">Empleados comprometidos según frecuencia de retroalimentación (sobre 100%)</p>
+        <p className="text-[9px] text-on-surface-variant/60 mb-6 italic">
+          «Feedback» = retroalimentación del manager sobre el trabajo del empleado: evaluaciones, comentarios y reconocimiento.
+        </p>
 
         <div className="flex items-end gap-6 justify-center">
           {data.map((d, i) => (
@@ -191,11 +187,11 @@ function FeedbackChart() {
               <span className="text-2xl font-headline font-black text-on-surface">
                 {visible ? `${d.engaged}%` : "—"}
               </span>
-              <div className="w-full flex flex-col justify-end bg-surface-container-lowest rounded-t-lg" style={{ height: 140 }}>
+              <div className="w-full flex flex-col justify-end bg-surface-container-lowest rounded-t-lg" style={{ height: 160 }}>
                 <div
                   className={`w-full ${d.color} rounded-t-lg transition-all duration-1000 ease-out`}
                   style={{
-                    height: visible ? `${(d.engaged / 70) * 100}%` : "0%",
+                    height: visible ? `${d.engaged}%` : "0%",
                     transitionDelay: `${i * 150}ms`,
                   }}
                 />
@@ -206,7 +202,7 @@ function FeedbackChart() {
         </div>
 
         <p className="text-[10px] text-outline mt-4 text-center">
-          Fuente: Gallup 2024 — Los empleados con feedback semanal son <span className="text-secondary font-bold">3.6x más propensos</span> a sentirse motivados
+          Fuente: Gallup 2024 — Los empleados con retroalimentación semanal son <span className="text-secondary font-bold">3.6x más propensos</span> a sentirse motivados
         </p>
       </div>
     </div>
@@ -224,7 +220,10 @@ function TurnoverCost() {
     <div ref={ref} className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
       <div className="rounded-lg bg-surface-bright p-6">
         <h4 className="font-headline font-bold text-on-surface text-lg mb-1">El coste de perder talento</h4>
-        <p className="text-xs text-outline mb-6">Coste de reemplazar un empleado según su nivel</p>
+        <p className="text-xs text-outline mb-4">Coste de reemplazar un empleado según su nivel (% del salario anual)</p>
+        <p className="text-[9px] text-on-surface-variant/60 mb-6 italic">
+          «Turnover» = rotación de personal. Incluye costes de selección, formación, pérdida de productividad y tiempo de adaptación.
+        </p>
 
         <div className="space-y-4">
           {[
@@ -239,15 +238,24 @@ function TurnoverCost() {
                   {visible ? `${r.pct}%` : "—"} <span className="text-outline font-normal">del salario anual</span>
                 </span>
               </div>
-              <div className="h-3 bg-surface-container-lowest rounded-full overflow-hidden">
+              <div className="h-4 bg-surface-container-lowest rounded-full overflow-hidden relative">
+                {/* 100% mark */}
+                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-on-surface/20 z-10" />
                 <div
                   className={`h-full ${r.color} rounded-full transition-all duration-1000 ease-out`}
                   style={{
-                    width: visible ? `${(r.pct / 210) * 100}%` : "0%",
+                    width: visible ? `${Math.min((r.pct / 200) * 100, 100)}%` : "0%",
                     transitionDelay: `${i * 150}ms`,
                   }}
                 />
               </div>
+              {i === 0 && (
+                <div className="flex justify-between mt-0.5">
+                  <span className="text-[8px] text-outline">0%</span>
+                  <span className="text-[8px] text-outline">100%</span>
+                  <span className="text-[8px] text-outline">200%</span>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -259,7 +267,7 @@ function TurnoverCost() {
               <p className="text-on-surface font-headline font-bold text-lg">
                 <AnimatedNumber target={438} prefix="$" suffix=" mil millones" />
               </p>
-              <p className="text-[10px] text-outline">Pérdida global anual por falta de engagement (Gallup 2025)</p>
+              <p className="text-[10px] text-outline">Pérdida global anual por falta de compromiso laboral (Gallup 2025)</p>
             </div>
           </div>
         </div>
@@ -286,25 +294,27 @@ function TenureChart() {
     <div ref={ref} className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
       <div className="rounded-lg bg-surface-bright p-6">
         <h4 className="font-headline font-bold text-on-surface text-lg mb-1">¿Cuánto dura un empleado?</h4>
-        <p className="text-xs text-outline mb-6">Antigüedad media por rango de edad (EE.UU. 2024)</p>
+        <p className="text-xs text-outline mb-4">Antigüedad media por rango de edad en años (EE.UU. 2024)</p>
+        <p className="text-[9px] text-on-surface-variant/60 mb-6 italic">
+          «Tenure» = tiempo medio que un empleado permanece en la misma empresa antes de cambiar.
+        </p>
 
-        <div className="flex items-end gap-4 justify-center">
+        <div className="space-y-3">
           {data.map((d, i) => (
-            <div key={d.age} className="flex flex-col items-center gap-1 flex-1 max-w-[100px]">
-              <span className="text-lg font-headline font-black text-on-surface">
-                {visible ? `${d.years}` : "—"}
-              </span>
-              <span className="text-[8px] text-outline">años</span>
-              <div className="w-full flex flex-col justify-end bg-surface-container-lowest rounded-t-lg" style={{ height: 120 }}>
+            <div key={d.age}>
+              <div className="flex justify-between mb-1">
+                <span className="text-[10px] font-bold text-on-surface">{d.age} años</span>
+                <span className="text-[10px] font-black text-on-surface">{d.years} años</span>
+              </div>
+              <div className="h-4 bg-surface-container-lowest rounded-full overflow-hidden">
                 <div
-                  className={`w-full ${d.color} rounded-t-lg transition-all duration-1000 ease-out`}
+                  className={`h-full ${d.color} rounded-full transition-all duration-1000 ease-out`}
                   style={{
-                    height: visible ? `${(d.years / 12) * 100}%` : "0%",
-                    transitionDelay: `${i * 150}ms`,
+                    width: visible ? `${(d.years / 15) * 100}%` : "0%",
+                    transitionDelay: `${i * 120}ms`,
                   }}
                 />
               </div>
-              <span className="text-[10px] font-bold text-outline mt-1">{d.age}</span>
             </div>
           ))}
         </div>
@@ -334,8 +344,8 @@ function GamificationImpact() {
           {[
             { stat: "+25%", desc: "aumento en productividad (KPMG, programa gamificado)", color: "text-secondary" },
             { stat: "+22%", desc: "más oportunidades de negocio generadas", color: "text-primary" },
-            { stat: "3.6x", desc: "más motivación con feedback frecuente vs. anual", color: "text-tertiary" },
-            { stat: "80%", desc: "de empleados con feedback significativo están fully engaged", color: "text-on-tertiary-container" },
+            { stat: "3.6x", desc: "más motivación con retroalimentación frecuente vs. anual", color: "text-tertiary" },
+            { stat: "80%", desc: "de empleados con retroalimentación significativa están plenamente comprometidos", color: "text-on-tertiary-container" },
           ].map((item, i) => (
             <div
               key={i}
@@ -376,7 +386,7 @@ function BigKpis() {
         { value: 21, suffix: "%", label: "de empleados están engaged globalmente", color: "text-error", sub: "79% desconectados" },
         { value: 13, suffix: "%", label: "en Europa — la peor región del mundo", color: "text-error", sub: "España: solo 9%" },
         { value: 3.5, suffix: " años", label: "antigüedad media en el sector privado", color: "text-primary", sub: "2.7 años en jóvenes 25-34" },
-        { value: 438, suffix: "B$", label: "pérdida anual por falta de engagement", color: "text-error", sub: "Gallup 2025" },
+        { value: 438, suffix: "B$", label: "pérdida anual por falta de compromiso", color: "text-error", sub: "Gallup 2025" },
       ].map((kpi, i) => (
         <div key={i} className="rounded-xl bg-surface-container-highest p-1">
           <div className="rounded-lg bg-surface-bright p-5 text-center h-full flex flex-col justify-center">
@@ -445,7 +455,7 @@ export default function LandingData() {
         {/* Closing statement */}
         <div className="text-center max-w-3xl mx-auto">
           <p className="text-on-surface-variant text-lg leading-relaxed">
-            El engagement no es un &quot;nice to have&quot;. Es la diferencia entre una empresa que retiene talento y una que lo pierde.{" "}
+            El compromiso laboral no es un extra. Es la diferencia entre una empresa que retiene talento y una que lo pierde.{" "}
             <span className="text-primary font-semibold">
               La gamificación no es un juego — es la herramienta que cierra esa brecha.
             </span>
