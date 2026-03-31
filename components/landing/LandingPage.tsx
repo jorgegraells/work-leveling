@@ -102,7 +102,7 @@ function HeroSection() {
         {/* Philosophy */}
         <p className="max-w-3xl font-body text-xl text-on-surface-variant sm:text-2xl leading-relaxed">
           Nos motiva más trabajar en un juego por dinero ficticio que trabajar en
-          la vida real por dinero real.{" "}
+          la vida por dinero real.{" "}
           <span className="text-primary font-semibold">
             Nosotros fusionamos ambos mundos.
           </span>
@@ -120,8 +120,8 @@ function SecondHeroSection() {
   const { ref, visible } = useScrollReveal()
 
   return (
-    <section className="relative bg-surface py-32 overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,rgba(233,196,0,0.05),transparent_70%)]" />
+    <section className="relative bg-surface-container-lowest py-32 overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,rgba(233,196,0,0.06),transparent_70%)]" />
 
       <div
         ref={ref}
@@ -166,11 +166,7 @@ function SecondHeroSection() {
           </button>
         </div>
 
-        {/* Trust line */}
-        <p className="mt-8 font-body text-xs text-on-surface-variant/50">
-          Sin tarjeta de crédito &middot; Implementación en minutos &middot;
-          Datos tuyos, siempre
-        </p>
+{/* trust line removed */}
       </div>
     </section>
   )
@@ -247,7 +243,7 @@ function ProblemSection() {
         <span className="mb-4 block text-center text-[10px] font-bold uppercase tracking-widest text-error font-label">
           La realidad
         </span>
-        <h2 className="mb-16 text-center font-headline text-2xl font-bold text-on-surface sm:text-3xl">
+        <h2 className="mb-16 text-center font-headline text-3xl font-extrabold text-on-surface sm:text-4xl lg:text-5xl">
           Esto pasa cada día en tu empresa
         </h2>
 
@@ -336,7 +332,7 @@ function TransformationSection() {
         <span className="mb-4 block text-center text-[10px] font-bold uppercase tracking-widest text-primary font-label">
           Resultados
         </span>
-        <h2 className="mb-16 text-center font-headline text-2xl font-bold text-on-surface sm:text-3xl">
+        <h2 className="mb-16 text-center font-headline text-3xl font-extrabold text-on-surface sm:text-4xl lg:text-5xl">
           Qué pasa cuando tu equipo tiene misiones claras
         </h2>
 
@@ -422,7 +418,7 @@ function HowItWorksSection() {
         <span className="mb-4 block text-center text-[10px] font-bold uppercase tracking-widest text-primary font-label">
           Flujo de trabajo
         </span>
-        <h2 className="mb-16 text-center font-headline text-2xl font-bold text-on-surface sm:text-3xl">
+        <h2 className="mb-16 text-center font-headline text-3xl font-extrabold text-on-surface sm:text-4xl lg:text-5xl">
           Así funciona, en la práctica
         </h2>
 
@@ -571,7 +567,7 @@ function RolesSection() {
         <span className="mb-4 block text-center text-[10px] font-bold uppercase tracking-widest text-primary font-label">
           Para tu organización
         </span>
-        <h2 className="mb-16 text-center font-headline text-2xl font-bold text-on-surface sm:text-3xl">
+        <h2 className="mb-16 text-center font-headline text-3xl font-extrabold text-on-surface sm:text-4xl lg:text-5xl">
           Diseñado para cada persona de tu organización
         </h2>
 
