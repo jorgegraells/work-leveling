@@ -2,6 +2,8 @@
 
 import { useRef, useState, useEffect } from "react"
 import Link from "next/link"
+import { useLandingLang } from "./LandingContext"
+import { t } from "./LandingTranslations"
 
 // ---------------------------------------------------------------------------
 // Scroll-reveal hook with stagger support
@@ -57,6 +59,8 @@ function stagger(visible: boolean, index: number, base = 100) {
 function HeroSection() {
   const [loaded, setLoaded] = useState(false)
   useEffect(() => setLoaded(true), [])
+  const { lang } = useLandingLang()
+  const s = t[lang]
 
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-surface">
@@ -101,10 +105,9 @@ function HeroSection() {
 
         {/* Philosophy */}
         <p className="max-w-3xl font-body text-xl text-on-surface-variant sm:text-2xl leading-relaxed">
-          Nos motiva más trabajar en un juego por dinero ficticio que trabajar en
-          la vida por dinero real.{" "}
+          {s.heroPhilosophy}{" "}
           <span className="text-primary font-semibold">
-            Nosotros fusionamos ambos mundos.
+            {s.heroFusion}
           </span>
         </p>
       </div>
@@ -118,6 +121,8 @@ function HeroSection() {
 
 function SecondHeroSection() {
   const { ref, visible } = useScrollReveal()
+  const { lang } = useLandingLang()
+  const s = t[lang]
 
   return (
     <section className="relative bg-surface-container-lowest py-32 overflow-hidden">
@@ -130,17 +135,14 @@ function SecondHeroSection() {
         }`}
       >
         <h2 className="font-headline text-3xl font-extrabold leading-tight tracking-tight text-on-surface sm:text-4xl lg:text-5xl">
-          El 87% de tus empleados{" "}
+          {s.heroHeadline}
           <span className="bg-gradient-to-r from-primary to-primary-fixed bg-clip-text text-transparent">
-            no saben si lo están haciendo bien
+            {s.heroHeadlineHighlight}
           </span>
         </h2>
 
         <p className="mt-6 max-w-2xl font-body text-lg text-on-surface-variant sm:text-xl">
-          Las revisiones trimestrales llegan tarde. Los Excel se pierden. El
-          talento se va sin que sepas por qué. Work Leveling convierte cada
-          objetivo en una misión con progreso visible, feedback real y datos que
-          no mienten.
+          {s.heroSubtitle}
         </p>
 
         {/* CTAs */}
@@ -149,7 +151,7 @@ function SecondHeroSection() {
             href="/sign-up"
             className="group relative rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-on-primary shadow-[0_0_25px_rgba(233,196,0,0.2)] transition-transform active:scale-95"
           >
-            <span className="relative z-10">Empieza gratis</span>
+            <span className="relative z-10">{s.ctaStart}</span>
             <span className="absolute inset-0 animate-pulse rounded-md bg-primary/15 blur-xl" />
           </Link>
 
@@ -161,7 +163,7 @@ function SecondHeroSection() {
             }
             className="flex items-center gap-2 rounded-md px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface transition-colors hover:bg-surface-container-high active:scale-[0.98]"
           >
-            Cómo funciona
+            {s.ctaHow}
             <Icon name="arrow_downward" className="text-base" />
           </button>
         </div>
@@ -176,59 +178,55 @@ function SecondHeroSection() {
 // SECTION 2 — El Problema (crear dolor)
 // ---------------------------------------------------------------------------
 
-const painPoints = [
-  {
-    icon: "visibility_off",
-    color: "text-error",
-    bg: "bg-error/10",
-    title: "Progreso invisible",
-    description:
-      "Tu mejor empleado lleva 6 meses sin saber si va bien. Cuando le preguntas en la review trimestral, ya tiene una oferta de otra empresa.",
-  },
-  {
-    icon: "description",
-    color: "text-outline",
-    bg: "bg-outline/10",
-    title: "Feedback que llega tarde",
-    description:
-      "Un Excel compartido. Tres versiones distintas. Nadie sabe cuál es la buena. Cuando el manager da feedback, el empleado ya ni recuerda el proyecto.",
-  },
-  {
-    icon: "trending_down",
-    color: "text-error",
-    bg: "bg-error/10",
-    title: "Talento que se va en silencio",
-    description:
-      "No se fueron por el sueldo. Se fueron porque nadie les dijo que estaban creciendo. Porque ningún sistema les mostró su progreso.",
-  },
-  {
-    icon: "gavel",
-    color: "text-outline",
-    bg: "bg-outline/10",
-    title: "Decisiones sin datos",
-    description:
-      "Ascender a María o a Carlos? Sin datos objetivos, es intuición. Y la intuición no se defiende ante un comité.",
-  },
-  {
-    icon: "mood_bad",
-    color: "text-error",
-    bg: "bg-error/10",
-    title: "Herramientas que desmotivan",
-    description:
-      "Los programas de gestión actuales son fríos, burocráticos y aburridos. Tu equipo los usa por obligación, no por motivación. El resultado: más rechazo que adopción.",
-  },
-  {
-    icon: "help_center",
-    color: "text-outline",
-    bg: "bg-outline/10",
-    title: "Demasiadas tareas, cero prioridad",
-    description:
-      "Cada semana llegan más proyectos. Sin un sistema claro de misiones y prioridades, tu equipo no sabe por dónde empezar. Y lo urgente siempre aplasta lo importante.",
-  },
-]
-
 function ProblemSection() {
   const section = useScrollReveal()
+  const { lang } = useLandingLang()
+  const s = t[lang]
+
+  const painPoints = [
+    {
+      icon: "visibility_off",
+      color: "text-error",
+      bg: "bg-error/10",
+      title: s.painTitle0,
+      description: s.painDesc0,
+    },
+    {
+      icon: "description",
+      color: "text-outline",
+      bg: "bg-outline/10",
+      title: s.painTitle1,
+      description: s.painDesc1,
+    },
+    {
+      icon: "trending_down",
+      color: "text-error",
+      bg: "bg-error/10",
+      title: s.painTitle2,
+      description: s.painDesc2,
+    },
+    {
+      icon: "gavel",
+      color: "text-outline",
+      bg: "bg-outline/10",
+      title: s.painTitle3,
+      description: s.painDesc3,
+    },
+    {
+      icon: "mood_bad",
+      color: "text-error",
+      bg: "bg-error/10",
+      title: s.painTitle4,
+      description: s.painDesc4,
+    },
+    {
+      icon: "help_center",
+      color: "text-outline",
+      bg: "bg-outline/10",
+      title: s.painTitle5,
+      description: s.painDesc5,
+    },
+  ]
 
   return (
     <section
@@ -242,10 +240,10 @@ function ProblemSection() {
     >
       <div className="mx-auto max-w-[1600px]">
         <span className="mb-4 block text-center text-[10px] font-bold uppercase tracking-widest text-error font-label">
-          La realidad
+          {s.problemLabel}
         </span>
         <h2 className="mb-16 text-center font-headline text-3xl font-extrabold text-on-surface sm:text-4xl lg:text-5xl">
-          Esto pasa cada día en tu empresa
+          {s.problemHeadline}
         </h2>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -282,43 +280,41 @@ function ProblemSection() {
 // SECTION 3 — La Transformación (resultados, no features)
 // ---------------------------------------------------------------------------
 
-const results = [
-  {
-    metric: "3x más feedback",
-    description:
-      "Cada misión completada genera una evaluación de 8 atributos. Tu equipo recibe feedback continuo, no anual.",
-    icon: "rate_review",
-    color: "text-primary",
-    bg: "bg-primary/10",
-  },
-  {
-    metric: "100% trazabilidad",
-    description:
-      "Quién creó el proyecto. Quién lo completó. Quién lo aprobó. Con qué puntuación. Qué nota dejó. Todo documentado.",
-    icon: "verified_user",
-    color: "text-secondary",
-    bg: "bg-secondary/10",
-  },
-  {
-    metric: "Engagement real",
-    description:
-      "XP, niveles, atributos que crecen. El progreso es visible y adictivo. Tus empleados abren la app porque quieren, no porque deben.",
-    icon: "trending_up",
-    color: "text-tertiary",
-    bg: "bg-tertiary/10",
-  },
-  {
-    metric: "Decisiones con datos",
-    description:
-      "KPIs por empresa, departamento y persona. Tasa de completado, puntualidad, rendimiento. Todo en tiempo real.",
-    icon: "analytics",
-    color: "text-on-tertiary-container",
-    bg: "bg-on-tertiary-container/10",
-  },
-]
-
 function TransformationSection() {
   const section = useScrollReveal()
+  const { lang } = useLandingLang()
+  const s = t[lang]
+
+  const results = [
+    {
+      metric: s.resultMetric0,
+      description: s.resultDesc0,
+      icon: "rate_review",
+      color: "text-primary",
+      bg: "bg-primary/10",
+    },
+    {
+      metric: s.resultMetric1,
+      description: s.resultDesc1,
+      icon: "verified_user",
+      color: "text-secondary",
+      bg: "bg-secondary/10",
+    },
+    {
+      metric: s.resultMetric2,
+      description: s.resultDesc2,
+      icon: "trending_up",
+      color: "text-tertiary",
+      bg: "bg-tertiary/10",
+    },
+    {
+      metric: s.resultMetric3,
+      description: s.resultDesc3,
+      icon: "analytics",
+      color: "text-on-tertiary-container",
+      bg: "bg-on-tertiary-container/10",
+    },
+  ]
 
   return (
     <section
@@ -331,10 +327,10 @@ function TransformationSection() {
     >
       <div className="mx-auto max-w-[1600px]">
         <span className="mb-4 block text-center text-[10px] font-bold uppercase tracking-widest text-primary font-label">
-          Resultados
+          {s.transformLabel}
         </span>
         <h2 className="mb-16 text-center font-headline text-3xl font-extrabold text-on-surface sm:text-4xl lg:text-5xl">
-          Qué pasa cuando tu equipo tiene misiones claras
+          {s.transformHeadline}
         </h2>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -369,41 +365,18 @@ function TransformationSection() {
 // SECTION 4 — Cómo funciona (timeline)
 // ---------------------------------------------------------------------------
 
-const steps = [
-  {
-    title: "El admin crea un proyecto",
-    description:
-      "Define objetivos, asigna XP, establece deadline. Elige la empresa y el equipo.",
-    detail: "Con selector de iconos, skills asociados y prioridad",
-  },
-  {
-    title: "Lo asigna al equipo",
-    description:
-      "Cada empleado recibe notificación. El primer objetivo se desbloquea automáticamente.",
-    detail: "Asignación individual o por departamento",
-  },
-  {
-    title: "El empleado completa misiones",
-    description:
-      "Avanza objetivo por objetivo. Ve su progreso en tiempo real. Cada paso desbloquea el siguiente.",
-    detail: "Sistema de bloqueo secuencial — sin saltarse pasos",
-  },
-  {
-    title: "El manager aprueba y evalúa",
-    description:
-      "Puntúa 8 atributos del 1 al 5. Deja una nota personal. Puede rechazar con feedback constructivo.",
-    detail: "El rechazo no penaliza — mantiene el 80% del progreso",
-  },
-  {
-    title: "El empleado sube de nivel",
-    description:
-      "Gana XP, sus atributos crecen, su perfil refleja su evolución real. Todo visible, todo medible.",
-    detail: "Curva exponencial — niveles iniciales rápidos, niveles altos prestigiosos",
-  },
-]
-
 function HowItWorksSection() {
   const section = useScrollReveal()
+  const { lang } = useLandingLang()
+  const s = t[lang]
+
+  const steps = [
+    { title: s.stepTitle0, description: s.stepDesc0, detail: s.stepDetail0 },
+    { title: s.stepTitle1, description: s.stepDesc1, detail: s.stepDetail1 },
+    { title: s.stepTitle2, description: s.stepDesc2, detail: s.stepDetail2 },
+    { title: s.stepTitle3, description: s.stepDesc3, detail: s.stepDetail3 },
+    { title: s.stepTitle4, description: s.stepDesc4, detail: s.stepDetail4 },
+  ]
 
   return (
     <section
@@ -416,10 +389,10 @@ function HowItWorksSection() {
     >
       <div className="mx-auto max-w-[1600px]">
         <span className="mb-4 block text-center text-[10px] font-bold uppercase tracking-widest text-primary font-label">
-          Flujo de trabajo
+          {s.howLabel}
         </span>
         <h2 className="mb-16 text-center font-headline text-3xl font-extrabold text-on-surface sm:text-4xl lg:text-5xl">
-          Así funciona, en la práctica
+          {s.howHeadline}
         </h2>
 
         {/* Desktop: horizontal timeline */}
@@ -506,53 +479,40 @@ function HowItWorksSection() {
 // SECTION 5 — Para cada rol
 // ---------------------------------------------------------------------------
 
-const roles = [
-  {
-    icon: "shield_person",
-    title: "CEO / Director",
-    subtitle: "Visibilidad total sin microgestión",
-    color: "text-primary",
-    borderColor: "border-primary/20",
-    bg: "bg-primary/10",
-    points: [
-      "Dashboard con KPIs por empresa y departamento",
-      "Tasa de completado, puntualidad y rendimiento en tiempo real",
-      "Gestión de múltiples empresas desde una sola cuenta",
-      "Datos para presentar al consejo, no intuiciones",
-    ],
-  },
-  {
-    icon: "supervisor_account",
-    title: "Manager",
-    subtitle: "Feedback estructurado que mejora al equipo",
-    color: "text-tertiary",
-    borderColor: "border-tertiary/20",
-    bg: "bg-tertiary/10",
-    points: [
-      "Aprueba misiones puntuando 8 atributos profesionales",
-      "Deja notas personalizadas que el empleado realmente lee",
-      "Ve quién está bloqueado sin preguntar 'cómo vas'",
-      "Crea proyectos con objetivos claros en minutos",
-    ],
-  },
-  {
-    icon: "person",
-    title: "Empleado",
-    subtitle: "Saber exactamente dónde estás y hacia dónde vas",
-    color: "text-secondary",
-    borderColor: "border-secondary/20",
-    bg: "bg-secondary/10",
-    points: [
-      "Perfil profesional con atributos que crecen con cada misión",
-      "Feedback real después de cada proyecto, no una vez al año",
-      "Nivel, XP y skills visibles — tu crecimiento tiene forma",
-      "Notificaciones cuando se aprueba tu trabajo, con la nota del manager",
-    ],
-  },
-]
-
 function RolesSection() {
   const section = useScrollReveal()
+  const { lang } = useLandingLang()
+  const s = t[lang]
+
+  const roles = [
+    {
+      icon: "shield_person",
+      title: s.roleTitle0,
+      subtitle: s.roleSubtitle0,
+      color: "text-primary",
+      borderColor: "border-primary/20",
+      bg: "bg-primary/10",
+      points: [s.rolePoint0_0, s.rolePoint0_1, s.rolePoint0_2, s.rolePoint0_3],
+    },
+    {
+      icon: "supervisor_account",
+      title: s.roleTitle1,
+      subtitle: s.roleSubtitle1,
+      color: "text-tertiary",
+      borderColor: "border-tertiary/20",
+      bg: "bg-tertiary/10",
+      points: [s.rolePoint1_0, s.rolePoint1_1, s.rolePoint1_2, s.rolePoint1_3],
+    },
+    {
+      icon: "person",
+      title: s.roleTitle2,
+      subtitle: s.roleSubtitle2,
+      color: "text-secondary",
+      borderColor: "border-secondary/20",
+      bg: "bg-secondary/10",
+      points: [s.rolePoint2_0, s.rolePoint2_1, s.rolePoint2_2, s.rolePoint2_3],
+    },
+  ]
 
   return (
     <section
@@ -565,10 +525,10 @@ function RolesSection() {
     >
       <div className="mx-auto max-w-[1600px]">
         <span className="mb-4 block text-center text-[10px] font-bold uppercase tracking-widest text-primary font-label">
-          Para tu organización
+          {s.rolesLabel}
         </span>
         <h2 className="mb-16 text-center font-headline text-3xl font-extrabold text-on-surface sm:text-4xl lg:text-5xl">
-          Diseñado para cada persona de tu organización
+          {s.rolesHeadline}
         </h2>
 
         <div className="grid gap-6 lg:grid-cols-3">

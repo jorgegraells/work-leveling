@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useLandingLang } from "./LandingContext";
+import { t } from "./LandingTranslations";
 
 /* ------------------------------------------------------------------ */
 /*  useScrollReveal — triggers once when element enters viewport      */
@@ -129,17 +131,20 @@ function MiniBar({
 /*  Sección 5 — Mockup / Demo Visual  (dos mini-pantallas)            */
 /* ------------------------------------------------------------------ */
 function MockupSection() {
+  const { lang } = useLandingLang();
+  const s = t[lang];
+
   return (
     <Section id="demo">
       <div className="text-center mb-12">
         <p className="text-[10px] font-label font-bold uppercase tracking-widest text-primary mb-3">
-          Vista del empleado
+          {s.mockupLabel}
         </p>
         <h2 className="text-2xl md:text-3xl font-headline font-bold text-on-surface">
-          Así es como tu equipo ve su progreso
+          {s.mockupHeadline}
         </h2>
         <p className="text-sm font-body text-on-surface-variant mt-3">
-          Diseño dark premium. Información clara. Progreso visible.
+          {s.mockupSubtitle}
         </p>
       </div>
 
@@ -154,11 +159,11 @@ function MockupSection() {
               {/* Header */}
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <p className="text-[8px] font-body text-on-surface-variant">Bienvenido,</p>
+                  <p className="text-[8px] font-body text-on-surface-variant">{s.mockupWelcome}</p>
                   <p className="text-[11px] font-headline font-bold text-on-surface">María</p>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[7px] font-label font-bold text-on-surface-variant">Nivel 8</span>
+                  <span className="text-[7px] font-label font-bold text-on-surface-variant">{s.mockupLevel}</span>
                   <span className="px-1.5 py-0.5 rounded bg-primary/20 text-[7px] font-label font-bold text-primary">
                     68% → 9
                   </span>
@@ -168,10 +173,10 @@ function MockupSection() {
               {/* 4 KPI mini cards */}
               <div className="grid grid-cols-4 gap-1.5 mb-2">
                 {[
-                  { label: "XP", value: "1.2k", color: "text-primary" },
-                  { label: "Activos", value: "3", color: "text-tertiary" },
-                  { label: "Completados", value: "5", color: "text-secondary" },
-                  { label: "Trofeos", value: "2", color: "text-on-tertiary-container" },
+                  { label: s.mockupXP, value: "1.2k", color: "text-primary" },
+                  { label: s.mockupActive, value: "3", color: "text-tertiary" },
+                  { label: s.mockupCompleted, value: "5", color: "text-secondary" },
+                  { label: s.mockupTrophies, value: "2", color: "text-on-tertiary-container" },
                 ].map((kpi) => (
                   <div key={kpi.label} className="rounded bg-surface-container-lowest p-1.5 text-center">
                     <p className="text-[7px] font-label text-on-surface-variant">{kpi.label}</p>
@@ -182,19 +187,19 @@ function MockupSection() {
 
               {/* 2 proyectos activos */}
               <p className="text-[7px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-1">
-                Proyectos activos
+                {s.mockupActiveProjects}
               </p>
               <div className="space-y-1.5 mb-2">
                 <div className="rounded bg-surface-container-lowest p-1.5">
                   <div className="flex justify-between items-center mb-0.5">
-                    <span className="text-[8px] font-body text-on-surface">Rediseño Web</span>
+                    <span className="text-[8px] font-body text-on-surface">{s.mockupProject0}</span>
                     <span className="text-[7px] font-label text-tertiary">65%</span>
                   </div>
                   <MiniBar percent={65} color="bg-tertiary" />
                 </div>
                 <div className="rounded bg-surface-container-lowest p-1.5">
                   <div className="flex justify-between items-center mb-0.5">
-                    <span className="text-[8px] font-body text-on-surface">Migración API</span>
+                    <span className="text-[8px] font-body text-on-surface">{s.mockupProject1}</span>
                     <span className="text-[7px] font-label text-secondary">30%</span>
                   </div>
                   <MiniBar percent={30} color="bg-secondary" />
@@ -203,21 +208,21 @@ function MockupSection() {
 
               {/* 2 misiones pendientes */}
               <p className="text-[7px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-1">
-                Misiones pendientes
+                {s.mockupPendingMissions}
               </p>
               <div className="space-y-1 mb-1">
                 <div className="flex items-center gap-1.5 rounded bg-surface-container-lowest p-1.5">
                   <span className="material-symbols-outlined text-primary text-[11px]">flag</span>
-                  <span className="text-[8px] font-body text-on-surface">Entregar prototipo v2</span>
+                  <span className="text-[8px] font-body text-on-surface">{s.mockupMission0}</span>
                 </div>
                 <div className="flex items-center gap-1.5 rounded bg-surface-container-lowest p-1.5">
                   <span className="material-symbols-outlined text-tertiary text-[11px]">code</span>
-                  <span className="text-[8px] font-body text-on-surface">Revisar pull requests</span>
+                  <span className="text-[8px] font-body text-on-surface">{s.mockupMission1}</span>
                 </div>
               </div>
             </BrowserFrame>
             <p className="text-center text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mt-3">
-              Vista Dashboard — Centro de control
+              {s.mockupDashboardCaption}
             </p>
           </div>
 
@@ -229,21 +234,21 @@ function MockupSection() {
                 <div className="relative w-14 h-14 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center mb-1.5 shadow-[0_0_16px_rgba(233,196,0,0.25)]">
                   <span className="text-[11px] font-headline font-black text-primary">8</span>
                   <span className="absolute -bottom-0.5 text-[6px] font-label font-bold text-primary uppercase">
-                    Nivel
+                    {s.mockupLevelWord}
                   </span>
                 </div>
                 <p className="text-[10px] font-headline font-bold text-on-surface">María López</p>
-                <p className="text-[7px] font-body text-on-surface-variant">Diseñadora Senior</p>
+                <p className="text-[7px] font-body text-on-surface-variant">{s.mockupDesigner}</p>
               </div>
 
               {/* Atributos — 2 columnas */}
               <div className="grid grid-cols-2 gap-x-3 gap-y-1 mb-3">
                 {/* Columna izquierda */}
                 {[
-                  { name: "Lógica", pct: 72, color: "bg-primary" },
-                  { name: "Creatividad", pct: 85, color: "bg-tertiary" },
-                  { name: "Liderazgo", pct: 45, color: "bg-secondary" },
-                  { name: "Negociación", pct: 60, color: "bg-on-tertiary-container" },
+                  { name: s.attrLogic, pct: 72, color: "bg-primary" },
+                  { name: s.attrCreativity, pct: 85, color: "bg-tertiary" },
+                  { name: s.attrLeadership, pct: 45, color: "bg-secondary" },
+                  { name: s.attrNegotiation, pct: 60, color: "bg-on-tertiary-container" },
                 ].map((attr) => (
                   <div key={attr.name}>
                     <div className="flex justify-between items-center">
@@ -255,10 +260,10 @@ function MockupSection() {
                 ))}
                 {/* Columna derecha */}
                 {[
-                  { name: "Estrategia", pct: 78, color: "bg-primary" },
-                  { name: "Análisis", pct: 62, color: "bg-tertiary" },
-                  { name: "Comunicación", pct: 70, color: "bg-secondary" },
-                  { name: "Adaptabilidad", pct: 88, color: "bg-on-tertiary-container" },
+                  { name: s.attrStrategy, pct: 78, color: "bg-primary" },
+                  { name: s.attrAnalysis, pct: 62, color: "bg-tertiary" },
+                  { name: s.attrCommunication, pct: 70, color: "bg-secondary" },
+                  { name: s.attrAdaptability, pct: 88, color: "bg-on-tertiary-container" },
                 ].map((attr) => (
                   <div key={attr.name}>
                     <div className="flex justify-between items-center">
@@ -306,15 +311,15 @@ function MockupSection() {
                   <div className="flex items-center gap-1.5">
                     <span className="material-symbols-outlined text-secondary text-[11px]">check_circle</span>
                     <div>
-                      <p className="text-[8px] font-body font-medium text-on-surface">App Móvil v3</p>
-                      <p className="text-[7px] font-body text-on-surface-variant">Completado — +320 XP</p>
+                      <p className="text-[8px] font-body font-medium text-on-surface">{s.mockupCompletedProject}</p>
+                      <p className="text-[7px] font-body text-on-surface-variant">{s.mockupCompletedXP}</p>
                     </div>
                   </div>
                 </div>
               </div>
             </BrowserFrame>
             <p className="text-center text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mt-3">
-              Vista Perfil — Ficha del empleado
+              {s.mockupProfileCaption}
             </p>
           </div>
         </div>
@@ -327,18 +332,21 @@ function MockupSection() {
 /*  Sección 6 — Argumentos Profundos                                  */
 /* ------------------------------------------------------------------ */
 
-const attributes = [
-  { name: "Lógica", width: "85%", color: "bg-primary" },
-  { name: "Creatividad", width: "72%", color: "bg-tertiary" },
-  { name: "Liderazgo", width: "60%", color: "bg-secondary" },
-  { name: "Negociación", width: "90%", color: "bg-on-tertiary-container" },
-  { name: "Estrategia", width: "55%", color: "bg-primary" },
-  { name: "Análisis", width: "78%", color: "bg-tertiary" },
-  { name: "Comunicación", width: "68%", color: "bg-secondary" },
-  { name: "Adaptabilidad", width: "82%", color: "bg-on-tertiary-container" },
-];
-
 function AttributeBarsVisual() {
+  const { lang } = useLandingLang();
+  const s = t[lang];
+
+  const attributes = [
+    { name: s.attrLogic, width: "85%", color: "bg-primary" },
+    { name: s.attrCreativity, width: "72%", color: "bg-tertiary" },
+    { name: s.attrLeadership, width: "60%", color: "bg-secondary" },
+    { name: s.attrNegotiation, width: "90%", color: "bg-on-tertiary-container" },
+    { name: s.attrStrategy, width: "55%", color: "bg-primary" },
+    { name: s.attrAnalysis, width: "78%", color: "bg-tertiary" },
+    { name: s.attrCommunication, width: "68%", color: "bg-secondary" },
+    { name: s.attrAdaptability, width: "82%", color: "bg-on-tertiary-container" },
+  ];
+
   return (
     <div className="space-y-2.5">
       {attributes.map((attr) => (
@@ -359,14 +367,19 @@ function AttributeBarsVisual() {
 }
 
 function RejectionFlowVisual() {
+  const { lang } = useLandingLang();
+  const s = t[lang];
+
+  const steps = [
+    { icon: "cancel", label: s.rejectionStep0, color: "text-error" },
+    { icon: "description", label: s.rejectionStep1, color: "text-on-surface-variant" },
+    { icon: "send", label: s.rejectionStep2, color: "text-tertiary" },
+    { icon: "check_circle", label: s.rejectionStep3, color: "text-secondary" },
+  ];
+
   return (
     <div className="flex items-center justify-center gap-2 md:gap-4">
-      {[
-        { icon: "cancel", label: "Rechazo", color: "text-error" },
-        { icon: "description", label: "Nota", color: "text-on-surface-variant" },
-        { icon: "send", label: "Reenvío", color: "text-tertiary" },
-        { icon: "check_circle", label: "Aprobado", color: "text-secondary" },
-      ].map((step, i) => (
+      {steps.map((step, i) => (
         <div key={step.label} className="flex items-center gap-2 md:gap-4">
           <div className="flex flex-col items-center gap-1.5">
             <div className="w-12 h-12 rounded-lg bg-surface-container-lowest flex items-center justify-center">
@@ -388,31 +401,36 @@ function RejectionFlowVisual() {
 }
 
 function DeadlineBadgesVisual() {
+  const { lang } = useLandingLang();
+  const s = t[lang];
+
+  const badges = [
+    {
+      icon: "schedule",
+      label: s.deadlineBadge0,
+      color: "text-tertiary",
+      bg: "bg-tertiary/10",
+      ring: "ring-tertiary/20",
+    },
+    {
+      icon: "warning",
+      label: s.deadlineBadge1,
+      color: "text-primary",
+      bg: "bg-primary/10",
+      ring: "ring-primary/20",
+    },
+    {
+      icon: "error",
+      label: s.deadlineBadge2,
+      color: "text-error",
+      bg: "bg-error/10",
+      ring: "ring-error/20",
+    },
+  ];
+
   return (
     <div className="flex flex-col gap-4 items-center md:items-start">
-      {[
-        {
-          icon: "schedule",
-          label: "48h — Recordatorio",
-          color: "text-tertiary",
-          bg: "bg-tertiary/10",
-          ring: "ring-tertiary/20",
-        },
-        {
-          icon: "warning",
-          label: "24h — Alerta",
-          color: "text-primary",
-          bg: "bg-primary/10",
-          ring: "ring-primary/20",
-        },
-        {
-          icon: "error",
-          label: "Vencido — Escalación",
-          color: "text-error",
-          bg: "bg-error/10",
-          ring: "ring-error/20",
-        },
-      ].map((badge) => (
+      {badges.map((badge) => (
         <div
           key={badge.label}
           className={`flex items-center gap-3 px-4 py-2.5 rounded-lg ${badge.bg} ring-1 ${badge.ring}`}
@@ -486,6 +504,9 @@ function AuditTrailVisual() {
 }
 
 function SkillPillsVisual() {
+  const { lang } = useLandingLang();
+  const s = t[lang];
+
   const skills = [
     { name: "JavaScript", level: 8, color: "bg-primary text-on-primary" },
     { name: "TypeScript", level: 7, color: "bg-tertiary text-on-tertiary" },
@@ -508,59 +529,61 @@ function SkillPillsVisual() {
           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-label font-bold uppercase tracking-widest ${skill.color}`}
         >
           {skill.name}
-          <span className="opacity-70">Nv.{skill.level}</span>
+          <span className="opacity-70">{s.skillLevelPrefix}{skill.level}</span>
         </span>
       ))}
     </div>
   );
 }
 
-const deepArguments = [
-  {
-    title: "8 atributos, no una casilla de verificación",
-    body: "Cuando un manager aprueba una misión, no marca un 'completado'. Puntúa Lógica, Creatividad, Liderazgo, Negociación, Estrategia, Análisis, Comunicación y Adaptabilidad. Del 1 al 5. Cada puntuación actualiza el perfil del empleado. Después de 10 misiones, tienes un mapa real de quién es esa persona profesionalmente.",
-    Visual: AttributeBarsVisual,
-  },
-  {
-    title: "El rechazo no castiga, enseña",
-    body: "Si un manager rechaza una misión, el empleado no pierde su progreso. Mantiene el 80%. Recibe una nota explicando qué mejorar. Puede reenviar. No es un sistema de castigo — es un sistema de mejora continua.",
-    Visual: RejectionFlowVisual,
-  },
-  {
-    title: "Deadlines que se respetan solos",
-    body: "48 horas antes: recordatorio. 24 horas: alerta. Vencido: escalación. Tres niveles de urgencia que eliminan la necesidad de que el manager mande emails de seguimiento. El sistema lo hace por ti.",
-    Visual: DeadlineBadgesVisual,
-  },
-  {
-    title: "Multi-empresa sin fricción",
-    body: "¿Gestionas una agencia con 12 clientes? ¿Un holding con 5 marcas? Una cuenta. Todas las empresas. Cada empleado ve su contexto. El CEO ve el panorama completo. Sin duplicar licencias.",
-    Visual: MultiOrgVisual,
-  },
-  {
-    title: "Compliance que se documenta solo",
-    body: "¿Quién aprobó la misión de María? ¿Qué puntuación tenía Carlos cuando se evaluó su rendimiento? ¿Cuántas misiones completó Ana en los últimos 3 meses? Todo registrado. Todo trazable. Todo defendible.",
-    Visual: AuditTrailVisual,
-  },
-  {
-    title: "Skills que se demuestran, no se declaran",
-    body: "Cada misión puede estar etiquetada con habilidades técnicas: JavaScript, React, SQL, Figma. Al completar misiones, el empleado acumula puntos de skill. Nivel 1 a 10. No es un curso — es evidencia de trabajo real.",
-    Visual: SkillPillsVisual,
-  },
-];
-
 function DeepArgumentsSection() {
+  const { lang } = useLandingLang();
+  const s = t[lang];
+
+  const deepArguments = [
+    {
+      title: s.deepTitle0,
+      body: s.deepBody0,
+      Visual: AttributeBarsVisual,
+    },
+    {
+      title: s.deepTitle1,
+      body: s.deepBody1,
+      Visual: RejectionFlowVisual,
+    },
+    {
+      title: s.deepTitle2,
+      body: s.deepBody2,
+      Visual: DeadlineBadgesVisual,
+    },
+    {
+      title: s.deepTitle3,
+      body: s.deepBody3,
+      Visual: MultiOrgVisual,
+    },
+    {
+      title: s.deepTitle4,
+      body: s.deepBody4,
+      Visual: AuditTrailVisual,
+    },
+    {
+      title: s.deepTitle5,
+      body: s.deepBody5,
+      Visual: SkillPillsVisual,
+    },
+  ];
+
   return (
     <Section id="argumentos" className="bg-surface-container-lowest">
       <div className="text-center mb-16 max-w-3xl mx-auto">
         <p className="text-[10px] font-label font-bold uppercase tracking-widest text-primary mb-4">
-          Por qué funciona
+          {s.deepLabel}
         </p>
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-headline font-extrabold text-on-surface mb-4">
-          Es tu sistema de gestión de talento.
+          {s.deepHeadline}
         </h2>
         <p className="text-base font-body text-on-surface-variant leading-relaxed">
-          Cada decisión en tu empresa deja un rastro. Cada empleado tiene un
-          perfil que cuenta su historia. Esto es lo que cambia.
+          {s.deepSubtitle}
         </p>
       </div>
 
@@ -603,25 +626,28 @@ function DeepArgumentsSection() {
 /*  Sección 7 — Preguntas Incómodas                                   */
 /* ------------------------------------------------------------------ */
 
-const awkwardQuestions = [
-  "¿Cuántos de tus empleados recibieron feedback esta semana?",
-  "¿Sabes quién de tu equipo tiene skills en una tecnología específica?",
-  "¿Tus managers evalúan con datos o con intuición?",
-  "Si un empleado se va mañana, ¿tienes registro de su contribución?",
-  "¿Cuánto tiempo pasa entre que alguien termina un proyecto y recibe feedback?",
-  "Cuando llega un nuevo proyecto, ¿cómo decides a quién asignarlo?",
-];
-
 function AwkwardQuestionsSection() {
+  const { lang } = useLandingLang();
+  const s = t[lang];
+
+  const awkwardQuestions = [
+    s.question0,
+    s.question1,
+    s.question2,
+    s.question3,
+    s.question4,
+    s.question5,
+  ];
+
   return (
     <section className="py-20 md:py-28 bg-surface-container-lowest">
       <div className="max-w-[1600px] mx-auto px-6 md:px-12">
         <div className="text-center mb-14 max-w-2xl mx-auto">
           <p className="text-[10px] font-label font-bold uppercase tracking-widest text-primary mb-4">
-            Reflexiona
+            {s.questionsLabel}
           </p>
           <h2 className="text-2xl md:text-3xl font-headline font-bold text-on-surface">
-            Preguntas que tu empresa debería poder responder
+            {s.questionsHeadline}
           </h2>
         </div>
 
@@ -643,9 +669,9 @@ function AwkwardQuestionsSection() {
         </div>
 
         <p className="text-center text-on-surface-variant font-body text-base mt-12 max-w-xl mx-auto">
-          Si no puedes responder con certeza,{" "}
-          <span className="text-primary font-semibold">Work Leveling</span> te
-          da las respuestas.
+          {s.questionsClosing}
+          <span className="text-primary font-semibold">{s.questionsClosingBrand}</span>
+          {s.questionsClosingSuffix}
         </p>
       </div>
     </section>
@@ -656,6 +682,9 @@ function AwkwardQuestionsSection() {
 /*  Sección 10 — CTA Final                                            */
 /* ------------------------------------------------------------------ */
 function CtaSection() {
+  const { lang } = useLandingLang();
+  const s = t[lang];
+
   return (
     <section className="relative py-24 md:py-32 overflow-hidden">
       {/* Gradient backdrop */}
@@ -664,15 +693,15 @@ function CtaSection() {
       <div className="relative max-w-[1600px] mx-auto px-6 md:px-12 text-center">
         <div className="max-w-2xl mx-auto space-y-2 mb-12">
           <p className="text-lg md:text-xl font-body text-on-surface leading-relaxed">
-            Tus empleados merecen saber cómo lo están haciendo.
+            {s.ctaLine1}
           </p>
           <p className="text-lg md:text-xl font-body text-on-surface leading-relaxed">
-            Tus managers merecen herramientas para evaluar con justicia.
+            {s.ctaLine2}
           </p>
           <p className="text-lg md:text-xl font-body text-on-surface-variant leading-relaxed">
-            Tu empresa merece{" "}
+            {s.ctaLine3Prefix}
             <span className="text-primary font-semibold">
-              datos que defiendan cada decisión.
+              {s.ctaLine3Highlight}
             </span>
           </p>
         </div>
@@ -681,10 +710,10 @@ function CtaSection() {
           href="/sign-up"
           className="inline-block px-10 py-4 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-label font-bold uppercase tracking-widest shadow-glow-gold transition-all active:scale-95 hover:shadow-[0_0_35px_rgba(233,196,0,0.4)]"
         >
-          Crear cuenta gratis
+          {s.ctaButton}
         </Link>
         <p className="mt-4 text-sm font-body text-on-surface-variant">
-          Implementación en menos de 5 minutos
+          {s.ctaNote}
         </p>
       </div>
     </section>
@@ -695,18 +724,21 @@ function CtaSection() {
 /*  Sección 11 — Footer                                               */
 /* ------------------------------------------------------------------ */
 
-const footerLinks = {
-  Producto: [
-    { label: "Producto", href: "#argumentos" },
-    { label: "Contacto", href: "mailto:info@workleveling.com" },
-  ],
-  Legal: [
-    { label: "Privacidad", href: "#" },
-    { label: "Términos", href: "#" },
-  ],
-};
-
 function Footer() {
+  const { lang } = useLandingLang();
+  const s = t[lang];
+
+  const footerLinks = {
+    [s.footerGroupProduct]: [
+      { label: s.footerLinkProduct, href: "#argumentos" },
+      { label: s.footerLinkContact, href: "mailto:info@workleveling.com" },
+    ],
+    [s.footerGroupLegal]: [
+      { label: s.footerLinkPrivacy, href: "#" },
+      { label: s.footerLinkTerms, href: "#" },
+    ],
+  };
+
   return (
     <footer className="border-t border-outline-variant/15 bg-surface-container-lowest">
       <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-12">
@@ -717,8 +749,7 @@ function Footer() {
               Work Leveling
             </p>
             <p className="text-xs font-body text-on-surface-variant max-w-xs">
-              La plataforma de gestión de talento que convierte cada proyecto en
-              evidencia de rendimiento.
+              {s.footerBrandDescription}
             </p>
             {/* Social icons */}
             <div className="flex gap-3 pt-2">
@@ -778,7 +809,7 @@ function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 pt-6 border-t border-outline-variant/15 text-center">
           <p className="text-xs font-body text-on-surface-variant">
-            &copy; 2026 Work Leveling. Todos los derechos reservados.
+            {s.footerCopyright}
           </p>
         </div>
       </div>
