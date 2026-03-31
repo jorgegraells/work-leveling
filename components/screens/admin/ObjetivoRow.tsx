@@ -8,7 +8,6 @@ interface ObjetivoRowProps {
     title: string
     xpReward: number
     order: number
-    icon: string
   }
   onMoveUp: () => void
   onMoveDown: () => void
@@ -31,20 +30,6 @@ export default function ObjetivoRow({
 
   return (
     <div className="flex items-center gap-2 p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15">
-      {/* Icon preview + input */}
-      <div className="flex items-center gap-2 flex-shrink-0">
-        <span className="material-symbols-outlined text-outline text-lg w-5 text-center">
-          {objetivo.icon || "circle"}
-        </span>
-        <input
-          type="text"
-          value={objetivo.icon}
-          onChange={(e) => onChange("icon", e.target.value)}
-          placeholder="star"
-          className="w-20 bg-surface-container-high rounded-md px-2 py-1.5 text-[11px] text-on-surface-variant border border-outline-variant/30 focus:outline-none focus:border-primary placeholder:text-outline"
-        />
-      </div>
-
       {/* Title */}
       <input
         type="text"
