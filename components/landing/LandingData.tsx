@@ -47,24 +47,13 @@ function AnimatedNumber({ target, suffix = "", prefix = "" }: { target: number; 
 // Engagement trend chart (Gallup 2020-2024)
 // ---------------------------------------------------------------------------
 
+// Grouped by 5-year periods, averaged. Europe data from Gallup (tracked from ~2009)
 const ENGAGEMENT_DATA = [
-  { year: "'00", value: 26, label: "" },
-  { year: "'02", value: 27, label: "" },
-  { year: "'04", value: 27, label: "" },
-  { year: "'05", value: 26, label: "Mínimo" },
-  { year: "'07", value: 28, label: "" },
-  { year: "'09", value: 28, label: "Crisis" },
-  { year: "'11", value: 29, label: "" },
-  { year: "'13", value: 30, label: "" },
-  { year: "'15", value: 32, label: "" },
-  { year: "'17", value: 33, label: "" },
-  { year: "'18", value: 34, label: "" },
-  { year: "'19", value: 35, label: "" },
-  { year: "'20", value: 36, label: "Pico" },
-  { year: "'21", value: 34, label: "" },
-  { year: "'22", value: 32, label: "" },
-  { year: "'23", value: 33, label: "" },
-  { year: "'24", value: 30, label: "Caída" },
+  { period: "2000–04", us: 26, europe: null,  label: "" },
+  { period: "2005–09", us: 27, europe: 11,    label: "Crisis" },
+  { period: "2010–14", us: 30, europe: 12,    label: "" },
+  { period: "2015–19", us: 34, europe: 13,    label: "" },
+  { period: "2020–24", us: 33, europe: 13,    label: "Post-pico" },
 ]
 
 function EngagementChart() {
@@ -74,56 +63,68 @@ function EngagementChart() {
     <div ref={ref} className="col-span-1 lg:col-span-2 rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
       <div className="rounded-lg bg-surface-bright p-6">
         <div className="flex items-center justify-between mb-2">
-          <h4 className="font-headline font-bold text-on-surface text-lg">Empleados comprometidos en EE.UU.</h4>
+          <h4 className="font-headline font-bold text-on-surface text-lg">Empleados comprometidos</h4>
           <span className="text-[9px] font-bold uppercase tracking-widest text-outline">Fuente: Gallup</span>
         </div>
-        <p className="text-xs text-outline mb-4">Porcentaje de empleados comprometidos con su trabajo (2000–2024, sobre 100%)</p>
+        <p className="text-xs text-outline mb-4">Media por períodos de 5 años — EE.UU. vs Europa (sobre 100%)</p>
         <p className="text-[9px] text-on-surface-variant/60 mb-6 italic">
-          «Engaged» = empleados emocionalmente involucrados y motivados en su trabajo, según la metodología Gallup. El resto está desconectado o activamente desmotivado.
+          «Engaged» = empleados emocionalmente involucrados y motivados en su trabajo. El resto está desconectado o activamente desmotivado.
         </p>
 
-        <div className="flex items-end gap-[3px] sm:gap-1">
-          {ENGAGEMENT_DATA.map((d, i) => {
-            const isPeak = d.value === 36
-            const isLow = d.value <= 26
-            const isCurrent = d.year === "'24"
-            const barColor = isPeak ? "bg-secondary" : isLow ? "bg-error/70" : isCurrent ? "bg-error" : "bg-primary"
-
-            return (
-              <div key={d.year} className="flex-1 flex flex-col items-center">
-                <span className={`text-[8px] sm:text-[9px] font-bold mb-1 ${isPeak ? "text-secondary" : isCurrent ? "text-error" : "text-primary"}`}>
-                  {visible ? `${d.value}` : ""}
-                </span>
-                <div className="w-full flex flex-col justify-end h-36 sm:h-44">
+        <div className="flex items-end gap-4 sm:gap-6">
+          {ENGAGEMENT_DATA.map((d, i) => (
+            <div key={d.period} className="flex-1 flex flex-col items-center">
+              {/* Labels */}
+              <div className="flex gap-2 mb-1 justify-center">
+                <span className="text-[10px] font-bold text-primary">{visible ? `${d.us}%` : ""}</span>
+                {d.europe !== null && (
+                  <span className="text-[10px] font-bold text-error">{visible ? `${d.europe}%` : ""}</span>
+                )}
+              </div>
+              {/* Bars */}
+              <div className="w-full flex gap-1 justify-center h-44">
+                {/* US bar */}
+                <div className="flex-1 flex flex-col justify-end max-w-[40px]">
                   <div
-                    className={`w-full ${barColor} rounded-t transition-all duration-1000 ease-out`}
-                    style={{ height: visible ? `${d.value}%` : "0%", transitionDelay: `${i * 60}ms` }}
+                    className="w-full bg-primary rounded-t transition-all duration-1000 ease-out"
+                    style={{ height: visible ? `${d.us}%` : "0%", transitionDelay: `${i * 120}ms` }}
                   />
                 </div>
-                <span className="text-[7px] sm:text-[9px] font-bold text-outline mt-1">{d.year}</span>
-                {d.label && <span className="text-[6px] sm:text-[8px] text-on-surface-variant">{d.label}</span>}
+                {/* Europe bar */}
+                <div className="flex-1 flex flex-col justify-end max-w-[40px]">
+                  {d.europe !== null ? (
+                    <div
+                      className="w-full bg-error/70 rounded-t transition-all duration-1000 ease-out"
+                      style={{ height: visible ? `${d.europe}%` : "0%", transitionDelay: `${i * 120 + 60}ms` }}
+                    />
+                  ) : (
+                    <div className="w-full flex items-end justify-center pb-1">
+                      <span className="text-[8px] text-outline/40">—</span>
+                    </div>
+                  )}
+                </div>
               </div>
-            )
-          })}
+              {/* Period label */}
+              <span className="text-[9px] sm:text-[10px] font-bold text-outline mt-2">{d.period}</span>
+              {d.label && <span className="text-[8px] text-on-surface-variant">{d.label}</span>}
+            </div>
+          ))}
         </div>
 
-        <div className="flex gap-4 mt-4 justify-center flex-wrap">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-sm bg-secondary" />
-            <span className="text-[9px] text-outline">Pico (2020): 36%</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-sm bg-error" />
-            <span className="text-[9px] text-outline">Actual (2024): 30%</span>
-          </div>
+        {/* Legend */}
+        <div className="flex gap-6 mt-5 justify-center flex-wrap">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-sm bg-primary" />
-            <span className="text-[9px] text-outline">Histórico</span>
+            <span className="text-[10px] text-outline">EE.UU.</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-sm bg-error/70" />
+            <span className="text-[10px] text-outline">Europa</span>
           </div>
         </div>
 
         <p className="text-[9px] text-outline mt-3 text-center">
-          En 24 años, nunca más del 36% de empleados ha estado comprometido. <span className="text-error font-bold">El 70% siempre ha estado desconectado.</span>
+          Europa no supera el 13% desde que se mide. En EE.UU., tras el pico de 2020, vuelve a caer. <span className="text-error font-bold">El 70–87% de empleados sigue desconectado.</span>
         </p>
       </div>
     </div>
