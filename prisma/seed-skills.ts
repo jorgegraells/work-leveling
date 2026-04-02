@@ -19,7 +19,7 @@ const SKILLS = [
   { name: "Microsoft Access",              slug: "microsoft-access",      category: "Ofimática / Office Suite",         icon: "storage",                  color: "outline" },
   { name: "OneNote",                       slug: "onenote",               category: "Ofimática / Office Suite",         icon: "edit_note",                color: "tertiary" },
   { name: "Microsoft Visio",               slug: "microsoft-visio",       category: "Ofimática / Office Suite",         icon: "account_tree",             color: "outline" },
-  { name: "Microsoft Project",             slug: "microsoft-project",     category: "Ofimática / Office Suite",         icon: "gantt_chart",              color: "tertiary" },
+  { name: "Microsoft Project",             slug: "microsoft-project",     category: "Ofimática / Office Suite",         icon: "calendar_view_month",      color: "tertiary" },
   { name: "Google Docs",                   slug: "google-docs",           category: "Ofimática / Office Suite",         icon: "description",              color: "secondary" },
   { name: "Google Sheets",                 slug: "google-sheets",         category: "Ofimática / Office Suite",         icon: "table_chart",              color: "secondary" },
   { name: "Google Slides",                 slug: "google-slides",         category: "Ofimática / Office Suite",         icon: "slideshow",                color: "secondary" },
@@ -151,7 +151,7 @@ const SKILLS = [
   { name: "ThreatLocker",                  slug: "threatlocker",          category: "Ciberseguridad",                   icon: "lock",                     color: "primary" },
   { name: "CrowdStrike",                   slug: "crowdstrike",           category: "Ciberseguridad",                   icon: "crisis_alert",             color: "secondary" },
   { name: "SentinelOne",                   slug: "sentinelone",           category: "Ciberseguridad",                   icon: "shield",                   color: "secondary" },
-  { name: "Palo Alto Networks",            slug: "palo-alto",             category: "Ciberseguridad",                   icon: "firewall",                 color: "outline" },
+  { name: "Palo Alto Networks",            slug: "palo-alto",             category: "Ciberseguridad",                   icon: "security",                 color: "outline" },
   { name: "Check Point",                   slug: "checkpoint",            category: "Ciberseguridad",                   icon: "verified_user",            color: "outline" },
   { name: "Cisco ASA",                     slug: "cisco-asa",             category: "Ciberseguridad",                   icon: "router",                   color: "tertiary" },
   { name: "Cisco Umbrella",                slug: "cisco-umbrella",        category: "Ciberseguridad",                   icon: "umbrella",                 color: "tertiary" },
@@ -176,7 +176,7 @@ const SKILLS = [
   { name: "Cisco CCNA",                    slug: "ccna",                  category: "Redes e infraestructura",          icon: "lan",                      color: "tertiary" },
   { name: "Cisco CCNP",                    slug: "ccnp",                  category: "Redes e infraestructura",          icon: "lan",                      color: "tertiary" },
   { name: "MikroTik",                      slug: "mikrotik",              category: "Redes e infraestructura",          icon: "router",                   color: "outline" },
-  { name: "pfSense",                       slug: "pfsense",               category: "Redes e infraestructura",          icon: "firewall",                 color: "outline" },
+  { name: "pfSense",                       slug: "pfsense",               category: "Redes e infraestructura",          icon: "shield",                   color: "outline" },
   { name: "VMware",                        slug: "vmware",                category: "Redes e infraestructura",          icon: "dns",                      color: "secondary" },
   { name: "Hyper-V",                       slug: "hyper-v",               category: "Redes e infraestructura",          icon: "developer_board",          color: "tertiary" },
   { name: "Active Directory",              slug: "active-directory",      category: "Redes e infraestructura",          icon: "manage_accounts",          color: "tertiary" },
@@ -201,7 +201,7 @@ const SKILLS = [
   { name: "Monday.com",                    slug: "monday",                category: "Project Management",               icon: "calendar_view_week",       color: "secondary" },
   { name: "Notion",                        slug: "notion",                category: "Project Management",               icon: "sticky_note_2",            color: "outline" },
   { name: "ClickUp",                       slug: "clickup",               category: "Project Management",               icon: "rocket_launch",            color: "secondary" },
-  { name: "MS Project",                    slug: "ms-project",            category: "Project Management",               icon: "gantt_chart",              color: "tertiary" },
+  { name: "MS Project",                    slug: "ms-project",            category: "Project Management",             icon: "calendar_view_month",      color: "tertiary" },
   { name: "Basecamp",                      slug: "basecamp",              category: "Project Management",               icon: "camping",                  color: "outline" },
 
   // RRHH / Nóminas
@@ -239,6 +239,12 @@ async function main() {
     where: { slug: { in: REMOVE_SLUGS } },
   })
   console.log(`  Removed ${removed.count} soft skills`)
+
+  console.log("Removing skills with empty category...")
+  const removedEmpty = await prisma.skill.deleteMany({
+    where: { category: "" },
+  })
+  console.log(`  Removed ${removedEmpty.count} uncategorized skills`)
 
   console.log(`Seeding ${SKILLS.length} skills...`)
   let count = 0
