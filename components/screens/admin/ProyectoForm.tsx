@@ -19,7 +19,7 @@ interface ProyectoFormProps {
   mission?: MissionWithObjectives
   orgs: { id: string; name: string }[]
   defaultOrgId?: string
-  skills?: { id: string; name: string; icon: string; color: string }[]
+  skills?: { id: string; name: string; icon: string; color: string; category: string }[]
   initialSkillIds?: string[]
 }
 
@@ -130,6 +130,8 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
   const [selectedSkillIds, setSelectedSkillIds] = useState<string[]>(
     initialSkillIds ?? []
   )
+  const [skillSearch, setSkillSearch] = useState("")
+  const [openCategories, setOpenCategories] = useState<Set<string>>(new Set())
   const [startDate, setStartDate] = useState<string>(
     mission?.startDate ? new Date(mission.startDate).toISOString().split("T")[0] : ""
   )
@@ -143,6 +145,15 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
     setSelectedSkillIds((prev) =>
       prev.includes(skillId) ? prev.filter((id) => id !== skillId) : [...prev, skillId]
     )
+  }
+
+  function toggleCategory(cat: string) {
+    setOpenCategories((prev) => {
+      const next = new Set(prev)
+      if (next.has(cat)) next.delete(cat)
+      else next.add(cat)
+      return next
+    })
   }
 
   function addObjective() {
@@ -530,40 +541,147 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
         </div>}
 
         {/* Skills section */}
-        {skills && skills.length > 0 && (
-          <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
-            <div className="rounded-lg bg-surface-bright p-6 space-y-4">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                  {t("skillsSection")}
-                </p>
-                <p className="text-[11px] text-on-surface-variant mt-0.5">
-                  {t("skillsHint")}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {skills.map((skill) => {
-                  const isSelected = selectedSkillIds.includes(skill.id)
-                  return (
+        {skills && skills.length > 0 && (() => {
+          const query = skillSearch.trim().toLowerCase()
+          const filtered = query
+            ? skills.filter((s) => s.name.toLowerCase().includes(query) || s.category.toLowerCase().includes(query))
+            : skills
+
+          // group by category preserving insertion order
+          const categoryMap = new Map<string, typeof skills>()
+          for (const s of filtered) {
+            if (!categoryMap.has(s.category)) categoryMap.set(s.category, [])
+            categoryMap.get(s.category)!.push(s)
+          }
+
+          return (
+            <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">
+              <div className="rounded-lg bg-surface-bright p-6 space-y-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                      {t("skillsSection")}
+                    </p>
+                    <p className="text-[11px] text-on-surface-variant mt-0.5">
+                      {t("skillsHint")}
+                    </p>
+                  </div>
+                  {selectedSkillIds.length > 0 && (
+                    <span className="flex-shrink-0 px-2.5 py-1 rounded-full bg-primary/15 text-primary text-[10px] font-bold uppercase tracking-widest">
+                      {selectedSkillIds.length} sel.
+                    </span>
+                  )}
+                </div>
+
+                {/* Search */}
+                <div className="relative">
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-base pointer-events-none">
+                    search
+                  </span>
+                  <input
+                    type="text"
+                    value={skillSearch}
+                    onChange={(e) => setSkillSearch(e.target.value)}
+                    placeholder="Buscar habilidad…"
+                    className="w-full bg-surface-container-lowest rounded-lg pl-9 pr-3 py-2.5 text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary placeholder:text-outline"
+                  />
+                  {skillSearch && (
                     <button
-                      key={skill.id}
                       type="button"
-                      onClick={() => toggleSkill(skill.id)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all active:scale-95 ${
-                        isSelected
-                          ? "bg-primary text-on-primary"
-                          : "bg-surface-container-high text-on-surface hover:bg-surface-container-highest"
-                      }`}
+                      onClick={() => setSkillSearch("")}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface"
                     >
-                      <span className="material-symbols-outlined text-sm">{skill.icon}</span>
-                      {skill.name}
+                      <span className="material-symbols-outlined text-base">close</span>
                     </button>
-                  )
-                })}
+                  )}
+                </div>
+
+                {/* Selected chips (always visible) */}
+                {selectedSkillIds.length > 0 && !query && (
+                  <div>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-outline mb-2">Seleccionadas</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedSkillIds.map((id) => {
+                        const s = skills.find((sk) => sk.id === id)
+                        if (!s) return null
+                        return (
+                          <button
+                            key={id}
+                            type="button"
+                            onClick={() => toggleSkill(id)}
+                            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform"
+                          >
+                            <span className="material-symbols-outlined text-xs">{s.icon}</span>
+                            {s.name}
+                            <span className="material-symbols-outlined text-xs">close</span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Category accordion */}
+                <div className="space-y-1">
+                  {[...categoryMap.entries()].map(([cat, catSkills]) => {
+                    const isOpen = openCategories.has(cat) || !!query
+                    const selectedInCat = catSkills.filter((s) => selectedSkillIds.includes(s.id)).length
+                    return (
+                      <div key={cat} className="rounded-lg overflow-hidden border border-outline-variant/15">
+                        <button
+                          type="button"
+                          onClick={() => toggleCategory(cat)}
+                          className="w-full flex items-center gap-3 px-4 py-3 bg-surface-container-lowest hover:bg-surface-container-high transition-colors text-left"
+                        >
+                          <span className="material-symbols-outlined text-base text-outline">
+                            {isOpen ? "expand_less" : "expand_more"}
+                          </span>
+                          <span className="flex-1 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
+                            {cat}
+                          </span>
+                          <span className="text-[9px] text-outline">
+                            {catSkills.length}
+                          </span>
+                          {selectedInCat > 0 && (
+                            <span className="px-2 py-0.5 rounded-full bg-primary/20 text-primary text-[9px] font-bold uppercase tracking-widest">
+                              {selectedInCat}
+                            </span>
+                          )}
+                        </button>
+                        {isOpen && (
+                          <div className="p-3 bg-surface flex flex-wrap gap-1.5">
+                            {catSkills.map((skill) => {
+                              const isSelected = selectedSkillIds.includes(skill.id)
+                              return (
+                                <button
+                                  key={skill.id}
+                                  type="button"
+                                  onClick={() => toggleSkill(skill.id)}
+                                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all active:scale-95 ${
+                                    isSelected
+                                      ? "bg-primary text-on-primary"
+                                      : "bg-surface-container-high text-on-surface hover:bg-surface-container-highest"
+                                  }`}
+                                >
+                                  <span className="material-symbols-outlined text-sm">{skill.icon}</span>
+                                  {skill.name}
+                                </button>
+                              )
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+
+                {filtered.length === 0 && (
+                  <p className="text-center text-outline text-sm py-4">No se encontraron habilidades</p>
+                )}
               </div>
             </div>
-          </div>
-        )}
+          )
+        })()}
 
         {/* Objectives section — hidden for daily missions */}
         {missionType !== "DAILY" && <div className="rounded-xl bg-surface-container-highest p-1 shadow-[0px_20px_40px_rgba(0,0,0,0.4)]">

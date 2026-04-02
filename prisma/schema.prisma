@@ -217,11 +217,12 @@ model Mission {
 // ============================================================
 
 model Skill {
-  id    String @id @default(cuid())
-  name  String @unique
-  slug  String @unique
-  icon  String @default("star")
-  color String @default("primary")
+  id       String @id @default(cuid())
+  name     String @unique
+  slug     String @unique
+  icon     String @default("star")
+  color    String @default("primary")
+  category String @default("")
   createdAt DateTime @default(now())
   missionSkills MissionSkill[]
   userSkills    UserSkill[]
