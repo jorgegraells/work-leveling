@@ -3,9 +3,11 @@ import EmpresasSwitcher from "@/components/screens/EmpresasSwitcher"
 import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 import type { Plan, Role } from "@prisma/client"
+import { getTranslations } from "next-intl/server"
 
 export default async function EmpresasPage() {
   const user = await requireCurrentUser()
+  const t = await getTranslations("empresas")
 
   // Confirmed org memberships
   const confirmedRoles = await prisma.userOrganizationRole.findMany({
@@ -41,10 +43,10 @@ export default async function EmpresasPage() {
   return (
     <SidebarLayout
       user={{ name: user.name, level: user.level, title: user.title ?? "Executive", avatarUrl: user.avatarUrl }}
-      breadcrumbs={[{ label: "Empresas" }]}
+      breadcrumbs={[{ label: t("breadcrumb") }]}
     >
       <div className="px-4 sm:px-8 py-8 max-w-[1600px] mx-auto w-full">
-        <h1 className="font-headline text-2xl font-bold text-on-surface mb-8">Empresas</h1>
+        <h1 className="font-headline text-2xl font-bold text-on-surface mb-8">{t("breadcrumb")}</h1>
         <EmpresasSwitcher
           orgs={orgs}
           currentOrgId={user.organizationId ?? ""}

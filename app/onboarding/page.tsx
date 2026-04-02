@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 
 // After sign-up Clerk redirects here.
 // We poll until the webhook has created the DB user, then send to /perfil.
 export default function OnboardingPage() {
   const router = useRouter()
+  const t = useTranslations("onboarding")
   const [dots, setDots] = useState(".")
 
   useEffect(() => {
@@ -56,9 +58,9 @@ export default function OnboardingPage() {
       </div>
       <div className="text-center space-y-1">
         <p className="text-on-surface font-headline font-bold text-lg">
-          Preparando tu cuenta{dots}
+          {`${t("preparing")}${dots}`}
         </p>
-        <p className="text-outline text-sm">Esto solo tarda un momento</p>
+        <p className="text-outline text-sm">{t("moment")}</p>
       </div>
     </div>
   )

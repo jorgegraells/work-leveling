@@ -28,6 +28,7 @@ const PLAN_COLORS: Record<Plan, string> = {
 export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
   const router = useRouter()
   const t = useTranslations("empresas")
+  const tCommon = useTranslations("common")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -38,10 +39,10 @@ export default function EmpresaForm({ mode, initialData }: EmpresaFormProps) {
   const [clerkOrgId, setClerkOrgId] = useState(initialData?.clerkOrgId ?? "")
 
   const PLANS: { value: Plan; label: string; description: string }[] = [
-    { value: "FREE",         label: "Free",         description: t("planFreeDesc") },
-    { value: "STARTER",      label: "Starter",      description: t("planStarterDesc") },
-    { value: "PROFESSIONAL", label: "Professional", description: t("planProDesc") },
-    { value: "ENTERPRISE",   label: "Enterprise",   description: t("planEnterpriseDesc") },
+    { value: "FREE",         label: tCommon("planFree"),         description: t("planFreeDesc") },
+    { value: "STARTER",      label: tCommon("planStarter"),      description: t("planStarterDesc") },
+    { value: "PROFESSIONAL", label: tCommon("planProfessional"), description: t("planProDesc") },
+    { value: "ENTERPRISE",   label: tCommon("planEnterprise"),   description: t("planEnterpriseDesc") },
   ]
 
   // Auto-generate slug from name (only in create mode)

@@ -51,16 +51,17 @@ interface EmpresaDetailProps {
   users?: UserBasic[]
 }
 
-const PLAN_BADGE: Record<Plan, { label: string; classes: string }> = {
-  FREE:         { label: "Free",         classes: "bg-outline/20 text-outline" },
-  STARTER:      { label: "Starter",      classes: "bg-secondary/20 text-secondary" },
-  PROFESSIONAL: { label: "Professional", classes: "bg-tertiary/20 text-tertiary" },
-  ENTERPRISE:   { label: "Enterprise",   classes: "bg-primary/20 text-primary" },
-}
-
 export default function EmpresaDetail({ org, departments, users }: EmpresaDetailProps) {
   const router = useRouter()
   const t = useTranslations("empresas")
+  const tCommon = useTranslations("common")
+
+  const PLAN_BADGE: Record<Plan, { label: string; classes: string }> = {
+    FREE:         { label: tCommon("planFree"),         classes: "bg-outline/20 text-outline" },
+    STARTER:      { label: tCommon("planStarter"),      classes: "bg-secondary/20 text-secondary" },
+    PROFESSIONAL: { label: tCommon("planProfessional"), classes: "bg-tertiary/20 text-tertiary" },
+    ENTERPRISE:   { label: tCommon("planEnterprise"),   classes: "bg-primary/20 text-primary" },
+  }
   const [deleting, setDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 

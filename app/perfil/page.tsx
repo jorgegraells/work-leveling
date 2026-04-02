@@ -2,14 +2,7 @@ import PanelPerfilSteveSmith from "@/components/screens/PanelPerfilSteveSmith"
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
-
-const MODULE_LABEL: Record<string, string> = {
-  VENTAS_LEADS: "Ventas & Leads",
-  PROYECTOS_CRONOGRAMA: "Proyectos & Cronograma",
-  ALIANZAS_CONTRATOS: "Alianzas & Contratos",
-  INFORMES_CUMPLIMIENTO: "Informes & Cumplimiento",
-  ESTRATEGIA_EXPANSION: "Estrategia & Expansión",
-}
+import { getTranslations } from "next-intl/server"
 
 const MODULE_ACCENT: Record<string, "primary" | "tertiary" | "secondary" | "on-tertiary-container"> = {
   VENTAS_LEADS: "secondary",
@@ -51,6 +44,15 @@ export default async function PerfilPage() {
   })
 
   if (!user) return redirect("/sign-in")
+
+  const tCommon = await getTranslations("common")
+  const MODULE_LABEL: Record<string, string> = {
+    VENTAS_LEADS: tCommon("moduleVentas"),
+    PROYECTOS_CRONOGRAMA: tCommon("moduleProyectos"),
+    ALIANZAS_CONTRATOS: tCommon("moduleAlianzas"),
+    INFORMES_CUMPLIMIENTO: tCommon("moduleInformes"),
+    ESTRATEGIA_EXPANSION: tCommon("moduleEstrategia"),
+  }
 
   const completedProjects = user.userMissions
     .filter((um) => um.approval?.status === "APPROVED")

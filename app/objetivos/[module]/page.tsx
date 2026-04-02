@@ -3,14 +3,7 @@ import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import type { MissionModule } from "@prisma/client"
-
-const MODULE_LABEL: Record<MissionModule, string> = {
-  VENTAS_LEADS: "Ventas & Leads",
-  PROYECTOS_CRONOGRAMA: "Proyectos & Cronograma",
-  ALIANZAS_CONTRATOS: "Alianzas & Contratos",
-  INFORMES_CUMPLIMIENTO: "Informes & Cumplimiento",
-  ESTRATEGIA_EXPANSION: "Estrategia & Expansión",
-}
+import { getTranslations } from "next-intl/server"
 
 const MODULE_COLOR: Record<MissionModule, string> = {
   VENTAS_LEADS: "secondary",
@@ -29,6 +22,15 @@ interface Props {
 export default async function DetallesObjetivoPage({ params }: Props) {
   const { module: missionId } = await params
   const user = await requireCurrentUser()
+
+  const tCommon = await getTranslations("common")
+  const MODULE_LABEL: Record<MissionModule, string> = {
+    VENTAS_LEADS: tCommon("moduleVentas"),
+    PROYECTOS_CRONOGRAMA: tCommon("moduleProyectos"),
+    ALIANZAS_CONTRATOS: tCommon("moduleAlianzas"),
+    INFORMES_CUMPLIMIENTO: tCommon("moduleInformes"),
+    ESTRATEGIA_EXPANSION: tCommon("moduleEstrategia"),
+  }
 
   const userMission = await prisma.userMission.findUnique({
     where: {

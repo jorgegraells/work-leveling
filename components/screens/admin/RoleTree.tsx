@@ -28,15 +28,15 @@ interface RoleTreeProps {
   departments: Department[]
 }
 
-const ROLE_BADGE: Record<Role, { label: string; classes: string; dotClass: string }> = {
-  SUPER_ADMIN: { label: "Super Admin", classes: "bg-primary/20 text-primary",    dotClass: "bg-primary" },
-  ORG_ADMIN:   { label: "Org Admin",   classes: "bg-tertiary/20 text-tertiary",  dotClass: "bg-tertiary" },
-  MANAGER:     { label: "Manager",     classes: "bg-secondary/20 text-secondary",dotClass: "bg-secondary" },
-  MEMBER:      { label: "Member",      classes: "bg-outline/20 text-outline",    dotClass: "bg-outline" },
+const ROLE_BADGE_CLASSES: Record<Role, { classes: string; dotClass: string }> = {
+  SUPER_ADMIN: { classes: "bg-primary/20 text-primary",    dotClass: "bg-primary" },
+  ORG_ADMIN:   { classes: "bg-tertiary/20 text-tertiary",  dotClass: "bg-tertiary" },
+  MANAGER:     { classes: "bg-secondary/20 text-secondary",dotClass: "bg-secondary" },
+  MEMBER:      { classes: "bg-outline/20 text-outline",    dotClass: "bg-outline" },
 }
 
-function UserCard({ member }: { member: Member }) {
-  const badge = ROLE_BADGE[member.role]
+function UserCard({ member, label }: { member: Member; label: string }) {
+  const badge = { label, ...ROLE_BADGE_CLASSES[member.role] }
   return (
     <div className="flex items-center gap-3 bg-surface-container-lowest rounded-lg px-3 py-2.5">
       <div className="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden flex-shrink-0">
@@ -62,6 +62,14 @@ function UserCard({ member }: { member: Member }) {
 
 export default function RoleTree({ members, departments }: RoleTreeProps) {
   const t = useTranslations("roletree")
+  const tCommon = useTranslations("common")
+
+  const ROLE_LABEL: Record<Role, string> = {
+    SUPER_ADMIN: tCommon("roleSuperAdmin"),
+    ORG_ADMIN:   tCommon("roleOrgAdmin"),
+    MANAGER:     tCommon("roleManager"),
+    MEMBER:      tCommon("roleMember"),
+  }
 
   // Admins (no department or ORG_ADMIN)
   const orgAdmins = members.filter((m) => m.role === "ORG_ADMIN" || m.role === "SUPER_ADMIN")
@@ -85,7 +93,7 @@ export default function RoleTree({ members, departments }: RoleTreeProps) {
               <span className="ml-auto text-[9px] text-outline/60">{orgAdmins.length}</span>
             </div>
             <div className="space-y-2 pl-4 border-l-2 border-primary/20">
-              {orgAdmins.map((m) => <UserCard key={m.id} member={m} />)}
+              {orgAdmins.map((m) => <UserCard key={m.id} member={m} label={ROLE_LABEL[m.role]} />)}
             </div>
           </div>
         </div>
@@ -113,7 +121,7 @@ export default function RoleTree({ members, departments }: RoleTreeProps) {
                     <div>
                       <p className="text-[9px] font-bold uppercase tracking-widest text-secondary mb-1.5">{t("managers")}</p>
                       <div className="space-y-1.5">
-                        {managers.map((m) => <UserCard key={m.id} member={m} />)}
+                        {managers.map((m) => <UserCard key={m.id} member={m} label={ROLE_LABEL[m.role]} />)}
                       </div>
                     </div>
                   )}
@@ -121,7 +129,7 @@ export default function RoleTree({ members, departments }: RoleTreeProps) {
                     <div>
                       <p className="text-[9px] font-bold uppercase tracking-widest text-outline mb-1.5">{t("members")}</p>
                       <div className="space-y-1.5">
-                        {rest.map((m) => <UserCard key={m.id} member={m} />)}
+                        {rest.map((m) => <UserCard key={m.id} member={m} label={ROLE_LABEL[m.role]} />)}
                       </div>
                     </div>
                   )}
@@ -142,7 +150,7 @@ export default function RoleTree({ members, departments }: RoleTreeProps) {
               <span className="ml-auto text-[9px] text-outline/60">{unassigned.length}</span>
             </div>
             <div className="space-y-2 pl-4 border-l-2 border-outline/20">
-              {unassigned.map((m) => <UserCard key={m.id} member={m} />)}
+              {unassigned.map((m) => <UserCard key={m.id} member={m} label={ROLE_LABEL[m.role]} />)}
             </div>
           </div>
         </div>

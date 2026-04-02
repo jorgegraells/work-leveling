@@ -2,6 +2,7 @@ import SidebarLayout from "@/components/layout/SidebarLayout"
 import Estadisticas from "@/components/screens/Estadisticas"
 import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
+import { getTranslations } from "next-intl/server"
 
 export default async function EstadisticasPage() {
   const user = await requireCurrentUser()
@@ -25,12 +26,14 @@ export default async function EstadisticasPage() {
     }),
   ])
 
+  const t = await getTranslations("estadisticas")
+  const tCommon = await getTranslations("common")
   const MODULE_LABEL: Record<string, string> = {
-    VENTAS_LEADS: "Ventas & Leads",
-    PROYECTOS_CRONOGRAMA: "Proyectos & Cronograma",
-    ALIANZAS_CONTRATOS: "Alianzas & Contratos",
-    INFORMES_CUMPLIMIENTO: "Informes & Cumplimiento",
-    ESTRATEGIA_EXPANSION: "Estrategia & Expansion",
+    VENTAS_LEADS: tCommon("moduleVentas"),
+    PROYECTOS_CRONOGRAMA: tCommon("moduleProyectos"),
+    ALIANZAS_CONTRATOS: tCommon("moduleAlianzas"),
+    INFORMES_CUMPLIMIENTO: tCommon("moduleInformes"),
+    ESTRATEGIA_EXPANSION: tCommon("moduleEstrategia"),
   }
 
   // Group XP by day
@@ -64,7 +67,7 @@ export default async function EstadisticasPage() {
   return (
     <SidebarLayout
       user={{ name: user.name, level: user.level, title: user.title ?? "Executive", avatarUrl: user.avatarUrl }}
-      breadcrumbs={[{ label: "Estadisticas" }]}
+      breadcrumbs={[{ label: t("breadcrumb") }]}
     >
       <Estadisticas
         stats={{

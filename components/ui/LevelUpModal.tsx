@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useTranslations } from "next-intl"
 
 interface LevelUpModalProps {
   level: number
@@ -8,6 +9,7 @@ interface LevelUpModalProps {
 }
 
 export default function LevelUpModal({ level, onClose }: LevelUpModalProps) {
+  const t = useTranslations("levelUp")
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -54,13 +56,13 @@ export default function LevelUpModal({ level, onClose }: LevelUpModalProps) {
         {/* Label */}
         <div className="text-center">
           <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-outline mb-2">
-            ¡Subiste de nivel!
+            {t("title")}
           </p>
           <p className="font-headline text-8xl font-black text-primary leading-none level-up-number">
             {level}
           </p>
           <p className="text-outline text-xs mt-3 uppercase tracking-widest">
-            Nivel alcanzado
+            {t("subtitle")}
           </p>
         </div>
 
@@ -69,7 +71,7 @@ export default function LevelUpModal({ level, onClose }: LevelUpModalProps) {
           onClick={handleClose}
           className="mt-2 px-8 py-2.5 rounded-md bg-primary text-on-primary font-bold text-[10px] uppercase tracking-widest active:scale-95 transition-transform hover:brightness-110"
         >
-          Continuar
+          {t("continue")}
         </button>
       </div>
     </div>

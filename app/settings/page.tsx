@@ -2,16 +2,18 @@ import SidebarLayout from "@/components/layout/SidebarLayout"
 import Settings from "@/components/screens/Settings"
 import { requireCurrentUser } from "@/lib/auth-helpers"
 import { cookies } from "next/headers"
+import { getTranslations } from "next-intl/server"
 
 export default async function SettingsPage() {
   const user = await requireCurrentUser()
+  const t = await getTranslations("settings")
   const cookieStore = await cookies()
   const locale = cookieStore.get("locale")?.value ?? "es"
 
   return (
     <SidebarLayout
       user={{ name: user.name, level: user.level, title: user.title ?? "Executive", avatarUrl: user.avatarUrl }}
-      breadcrumbs={[{ label: "Configuracion" }]}
+      breadcrumbs={[{ label: t("breadcrumb") }]}
     >
       <Settings
         user={{

@@ -31,7 +31,8 @@
     "uploadError": "Error al subir la imagen",
     "errorSave": "Error al guardar",
     "errorUnknown": "Error desconocido",
-    "titlePlaceholder": "Ej: Architect of the Atelier"
+    "titlePlaceholder": "Ej: Architect of the Atelier",
+    "breadcrumb": "Configuración"
   },
   "archivados": {
     "title": "Archivados",
@@ -46,7 +47,8 @@
     "archivedOn": "Archivado el {date}",
     "reviewerNote": "Nota del revisor",
     "note": "Nota",
-    "xp": "XP"
+    "xp": "XP",
+    "breadcrumb": "Archivados"
   },
   "common": {
     "level": "Nivel",
@@ -97,7 +99,15 @@
     "pendingReviewBadge": "Pendiente revisión",
     "objectiveApproved": "Aprobada",
     "objectiveRejected": "Rechazada",
-    "allMissionsRequired": "Todas las misiones deben estar aprobadas antes de finalizar el objetivo"
+    "allMissionsRequired": "Todas las misiones deben estar aprobadas antes de finalizar el objetivo",
+    "roleSuperAdmin": "Super Admin",
+    "roleOrgAdmin": "Admin de Org",
+    "roleManager": "Manager",
+    "roleMember": "Miembro",
+    "planFree": "Gratis",
+    "planStarter": "Starter",
+    "planProfessional": "Profesional",
+    "planEnterprise": "Enterprise"
   },
   "dashboard": {
     "welcome": "Bienvenido, {name}",
@@ -166,7 +176,8 @@
     "missionsByModule": "Misiones por Modulo",
     "noMissions": "Sin misiones completadas aun",
     "attributes": "Atributos",
-    "noAttributes": "Sin atributos asignados"
+    "noAttributes": "Sin atributos asignados",
+    "breadcrumb": "Estadísticas"
   },
   "aprobaciones": {
     "pendingTitle": "Aprobaciones Pendientes",
@@ -270,7 +281,10 @@
     "department": "Departamento",
     "total": "Total",
     "avgDelayDays": "Retraso prom.",
-    "viewAll": "Ver KPIs completos"
+    "viewAll": "Ver KPIs completos",
+    "sectionTitle": "KPIs & Rendimiento",
+    "onTimeShort": "% a tiempo",
+    "noDeadlineMissions": "Añade plazos a tus misiones para ver KPIs"
   },
   "empresa": {
     "dashboard": "Dashboard",
@@ -598,7 +612,9 @@
     "minutesAgo": "Hace {mins}m",
     "hoursAgo": "Hace {hours}h",
     "daysAgo": "Hace {days}d",
-    "monthsAgo": "Hace {months}mes"
+    "monthsAgo": "Hace {months}mes",
+    "pageTitle": "Notificaciones",
+    "pageSubtitle": "Tus alertas y actualizaciones recientes"
   },
   "sidebar": {
     "levelLabel": "Nivel {level} {title}"
@@ -665,6 +681,16 @@
     "onTrack": "A tiempo",
     "completedEarly": "Antes",
     "completedOnTime": "A tiempo",
-    "completedLate": "Con retraso"
+    "completedLate": "Con retraso",
+    "sortLabel": "Ordenar:"
+  },
+  "onboarding": {
+    "preparing": "Preparando tu cuenta",
+    "moment": "Esto solo tarda un momento"
+  },
+  "levelUp": {
+    "title": "¡Subiste de nivel!",
+    "subtitle": "Nivel alcanzado",
+    "continue": "Continuar"
   }
 }

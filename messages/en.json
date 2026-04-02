@@ -31,7 +31,8 @@
     "uploadError": "Error uploading image",
     "errorSave": "Error saving",
     "errorUnknown": "Unknown error",
-    "titlePlaceholder": "E.g.: Architect of the Atelier"
+    "titlePlaceholder": "E.g.: Architect of the Atelier",
+    "breadcrumb": "Settings"
   },
   "archivados": {
     "title": "Archived",
@@ -46,7 +47,8 @@
     "archivedOn": "Archived on {date}",
     "reviewerNote": "Reviewer note",
     "note": "Note",
-    "xp": "XP"
+    "xp": "XP",
+    "breadcrumb": "Archived"
   },
   "common": {
     "level": "Level",
@@ -97,7 +99,15 @@
     "pendingReviewBadge": "Pending review",
     "objectiveApproved": "Approved",
     "objectiveRejected": "Rejected",
-    "allMissionsRequired": "All missions must be approved before finishing the objective"
+    "allMissionsRequired": "All missions must be approved before finishing the objective",
+    "roleSuperAdmin": "Super Admin",
+    "roleOrgAdmin": "Org Admin",
+    "roleManager": "Manager",
+    "roleMember": "Member",
+    "planFree": "Free",
+    "planStarter": "Starter",
+    "planProfessional": "Professional",
+    "planEnterprise": "Enterprise"
   },
   "dashboard": {
     "welcome": "Welcome, {name}",
@@ -166,7 +176,8 @@
     "missionsByModule": "Missions by Module",
     "noMissions": "No completed missions yet",
     "attributes": "Attributes",
-    "noAttributes": "No attributes assigned"
+    "noAttributes": "No attributes assigned",
+    "breadcrumb": "Statistics"
   },
   "aprobaciones": {
     "pendingTitle": "Pending Approvals",
@@ -270,7 +281,10 @@
     "department": "Department",
     "total": "Total",
     "avgDelayDays": "Avg delay",
-    "viewAll": "View all KPIs"
+    "viewAll": "View all KPIs",
+    "sectionTitle": "KPIs & Performance",
+    "onTimeShort": "% on time",
+    "noDeadlineMissions": "Add deadlines to your missions to see KPIs"
   },
   "empresa": {
     "dashboard": "Dashboard",
@@ -597,7 +611,9 @@
     "minutesAgo": "{mins}m ago",
     "hoursAgo": "{hours}h ago",
     "daysAgo": "{days}d ago",
-    "monthsAgo": "{months}mo ago"
+    "monthsAgo": "{months}mo ago",
+    "pageTitle": "Notifications",
+    "pageSubtitle": "Your recent alerts and updates"
   },
   "sidebar": {
     "levelLabel": "Level {level} {title}"
@@ -664,6 +680,16 @@
     "onTrack": "On track",
     "completedEarly": "Early",
     "completedOnTime": "On time",
-    "completedLate": "Late"
+    "completedLate": "Late",
+    "sortLabel": "Sort:"
+  },
+  "onboarding": {
+    "preparing": "Setting up your account",
+    "moment": "This will only take a moment"
+  },
+  "levelUp": {
+    "title": "You leveled up!",
+    "subtitle": "Level reached",
+    "continue": "Continue"
   }
 }

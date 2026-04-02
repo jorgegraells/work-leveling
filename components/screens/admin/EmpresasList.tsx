@@ -20,15 +20,16 @@ interface EmpresasListProps {
   empresas: EmpresaRow[]
 }
 
-const PLAN_BADGE: Record<Plan, { label: string; classes: string }> = {
-  FREE:         { label: "Free",         classes: "bg-outline/20 text-outline" },
-  STARTER:      { label: "Starter",      classes: "bg-secondary/20 text-secondary" },
-  PROFESSIONAL: { label: "Professional", classes: "bg-tertiary/20 text-tertiary" },
-  ENTERPRISE:   { label: "Enterprise",   classes: "bg-primary/20 text-primary" },
-}
-
 export default function EmpresasList({ empresas }: EmpresasListProps) {
   const t = useTranslations("empresas")
+  const tCommon = useTranslations("common")
+
+  const PLAN_BADGE: Record<Plan, { label: string; classes: string }> = {
+    FREE:         { label: tCommon("planFree"),         classes: "bg-outline/20 text-outline" },
+    STARTER:      { label: tCommon("planStarter"),      classes: "bg-secondary/20 text-secondary" },
+    PROFESSIONAL: { label: tCommon("planProfessional"), classes: "bg-tertiary/20 text-tertiary" },
+    ENTERPRISE:   { label: tCommon("planEnterprise"),   classes: "bg-primary/20 text-primary" },
+  }
 
   const SUB_BADGE: Record<SubscriptionStatus, { label: string; classes: string }> = {
     TRIALING:  { label: "Trial",           classes: "bg-tertiary/20 text-tertiary" },
@@ -113,7 +114,7 @@ export default function EmpresasList({ empresas }: EmpresasListProps) {
               {empresas.map((emp) => {
                 const plan = PLAN_BADGE[emp.plan]
                 const sub = emp.subscriptionStatus ? SUB_BADGE[emp.subscriptionStatus] : null
-                const date = new Date(emp.createdAt).toLocaleDateString("es-MX", {
+                const date = new Date(emp.createdAt).toLocaleDateString(undefined, {
                   day: "2-digit",
                   month: "short",
                   year: "numeric",

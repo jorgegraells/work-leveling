@@ -34,19 +34,20 @@ interface UsuariosOrgProps {
   departments: Department[]
 }
 
-const ROLE_BADGE: Record<Role, { label: string; classes: string }> = {
-  SUPER_ADMIN: { label: "Super Admin", classes: "bg-primary/20 text-primary" },
-  ORG_ADMIN:   { label: "Org Admin",   classes: "bg-tertiary/20 text-tertiary" },
-  MANAGER:     { label: "Manager",     classes: "bg-secondary/20 text-secondary" },
-  MEMBER:      { label: "Member",      classes: "bg-outline/20 text-outline" },
-}
-
 const ROLES: Role[] = ["SUPER_ADMIN", "ORG_ADMIN", "MANAGER", "MEMBER"]
 
 export default function UsuariosOrg({ orgId, orgName, members, departments }: UsuariosOrgProps) {
   const router = useRouter()
   const t = useTranslations("usuarios")
   const tEmpresas = useTranslations("empresas")
+  const tCommon = useTranslations("common")
+
+  const ROLE_BADGE: Record<Role, { label: string; classes: string }> = {
+    SUPER_ADMIN: { label: tCommon("roleSuperAdmin"), classes: "bg-primary/20 text-primary" },
+    ORG_ADMIN:   { label: tCommon("roleOrgAdmin"),   classes: "bg-tertiary/20 text-tertiary" },
+    MANAGER:     { label: tCommon("roleManager"),     classes: "bg-secondary/20 text-secondary" },
+    MEMBER:      { label: tCommon("roleMember"),      classes: "bg-outline/20 text-outline" },
+  }
   const [view, setView] = useState<"table" | "tree">("table")
   const [showAddModal, setShowAddModal] = useState(false)
   const [editMember, setEditMember] = useState<Member | null>(null)

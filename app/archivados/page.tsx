@@ -33,7 +33,7 @@ export default async function ArchivadosPage() {
   return (
     <SidebarLayout
       user={{ name: user.name, level: user.level, title: user.title ?? "Executive", avatarUrl: user.avatarUrl }}
-      breadcrumbs={[{ label: "Archivados" }]}
+      breadcrumbs={[{ label: t("breadcrumb") }]}
     >
       <div className="flex-1 flex flex-col w-full relative">
         <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />

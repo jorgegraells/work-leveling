@@ -115,10 +115,10 @@ export default function SidebarLayout({
             </div>
             <div className="overflow-hidden">
               <h2 className="text-[11px] font-bold uppercase tracking-widest text-on-surface truncate">
-                {user ? user.name : "Steve Smith"}
+                {user ? user.name : ""}
               </h2>
               <p className="text-[9px] text-primary mt-1 truncate">
-                {tCommon("level")} {user ? user.level : 42} {user ? user.title.split(" ")[0] : "Architect"}
+                {tCommon("level")} {user ? user.level : ""} {user ? user.title?.split(" ")[0] ?? "" : ""}
               </p>
               {currentOrg && (
                 <p className="text-[9px] text-on-surface/40 uppercase tracking-widest truncate mt-0.5">

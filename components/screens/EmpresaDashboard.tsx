@@ -93,6 +93,7 @@ function PieTooltip({ active, payload, missionLabel }: { active?: boolean; paylo
 export default function EmpresaDashboard({ org, departments, members, missionStats, kpiSummary }: Props) {
   const t = useTranslations("empresa")
   const tCommon = useTranslations("common")
+  const tKpi = useTranslations("kpi")
   const [selectedDept, setSelectedDept] = useState<string | null>(null)
 
   const MODULE_LABEL: Record<string, string> = {
@@ -338,14 +339,14 @@ export default function EmpresaDashboard({ org, departments, members, missionSta
               <span className="material-symbols-outlined text-xl text-tertiary">monitoring</span>
             </div>
             <div>
-              <p className="text-[9px] font-bold uppercase tracking-widest text-outline">KPIs & Rendimiento</p>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-outline">{tKpi("sectionTitle")}</p>
               {kpiSummary && kpiSummary.withDeadline > 0 ? (
                 <p className="font-headline text-2xl font-bold text-tertiary mt-0.5">
-                  {kpiSummary.onTimePct}% a tiempo
+                  {kpiSummary.onTimePct}% {tKpi("onTimeShort")}
                 </p>
               ) : (
                 <p className="text-sm text-outline mt-0.5">
-                  Añade plazos a tus misiones para ver KPIs
+                  {tKpi("noDeadlineMissions")}
                 </p>
               )}
             </div>

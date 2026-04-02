@@ -110,6 +110,7 @@ export default function PanelCorporativoGamificado({
 
   const t = useTranslations("misiones")
   const tCommon = useTranslations("common")
+  const tDeadlines = useTranslations("deadlines")
   const [completingDaily, setCompletingDaily] = useState<string | null>(null)
 
   const handleCompleteDaily = async (userMissionId: string, missionId: string) => {
@@ -327,10 +328,10 @@ export default function PanelCorporativoGamificado({
               {/* Sort controls */}
               {objectiveProjects.length > 0 && <div className="flex items-center gap-2 px-2">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-outline">
-                  Ordenar:
+                  {tDeadlines("sortLabel")}
                 </span>
                 {(["default", "urgency", "deadline"] as const).map((mode) => {
-                  const labels = { default: "Por defecto", urgency: "Urgencia", deadline: "Plazo" }
+                  const labels = { default: tDeadlines("sortDefault"), urgency: tDeadlines("sortUrgency"), deadline: tDeadlines("sortDeadline") }
                   const isActive = sortMode === mode
                   return (
                     <button
