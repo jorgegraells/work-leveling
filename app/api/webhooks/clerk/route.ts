@@ -121,40 +121,24 @@ export async function POST(req: Request) {
 
   try {
     await prisma.$transaction(async (tx) => {
-      let organizationId: string | undefined = undefined
-
-      if (!isSuperAdmin) {
-        // 1. Create a personal organization for regular users
-        const orgSlug = `org-${data.id.slice(-8).toLowerCase()}`
-        const org = await tx.organization.create({
-          data: {
-            clerkOrgId: `personal_${data.id}`,
-            name:       `${name}'s Org`,
-            slug:       orgSlug,
-          },
-        })
-        organizationId = org.id
-      }
-
-      // 2. Create the user record
+      // 1. Create the user record (no organization — superadmin assigns orgs manually)
       const user = await tx.user.create({
         data: {
-          clerkUserId:    data.id,
-          email:          primaryEmail,
+          clerkUserId:   data.id,
+          email:         primaryEmail,
           name,
-          avatarUrl:      data.image_url,
-          title:          isSuperAdmin ? "Super Admin" : "Executive",
-          level:          1,
-          xp:             0,
-          xpToNextLevel:  1000,
-          trophies:       0,
-          kredits:        0,
+          avatarUrl:     data.image_url,
+          title:         isSuperAdmin ? "Super Admin" : "Executive",
+          level:         1,
+          xp:            0,
+          xpToNextLevel: 1000,
+          trophies:      0,
+          kredits:       0,
           isSuperAdmin,
-          ...(organizationId ? { organizationId } : {}),
         },
       })
 
-      // 3. Upsert global attributes and assign them to the user with value 0
+      // 2. Upsert global attributes and assign them to the user with value 0
       for (const attr of DEFAULT_ATTRIBUTES) {
         const attribute = await tx.attribute.upsert({
           where:  { key: attr.key },

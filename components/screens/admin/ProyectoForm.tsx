@@ -132,6 +132,9 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
   )
   const [skillSearch, setSkillSearch] = useState("")
   const [openCategories, setOpenCategories] = useState<Set<string>>(new Set())
+  const [customSkillInput, setCustomSkillInput] = useState("")
+  const [customSkillLoading, setCustomSkillLoading] = useState(false)
+  const [localSkills, setLocalSkills] = useState(skills ?? [])
   const [startDate, setStartDate] = useState<string>(
     mission?.startDate ? new Date(mission.startDate).toISOString().split("T")[0] : ""
   )
@@ -154,6 +157,37 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
       else next.add(cat)
       return next
     })
+  }
+
+  async function addCustomSkill() {
+    const name = customSkillInput.trim()
+    if (!name) return
+    setCustomSkillLoading(true)
+    try {
+      const res = await fetch("/api/admin/skills", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      })
+      if (res.ok) {
+        const skill = await res.json()
+        // Add to local list if not already there
+        setLocalSkills((prev) =>
+          prev.find((s) => s.id === skill.id) ? prev : [...prev, skill]
+        )
+        // Auto-select it
+        setSelectedSkillIds((prev) =>
+          prev.includes(skill.id) ? prev : [...prev, skill.id]
+        )
+        setCustomSkillInput("")
+        // Open Personalizado category
+        setOpenCategories((prev) => new Set(prev).add("Personalizado"))
+      }
+    } catch {
+      // silent
+    } finally {
+      setCustomSkillLoading(false)
+    }
   }
 
   function addObjective() {
@@ -541,14 +575,14 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
         </div>}
 
         {/* Skills section */}
-        {skills && skills.length > 0 && (() => {
+        {localSkills !== undefined && (() => {
           const query = skillSearch.trim().toLowerCase()
           const filtered = query
-            ? skills.filter((s) => s.name.toLowerCase().includes(query) || s.category.toLowerCase().includes(query))
-            : skills
+            ? localSkills.filter((s) => s.name.toLowerCase().includes(query) || s.category.toLowerCase().includes(query))
+            : localSkills
 
           // group by category preserving insertion order
-          const categoryMap = new Map<string, typeof skills>()
+          const categoryMap = new Map<string, typeof localSkills>()
           for (const s of filtered) {
             if (!categoryMap.has(s.category)) categoryMap.set(s.category, [])
             categoryMap.get(s.category)!.push(s)
@@ -602,7 +636,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
                     <p className="text-[9px] font-bold uppercase tracking-widest text-outline mb-2">Seleccionadas</p>
                     <div className="flex flex-wrap gap-1.5">
                       {selectedSkillIds.map((id) => {
-                        const s = skills.find((sk) => sk.id === id)
+                        const s = localSkills.find((sk) => sk.id === id)
                         if (!s) return null
                         return (
                           <button
@@ -678,6 +712,35 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
                 {filtered.length === 0 && (
                   <p className="text-center text-outline text-sm py-4">No se encontraron habilidades</p>
                 )}
+
+                {/* Custom skill */}
+                <div className="pt-2 border-t border-outline-variant/15">
+                  <p className="text-[9px] font-bold uppercase tracking-widest text-outline mb-2">
+                    ¿No encuentras la habilidad? Añádela
+                  </p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={customSkillInput}
+                      onChange={(e) => setCustomSkillInput(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addCustomSkill() } }}
+                      placeholder="Ej: Verint, Zendesk, Power Automate…"
+                      className="flex-1 bg-surface-container-lowest rounded-lg px-3 py-2 text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary placeholder:text-outline"
+                    />
+                    <button
+                      type="button"
+                      onClick={addCustomSkill}
+                      disabled={!customSkillInput.trim() || customSkillLoading}
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-container-high text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-container-highest transition-colors disabled:opacity-40 active:scale-95"
+                    >
+                      {customSkillLoading
+                        ? <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+                        : <span className="material-symbols-outlined text-sm">add</span>
+                      }
+                      Añadir
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )
