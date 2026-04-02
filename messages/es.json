@@ -359,6 +359,7 @@
     "accessDeniedDesc": "No tienes permisos para acceder al panel de administración. Esta sección requiere privilegios de Super Admin.",
     "backToDashboard": "Volver al Dashboard",
     "newMissionTitle": "Nuevo Objetivo",
+    "editMissionTitle": "Editar Objetivo",
     "newMissionSubtitle": "Crear un nuevo objetivo con misiones",
     "breadcrumbProjects": "Objetivos",
     "breadcrumbApprovals": "Aprobaciones",
