@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+
 export interface TopPerformer {
   userId: string
   name: string
@@ -25,6 +27,9 @@ const TROPHY_ICONS = [
 ]
 
 export default function TopPerformersLeaderboard({ performers, onClickEmployee }: Props) {
+  const [expanded, setExpanded] = useState(false)
+  const [sortBy, setSortBy] = useState<"completed" | "ontime">("completed")
+
   if (!performers.length) {
     return (
       <div className="py-8 text-center space-y-2">
@@ -34,8 +39,41 @@ export default function TopPerformersLeaderboard({ performers, onClickEmployee }
     )
   }
 
+  const sorted = [...performers].sort((a, b) =>
+    sortBy === "completed"
+      ? b.completedCount - a.completedCount
+      : b.onTimePct - a.onTimePct
+  )
+
+  const visible = sorted.slice(0, expanded ? sorted.length : 5)
+
   return (
     <div className="space-y-1.5">
+      {/* Sort controls */}
+      <div className="flex items-center gap-2 pb-2">
+        <span className="text-[9px] font-bold uppercase tracking-widest text-outline">Ordenar:</span>
+        <button
+          onClick={() => setSortBy("completed")}
+          className={`px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all active:scale-95 ${
+            sortBy === "completed"
+              ? "bg-primary text-on-primary"
+              : "bg-surface-container-highest text-outline hover:text-on-surface"
+          }`}
+        >
+          Completadas
+        </button>
+        <button
+          onClick={() => setSortBy("ontime")}
+          className={`px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all active:scale-95 ${
+            sortBy === "ontime"
+              ? "bg-primary text-on-primary"
+              : "bg-surface-container-highest text-outline hover:text-on-surface"
+          }`}
+        >
+          A tiempo %
+        </button>
+      </div>
+
       {/* Header */}
       <div className="grid grid-cols-[2rem_1fr_auto_auto] gap-3 px-3 pb-1">
         <span className="text-[9px] font-bold uppercase tracking-widest text-outline">#</span>
@@ -44,7 +82,7 @@ export default function TopPerformersLeaderboard({ performers, onClickEmployee }
         <span className="text-[9px] font-bold uppercase tracking-widest text-outline w-16 text-center">A tiempo</span>
       </div>
 
-      {performers.map((p, i) => {
+      {visible.map((p, i) => {
         const trophy = TROPHY_ICONS[i]
         const initials = p.name.split(" ").map(n => n[0]).slice(0, 2).join("").toUpperCase()
 
@@ -104,6 +142,19 @@ export default function TopPerformersLeaderboard({ performers, onClickEmployee }
           </button>
         )
       })}
+
+      {/* Show more / collapse toggle */}
+      {sorted.length > 5 && (
+        <button
+          onClick={() => setExpanded(prev => !prev)}
+          className="w-full mt-1 py-2 rounded-lg bg-surface-container-highest text-outline hover:text-on-surface text-[10px] font-bold uppercase tracking-widest transition-all active:scale-[0.98] flex items-center justify-center gap-1.5"
+        >
+          <span className="material-symbols-outlined text-base">
+            {expanded ? "expand_less" : "expand_more"}
+          </span>
+          {expanded ? "Ver menos" : "Ver más"}
+        </button>
+      )}
     </div>
   )
 }

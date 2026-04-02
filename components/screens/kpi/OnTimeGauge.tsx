@@ -22,7 +22,7 @@ export default function OnTimeGauge({ onTimePct, earlyPct, latePct }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div className="relative w-48 h-48">
+      <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48">
         <ResponsiveContainer width="100%" height="100%">
           <RadialBarChart
             cx="50%"
