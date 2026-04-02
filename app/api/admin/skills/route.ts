@@ -9,6 +9,15 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
+  if (!user.isSuperAdmin) {
+    const orgRole = await prisma.userOrganizationRole.findFirst({
+      where: { userId: user.id, confirmed: true, role: { in: ["MANAGER", "ORG_ADMIN"] } },
+    })
+    if (!orgRole) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+    }
+  }
+
   const skills = await prisma.skill.findMany({
     orderBy: { name: "asc" },
   })

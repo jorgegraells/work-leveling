@@ -70,8 +70,7 @@ export async function POST(
   }
 
   if (!approverId) {
-    // No admin at all — still create the approval with self as fallback
-    approverId = user.id
+    return NextResponse.json({ error: "No se encontró un aprobador válido" }, { status: 400 })
   }
 
   const approval = await prisma.missionApproval.create({

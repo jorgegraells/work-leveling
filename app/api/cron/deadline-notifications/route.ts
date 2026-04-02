@@ -36,12 +36,10 @@ export async function GET(req: NextRequest) {
   })
 
   for (const um of dueSoonCandidates) {
-    await prisma.$transaction([
-      prisma.userMission.update({
-        where: { id: um.id },
-        data: { dueSoonNotifiedAt: now },
-      }),
-    ])
+    await prisma.userMission.update({
+      where: { id: um.id },
+      data: { dueSoonNotifiedAt: now },
+    })
     await createNotification(
       um.userId,
       "DUE_SOON",
@@ -60,12 +58,10 @@ export async function GET(req: NextRequest) {
   })
 
   for (const um of criticalCandidates) {
-    await prisma.$transaction([
-      prisma.userMission.update({
-        where: { id: um.id },
-        data: { criticalNotifiedAt: now },
-      }),
-    ])
+    await prisma.userMission.update({
+      where: { id: um.id },
+      data: { criticalNotifiedAt: now },
+    })
     await createNotification(
       um.userId,
       "DEADLINE_CRITICAL",
@@ -84,12 +80,10 @@ export async function GET(req: NextRequest) {
   })
 
   for (const um of overdueCandidates) {
-    await prisma.$transaction([
-      prisma.userMission.update({
-        where: { id: um.id },
-        data: { overdueNotifiedAt: now },
-      }),
-    ])
+    await prisma.userMission.update({
+      where: { id: um.id },
+      data: { overdueNotifiedAt: now },
+    })
     await createNotification(
       um.userId,
       "OVERDUE",

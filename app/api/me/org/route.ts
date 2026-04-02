@@ -27,7 +27,7 @@ export async function POST(req: Request) {
   cookieStore.set("selected-org-id", orgId, {
     path: "/",
     maxAge: 60 * 60 * 24 * 30, // 30 days
-    httpOnly: false,
+    httpOnly: true,
     sameSite: "lax",
   })
 

@@ -32,6 +32,10 @@ export async function POST(
   const mission = await prisma.mission.findUnique({ where: { id } })
   if (!mission) return NextResponse.json({ error: "Mission not found" }, { status: 404 })
 
+  if (!user.isSuperAdmin && mission.organizationId !== null && mission.organizationId !== user.organizationId) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
+
   const body = await req.json()
   const { userIds, departmentId }: { userIds?: string[]; departmentId?: string } = body
 

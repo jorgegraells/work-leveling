@@ -19,7 +19,7 @@ export async function PATCH(
   }
 
   if (role.confirmed) {
-    return NextResponse.json({ error: "Already confirmed" }, { status: 400 })
+    return NextResponse.json({ error: "Already confirmed" }, { status: 409 })
   }
 
   const updated = await prisma.userOrganizationRole.update({

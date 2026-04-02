@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { requireCurrentUser, getUserOrgRole } from "@/lib/auth-helpers"
+import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 import type { Role } from "@prisma/client"
 
