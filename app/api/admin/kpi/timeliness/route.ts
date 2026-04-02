@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
         select: {
           orgRoles: {
             where: { organizationId: orgId },
-            select: { departmentId: true },
+            select: { departmentId: true, organizationId: true },
           },
         },
       },
@@ -72,7 +72,7 @@ export async function GET(req: NextRequest) {
     completedAt: um.completedAt,
     dueDate: um.mission.dueDate,
     userId: um.userId,
-    departmentId: um.user.orgRoles[0]?.departmentId ?? null,
+    departmentId: um.user.orgRoles.find(r => r.organizationId === orgId)?.departmentId ?? null,
   }))
 
   const aggregate = aggregateTimeliness(records)

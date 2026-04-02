@@ -284,7 +284,8 @@
     "viewAll": "View all KPIs",
     "sectionTitle": "KPIs & Performance",
     "onTimeShort": "% on time",
-    "noDeadlineMissions": "Add deadlines to your missions to see KPIs"
+    "noDeadlineMissions": "Add deadlines to your missions to see KPIs",
+    "noData": "No data available"
   },
   "empresa": {
     "dashboard": "Dashboard",
@@ -572,6 +573,7 @@
     "createButton": "Create Objective",
     "errorSave": "Error saving the objective",
     "errorConnection": "Connection error",
+    "errorDateRange": "Start date cannot be after the due date",
     "missionVisible": "This objective will be visible to employees of the selected company",
     "priorityAlta": "High",
     "priorityNormal": "Normal",
@@ -613,7 +615,8 @@
     "daysAgo": "{days}d ago",
     "monthsAgo": "{months}mo ago",
     "pageTitle": "Notifications",
-    "pageSubtitle": "Your recent alerts and updates"
+    "pageSubtitle": "Your recent alerts and updates",
+    "SKILL_LEVEL_UP": "Skill level up"
   },
   "sidebar": {
     "levelLabel": "Level {level} {title}"
@@ -690,6 +693,12 @@
   "levelUp": {
     "title": "You leveled up!",
     "subtitle": "Level reached",
-    "continue": "Continue"
+    "continue": "Continue",
+    "skillLevelUp": "Skill level up!",
+    "skillLevelUpBody": "You reached level {level} in {skill}. Keep it up!",
+    "xpBreakdown": "+{base} base +{bonus} bonus = {total} XP",
+    "earlyBonus": "early completion bonus",
+    "priorityBonus": "high priority bonus",
+    "maxLevel": "Max Level"
   }
 }

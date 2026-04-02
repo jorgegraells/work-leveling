@@ -24,6 +24,14 @@ function formatDate(dateStr: string) {
   return `${d.getDate()}/${d.getMonth() + 1}`
 }
 
+const ATTR_BG: Record<string, string> = {
+  primary: "bg-primary",
+  secondary: "bg-secondary",
+  tertiary: "bg-tertiary",
+  "on-tertiary-container": "bg-on-tertiary-container",
+  outline: "bg-outline",
+}
+
 export default function Estadisticas({ stats }: { stats: UserStats }) {
   const t = useTranslations("estadisticas")
   const maxXp = Math.max(...stats.xpHistory.map((d) => d.amount), 1)
@@ -159,7 +167,7 @@ export default function Estadisticas({ stats }: { stats: UserStats }) {
                     </div>
                     <div className="h-1.5 rounded-full bg-surface-container-lowest">
                       <div
-                        className={`h-full rounded-full bg-${attr.color}`}
+                        className={`h-full rounded-full ${ATTR_BG[attr.color] ?? "bg-outline"}`}
                         style={{ width: `${attr.value}%` }}
                       />
                     </div>

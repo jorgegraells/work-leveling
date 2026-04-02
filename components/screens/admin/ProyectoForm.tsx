@@ -229,6 +229,12 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
     setLoading(true)
     setError(null)
 
+    if (startDate && dueDate && new Date(startDate) > new Date(dueDate)) {
+      setError(t("errorDateRange"))
+      setLoading(false)
+      return
+    }
+
     const payload = {
       title,
       description: description || null,

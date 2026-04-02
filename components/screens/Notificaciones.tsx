@@ -21,6 +21,7 @@ const TYPE_ICON: Record<NotificationType, string> = {
   MISSION_REJECTED: "cancel",
   MISSION_ASSIGNED: "assignment",
   LEVEL_UP: "arrow_upward",
+  SKILL_LEVEL_UP: "trending_up",
   DUE_SOON: "alarm",
   DEADLINE_CRITICAL: "alarm_on",
   OVERDUE: "alarm_off",
@@ -34,6 +35,7 @@ const TYPE_COLOR: Record<NotificationType, string> = {
   MISSION_REJECTED: "text-error",
   MISSION_ASSIGNED: "text-primary",
   LEVEL_UP: "text-primary",
+  SKILL_LEVEL_UP: "text-secondary",
   DUE_SOON: "text-primary",
   DEADLINE_CRITICAL: "text-error",
   OVERDUE: "text-error",
@@ -55,13 +57,34 @@ function timeAgo(dateStr: string, t: (key: string, values?: Record<string, numbe
 
 export default function Notificaciones({
   notifications: initialNotifications,
+  hasMore: initialHasMore = false,
 }: {
   notifications: NotificationItem[]
+  hasMore?: boolean
 }) {
   const router = useRouter()
   const t = useTranslations("notificaciones")
   const [notifications, setNotifications] = useState(initialNotifications)
   const [markingAll, setMarkingAll] = useState(false)
+  const [hasMore, setHasMore] = useState(initialHasMore)
+  const [loadingMore, setLoadingMore] = useState(false)
+
+  async function fetchMore() {
+    setLoadingMore(true)
+    try {
+      const res = await fetch(`/api/notificaciones?skip=${notifications.length}&take=20`)
+      if (res.ok) {
+        const data = await res.json()
+        const newItems: NotificationItem[] = data.notifications ?? []
+        setNotifications((prev) => [...prev, ...newItems])
+        setHasMore(newItems.length === 20)
+      }
+    } catch {
+      // silent fail
+    } finally {
+      setLoadingMore(false)
+    }
+  }
 
   const unreadCount = notifications.filter((n) => !n.read).length
 
@@ -162,6 +185,19 @@ export default function Notificaciones({
           ))}
         </div>
       </div>
+
+      {/* Load more */}
+      {hasMore && (
+        <div className="flex justify-center">
+          <button
+            onClick={fetchMore}
+            disabled={loadingMore}
+            className="px-6 py-2 text-[10px] font-bold uppercase tracking-widest text-on-surface bg-surface-container-highest rounded-md hover:bg-surface-container-high transition-colors disabled:opacity-50 active:scale-95"
+          >
+            {loadingMore ? "Cargando..." : "Cargar más"}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

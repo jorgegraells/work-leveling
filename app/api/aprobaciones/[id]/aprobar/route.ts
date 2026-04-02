@@ -170,10 +170,29 @@ export async function POST(
         update: { points: newPoints, level: newSkillLevel },
         create: { userId: employee.id, skillId, points: newPoints, level: newSkillLevel },
       })
+      // Notify if skill level increased
+      if (newSkillLevel > (existing?.level ?? 0)) {
+        const skillRecord = await tx.skill.findUnique({ where: { id: skillId }, select: { name: true } })
+        await tx.notification.create({
+          data: {
+            userId: employee.id,
+            type: "SKILL_LEVEL_UP",
+            title: "¡Nueva habilidad desbloqueada!",
+            body: `Has alcanzado el nivel ${newSkillLevel} en ${skillRecord?.name ?? "tu habilidad"}`,
+            data: { skillId, skillName: skillRecord?.name, newLevel: newSkillLevel },
+          },
+        })
+      }
     }
 
     // 3. Add XP
-    const xpGain = mission.xpReward
+    let xpMultiplier = 1.0
+    // +20% for ALTA priority
+    if (mission.priority === "ALTA") xpMultiplier += 0.2
+    // +10% for early completion (completedAt before dueDate)
+    const completedAt = approval.userMission.completedAt ?? new Date()
+    if (mission.dueDate && completedAt < mission.dueDate) xpMultiplier += 0.1
+    const xpGain = Math.round(mission.xpReward * xpMultiplier)
     const newXp = employee.xp + xpGain
 
     // 4. Recalculate level
@@ -194,7 +213,7 @@ export async function POST(
       data: {
         userId: employee.id,
         amount: xpGain,
-        reason: `Misión aprobada: ${mission.title}`,
+        reason: xpMultiplier > 1 ? `Misión aprobada: ${mission.title} (×${xpMultiplier.toFixed(1)})` : `Misión aprobada: ${mission.title}`,
       },
     })
 

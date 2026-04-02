@@ -203,7 +203,7 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
                       {t("detail")}
                     </Link>
                     <Link
-                      href={`/admin/objetivos/${mission.id}`}
+                      href={`/admin/objetivos/${mission.id}/editar`}
                       className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md bg-surface-container-high text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-container-highest transition-colors active:scale-95"
                     >
                       <span className="material-symbols-outlined text-base">edit</span>

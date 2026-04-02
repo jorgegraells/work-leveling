@@ -284,7 +284,8 @@
     "viewAll": "Ver KPIs completos",
     "sectionTitle": "KPIs & Rendimiento",
     "onTimeShort": "% a tiempo",
-    "noDeadlineMissions": "Añade plazos a tus misiones para ver KPIs"
+    "noDeadlineMissions": "Añade plazos a tus misiones para ver KPIs",
+    "noData": "Sin datos disponibles"
   },
   "empresa": {
     "dashboard": "Dashboard",
@@ -573,6 +574,7 @@
     "createButton": "Crear Objetivo",
     "errorSave": "Error al guardar el objetivo",
     "errorConnection": "Error de conexion",
+    "errorDateRange": "La fecha de inicio no puede ser posterior a la fecha límite",
     "missionVisible": "Este objetivo será visible para los empleados de la empresa seleccionada",
     "priorityAlta": "Alta",
     "priorityNormal": "Normal",
@@ -614,7 +616,8 @@
     "daysAgo": "Hace {days}d",
     "monthsAgo": "Hace {months}mes",
     "pageTitle": "Notificaciones",
-    "pageSubtitle": "Tus alertas y actualizaciones recientes"
+    "pageSubtitle": "Tus alertas y actualizaciones recientes",
+    "SKILL_LEVEL_UP": "Nueva habilidad"
   },
   "sidebar": {
     "levelLabel": "Nivel {level} {title}"
@@ -691,6 +694,12 @@
   "levelUp": {
     "title": "¡Subiste de nivel!",
     "subtitle": "Nivel alcanzado",
-    "continue": "Continuar"
+    "continue": "Continuar",
+    "skillLevelUp": "¡Nueva habilidad desbloqueada!",
+    "skillLevelUpBody": "Has alcanzado el nivel {level} en {skill}. ¡Sigue practicando!",
+    "xpBreakdown": "+{base} base +{bonus} bonus = {total} XP",
+    "earlyBonus": "bonus por entrega anticipada",
+    "priorityBonus": "bonus por prioridad alta",
+    "maxLevel": "Nivel máximo"
   }
 }

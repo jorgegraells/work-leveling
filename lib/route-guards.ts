@@ -13,6 +13,5 @@ export const PROTECTED_ROUTES = [
   "/empresas(.*)",
   "/estadisticas(.*)",
   "/archivados(.*)",
-  "/manager(.*)",
   "/onboarding(.*)",
 ]

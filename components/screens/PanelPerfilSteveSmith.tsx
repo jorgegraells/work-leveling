@@ -258,6 +258,7 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
   const t = useTranslations("perfil")
   const tAttr = useTranslations("attributes")
   const tSkills = useTranslations("skills")
+  const tLevelUp = useTranslations("levelUp")
 
   const leftAttrs = user.attributes.filter((a) => a.attribute.side === "left")
   const rightAttrs = user.attributes.filter((a) => a.attribute.side === "right")
@@ -368,6 +369,9 @@ export default function PanelPerfilSteveSmith({ user, completedProjects, pending
                           <span className="text-[9px] font-bold uppercase tracking-widest bg-primary/20 text-primary px-1.5 py-0.5 rounded-full">
                             {tSkills("level", { n: us.level })}
                           </span>
+                          {us.level >= 10 && (
+                            <span className="text-[8px] font-bold uppercase tracking-widest text-primary">{tLevelUp("maxLevel")}</span>
+                          )}
                         </div>
                       ))}
                     </div>

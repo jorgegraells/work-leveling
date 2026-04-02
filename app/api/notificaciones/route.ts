@@ -11,7 +11,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const countOnly = req.nextUrl.searchParams.get("count") === "true"
+  const searchParams = req.nextUrl.searchParams
+  const countOnly = searchParams.get("count") === "true"
 
   if (countOnly) {
     const unread = await prisma.notification.count({
@@ -20,11 +21,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ unread })
   }
 
+  const skip = parseInt(searchParams.get("skip") ?? "0")
+  const take = Math.min(parseInt(searchParams.get("take") ?? "20"), 50)
+
   const [notifications, unreadCount] = await Promise.all([
     prisma.notification.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
-      take: 50,
+      skip,
+      take,
     }),
     prisma.notification.count({
       where: { userId: user.id, read: false },

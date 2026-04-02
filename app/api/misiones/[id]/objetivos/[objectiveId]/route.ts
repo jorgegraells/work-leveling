@@ -105,11 +105,12 @@ export async function PATCH(
 
   // Calculate new progress
   const totalObjectives = userMission.mission.objectives.length
-  // Count completed including the one we just completed
+  // Count completed: pre-update snapshot has the objective still PENDING,
+  // so add +1 for the one just marked COMPLETED.
   const completedCount =
     userMission.objectives.filter(
-      (o) => o.status === "COMPLETED" || o.objectiveId === objectiveId
-    ).length
+      (o) => o.status === "COMPLETED"
+    ).length + 1
   const newProgress =
     totalObjectives > 0
       ? Math.round((completedCount / totalObjectives) * 100)

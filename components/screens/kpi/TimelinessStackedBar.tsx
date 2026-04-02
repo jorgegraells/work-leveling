@@ -8,6 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts"
+import { useTranslations } from "next-intl"
 import type { MonthBucket } from "@/lib/kpi-helpers"
 
 interface Props {
@@ -30,10 +31,11 @@ function CustomTooltip({ active, payload, label }: { active?: boolean; payload?:
 }
 
 export default function TimelinessStackedBar({ data }: Props) {
+  const t = useTranslations("kpi")
   if (!data.length) {
     return (
       <div className="h-40 flex items-center justify-center text-outline text-sm">
-        Sin datos disponibles
+        {t("noData")}
       </div>
     )
   }

@@ -52,6 +52,7 @@ export interface DashboardProps {
   recentActivity: ActivityItem[]
   completedCount: number
   inProgressCount: number
+  pendingApprovalCount?: number
 }
 
 // ---------------------------------------------------------------------------
@@ -103,6 +104,7 @@ export default function ExecutiveQuestDashboard({
   recentActivity,
   completedCount,
   inProgressCount,
+  pendingApprovalCount,
 }: DashboardProps) {
   const t = useTranslations("dashboard")
   const tc = useTranslations("common")
@@ -136,6 +138,24 @@ export default function ExecutiveQuestDashboard({
               </div>
             </div>
           </div>
+
+          {/* ── Pending approvals banner ── */}
+          {pendingApprovalCount != null && pendingApprovalCount > 0 && (
+            <div className="rounded-xl bg-surface-container-highest p-1">
+              <div className="rounded-lg bg-surface-bright px-4 py-3 flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  pending_actions
+                </span>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-on-surface">
+                    {pendingApprovalCount} {pendingApprovalCount === 1 ? "misión pendiente de revisión" : "misiones pendientes de revisión"}
+                  </p>
+                  <p className="text-xs text-outline">Tu manager revisará tu trabajo pronto</p>
+                </div>
+                <span className="w-2 h-2 rounded-full bg-primary flex-shrink-0 animate-pulse" />
+              </div>
+            </div>
+          )}
 
           {/* ── KPI cards ── */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
