@@ -1,3 +1,6 @@
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Empresas | Work Leveling", description: "Gestiona tus organizaciones" }
+
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import EmpresasSwitcher from "@/components/screens/EmpresasSwitcher"
 import { requireCurrentUser } from "@/lib/auth-helpers"

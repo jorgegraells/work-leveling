@@ -1,5 +1,8 @@
 export const dynamic = "force-dynamic"
 
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Archivados | Work Leveling", description: "Misiones y objetivos completados" }
+
 import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"

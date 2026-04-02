@@ -1,5 +1,8 @@
 export const dynamic = "force-dynamic"
 
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "KPIs | Admin" }
+
 import { getTranslations } from "next-intl/server"
 import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"

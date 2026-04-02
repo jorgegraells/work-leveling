@@ -1,3 +1,6 @@
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Configuración | Work Leveling", description: "Preferencias de idioma y cuenta" }
+
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import Settings from "@/components/screens/Settings"
 import { requireCurrentUser } from "@/lib/auth-helpers"

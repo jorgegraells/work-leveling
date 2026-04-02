@@ -1,3 +1,6 @@
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Notificaciones | Work Leveling", description: "Tus alertas y actualizaciones" }
+
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import Notificaciones from "@/components/screens/Notificaciones"
 import { requireCurrentUser } from "@/lib/auth-helpers"
@@ -10,9 +13,11 @@ export default async function NotificacionesPage() {
 
   const notifications = await prisma.notification.findMany({
     where: { userId: user.id },
+    take: 20,
     orderBy: { createdAt: "desc" },
-    take: 100,
   })
+
+  const hasMore = notifications.length === 20
 
   return (
     <SidebarLayout
@@ -30,7 +35,7 @@ export default async function NotificacionesPage() {
               {t("pageSubtitle")}
             </p>
           </div>
-          <Notificaciones notifications={JSON.parse(JSON.stringify(notifications))} />
+          <Notificaciones notifications={JSON.parse(JSON.stringify(notifications))} hasMore={hasMore} />
         </div>
         <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />
       </div>

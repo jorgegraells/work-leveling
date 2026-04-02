@@ -1,3 +1,6 @@
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Estadísticas | Work Leveling", description: "Tu progreso y estadísticas de gamificación" }
+
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import Estadisticas from "@/components/screens/Estadisticas"
 import { requireCurrentUser } from "@/lib/auth-helpers"

@@ -1,3 +1,6 @@
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Estadísticas | Admin" }
+
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import AdminEstadisticas from "@/components/screens/admin/AdminEstadisticas"
 import { requireCurrentUser } from "@/lib/auth-helpers"

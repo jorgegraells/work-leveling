@@ -1,3 +1,6 @@
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Aprobaciones | Admin" }
+
 import { getTranslations } from "next-intl/server"
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import AprobacionesList from "@/components/screens/admin/AprobacionesList"

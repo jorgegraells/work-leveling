@@ -1,3 +1,6 @@
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Gestión de Objetivos | Admin" }
+
 import { getTranslations } from "next-intl/server"
 import ProyectosList from "@/components/screens/admin/ProyectosList"
 import SidebarLayout from "@/components/layout/SidebarLayout"

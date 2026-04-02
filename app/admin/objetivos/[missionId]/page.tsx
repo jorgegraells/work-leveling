@@ -1,9 +1,16 @@
+import type { Metadata } from "next"
 import ProyectoDetail from "@/components/screens/admin/ProyectoDetail"
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { getTranslations } from "next-intl/server"
+
+export async function generateMetadata({ params }: { params: Promise<{ missionId: string }> }): Promise<Metadata> {
+  const { missionId } = await params
+  const mission = await prisma.mission.findUnique({ where: { id: missionId }, select: { title: true } })
+  return { title: mission ? `${mission.title} | Admin` : "Detalle Objetivo | Admin" }
+}
 
 interface Props {
   params: Promise<{ missionId: string }>

@@ -1,3 +1,10 @@
+import type { Metadata } from "next"
+
+export async function generateMetadata({ params }: { params: Promise<{ module: string }> }): Promise<Metadata> {
+  const { module } = await params
+  return { title: `${module} | Objetivos | Work Leveling` }
+}
+
 import DetallesMision from "@/components/screens/DetallesMision"
 import { requireCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"

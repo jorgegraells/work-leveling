@@ -1,3 +1,6 @@
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Mi Perfil | Work Leveling", description: "Tu perfil, habilidades y misiones completadas" }
+
 import PanelPerfilSteveSmith from "@/components/screens/PanelPerfilSteveSmith"
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"

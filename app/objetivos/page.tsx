@@ -1,5 +1,8 @@
 export const dynamic = "force-dynamic"
 
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Objetivos | Work Leveling", description: "Tus objetivos activos por módulo" }
+
 import PanelCorporativoGamificado, {
   type ProjectCard,
 } from "@/components/screens/PanelCorporativoGamificado"

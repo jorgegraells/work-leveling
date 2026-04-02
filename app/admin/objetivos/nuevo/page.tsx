@@ -1,3 +1,6 @@
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Nuevo Objetivo | Admin" }
+
 import ProyectoForm from "@/components/screens/admin/ProyectoForm"
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import { requireCurrentUser } from "@/lib/auth-helpers"

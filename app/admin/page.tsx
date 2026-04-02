@@ -1,3 +1,6 @@
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Panel Admin | Work Leveling" }
+
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import AdminDashboard from "@/components/screens/admin/AdminDashboard"
 import { requireSuperAdmin } from "@/lib/auth-helpers"

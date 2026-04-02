@@ -1,3 +1,6 @@
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Empresas | Admin" }
+
 import SidebarLayout from "@/components/layout/SidebarLayout"
 import EmpresasList from "@/components/screens/admin/EmpresasList"
 import { requireSuperAdmin } from "@/lib/auth-helpers"

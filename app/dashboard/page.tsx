@@ -1,3 +1,6 @@
+import type { Metadata } from "next"
+export const metadata: Metadata = { title: "Dashboard | Work Leveling", description: "Tu panel de misiones y progreso" }
+
 import ExecutiveQuestDashboard, {
   type ActiveProject,
   type PendingObjective,
@@ -102,6 +105,15 @@ export default async function DashboardPage() {
     (um.status === "COMPLETED" && um.approval?.status !== "APPROVED")
   ).length
 
+  // ── Pending approvals count ──
+  const pendingApprovalCount = await prisma.userMission.count({
+    where: {
+      userId: user.id,
+      status: "COMPLETED",
+      approval: { status: "PENDING" },
+    },
+  })
+
   // ── Rank progress ──
   const rankProgress = user.xpToNextLevel > 0
     ? Math.min(100, Math.round((user.xp / user.xpToNextLevel) * 100))
@@ -122,6 +134,7 @@ export default async function DashboardPage() {
       recentActivity={recentActivity}
       completedCount={completedCount}
       inProgressCount={inProgressCount}
+      pendingApprovalCount={pendingApprovalCount}
     />
   )
 }
