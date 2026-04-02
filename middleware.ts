@@ -20,10 +20,12 @@ export default clerkMiddleware(async (auth, req) => {
         url.pathname.startsWith("/perfil") ||
         url.pathname.startsWith("/admin") ||
         url.pathname.startsWith("/misiones") ||
+        url.pathname.startsWith("/objetivos") ||
         url.pathname.startsWith("/settings") ||
         url.pathname.startsWith("/estadisticas") ||
         url.pathname.startsWith("/empresas") ||
-        url.pathname.startsWith("/notificaciones")) {
+        url.pathname.startsWith("/notificaciones") ||
+        url.pathname.startsWith("/onboarding")) {
       return NextResponse.redirect(new URL("/", req.url))
     }
   }

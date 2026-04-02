@@ -3,20 +3,16 @@
 // Imported by middleware.ts via createRouteMatcher.
 
 export const PROTECTED_ROUTES = [
-  // Existing
   "/perfil(.*)",
   "/misiones(.*)",
+  "/objetivos(.*)",
   "/dashboard(.*)",
-  // Agent 1 — Company & Roles Admin
   "/admin(.*)",
-  // Agent 4 — Approvals & Notifications
   "/notificaciones(.*)",
-  // Agent 5 — Missing Screens
   "/settings(.*)",
   "/empresas(.*)",
   "/estadisticas(.*)",
-  // Archivados
   "/archivados(.*)",
-  // Manager panel
   "/manager(.*)",
+  "/onboarding(.*)",
 ]
