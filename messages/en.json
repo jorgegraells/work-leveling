@@ -198,6 +198,7 @@
     "reject": "Reject",
     "alreadyApproved": "This objective has already been approved",
     "alreadyRejected": "This objective has already been rejected",
+    "reopenButton": "Re-open for approval",
     "noteLabel": "Note: {note}",
     "rejectReasonRequired": "You must provide a reason to reject the objective",
     "errorApproving": "Error approving",

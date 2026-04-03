@@ -12,19 +12,33 @@ export default async function EmpresasPage() {
   const user = await requireCurrentUser()
   const t = await getTranslations("empresas")
 
-  // Confirmed org memberships
-  const confirmedRoles = await prisma.userOrganizationRole.findMany({
-    where: { userId: user.id, confirmed: true },
-    include: { organization: true },
-  })
+  // SuperAdmin sees all orgs; regular users see only confirmed memberships
+  let orgs: { id: string; name: string; slug: string; plan: Plan; role: Role }[]
 
-  const orgs = confirmedRoles.map((or) => ({
-    id: or.organization.id,
-    name: or.organization.name,
-    slug: or.organization.slug,
-    plan: or.organization.plan as Plan,
-    role: or.role as Role,
-  }))
+  if (user.isSuperAdmin) {
+    const allOrgs = await prisma.organization.findMany({
+      orderBy: { name: "asc" },
+    })
+    orgs = allOrgs.map((org) => ({
+      id: org.id,
+      name: org.name,
+      slug: org.slug,
+      plan: org.plan as Plan,
+      role: "SUPER_ADMIN" as Role,
+    }))
+  } else {
+    const confirmedRoles = await prisma.userOrganizationRole.findMany({
+      where: { userId: user.id, confirmed: true },
+      include: { organization: true },
+    })
+    orgs = confirmedRoles.map((or) => ({
+      id: or.organization.id,
+      name: or.organization.name,
+      slug: or.organization.slug,
+      plan: or.organization.plan as Plan,
+      role: or.role as Role,
+    }))
+  }
 
   // Pending invitations
   const pendingRoles = await prisma.userOrganizationRole.findMany({

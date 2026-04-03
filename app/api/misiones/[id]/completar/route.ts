@@ -63,6 +63,11 @@ export async function POST(
     if (ownOrgAdmin) approverId = ownOrgAdmin.userId
   }
 
+  // For re-submissions, fall back to the existing approval's approverId
+  if (!approverId && userMission.approval?.status === "REJECTED") {
+    approverId = userMission.approval.approverId
+  }
+
   if (!approverId) {
     return NextResponse.json({ error: "No se encontró un aprobador válido" }, { status: 400 })
   }

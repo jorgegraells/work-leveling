@@ -138,7 +138,7 @@ export default function AprobacionDetail({
     scoreAdaptabilidad: 3,
   })
   const [note, setNote] = useState("")
-  const [loading, setLoading] = useState<"approve" | "reject" | null>(null)
+  const [loading, setLoading] = useState<"approve" | "reject" | "reopen" | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   // Per-objective review state
@@ -193,6 +193,24 @@ export default function AprobacionDetail({
       if (!res.ok) {
         const data = await res.json()
         throw new Error(data.error || t("errorRejecting"))
+      }
+      router.push("/admin/aprobaciones")
+      router.refresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("unknownError"))
+    } finally {
+      setLoading(null)
+    }
+  }
+
+  async function handleReopen() {
+    setLoading("reopen")
+    setError(null)
+    try {
+      const res = await fetch(`/api/aprobaciones/${approval.id}/reabrir`, { method: "POST" })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || t("unknownError"))
       }
       router.push("/admin/aprobaciones")
       router.refresh()
@@ -577,7 +595,7 @@ export default function AprobacionDetail({
       {/* Already processed state */}
       {isAlreadyProcessed && (
         <div className="rounded-xl bg-surface-container-highest p-1">
-          <div className="rounded-lg bg-surface-bright p-6 text-center">
+          <div className="rounded-lg bg-surface-bright p-6 text-center space-y-4">
             <span className="material-symbols-outlined text-3xl text-outline mb-2 block">
               {approval.status === "APPROVED" ? "verified" : "cancel"}
             </span>
@@ -585,9 +603,19 @@ export default function AprobacionDetail({
               {approval.status === "APPROVED" ? t("alreadyApproved") : t("alreadyRejected")}
             </p>
             {approval.note && (
-              <p className="text-on-surface-variant text-sm mt-2">
+              <p className="text-on-surface-variant text-sm">
                 {t("noteLabel", { note: approval.note })}
               </p>
+            )}
+            {approval.status === "REJECTED" && (
+              <button
+                onClick={handleReopen}
+                disabled={loading === "reopen"}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest hover:bg-primary/30 active:scale-95 transition-all disabled:opacity-50"
+              >
+                <span className="material-symbols-outlined text-base">restart_alt</span>
+                {loading === "reopen" ? "..." : t("reopenButton")}
+              </button>
             )}
           </div>
         </div>
