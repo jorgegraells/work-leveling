@@ -131,19 +131,19 @@ function ObjectiveCard({
             {isApproved && (
               <span className="text-[10px] font-bold text-secondary uppercase tracking-widest flex items-center gap-1">
                 <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                {t("objManagerApproved")}
+                {t("objectiveApproved")}
               </span>
             )}
             {isRejected && (
               <span className="text-[10px] font-bold text-error uppercase tracking-widest flex items-center gap-1">
                 <span className="material-symbols-outlined text-xs">cancel</span>
-                {t("objManagerRejected")}
+                {t("objectiveRejected")}
               </span>
             )}
             {isPendingReview && (
               <span className="text-[10px] font-bold text-primary uppercase tracking-widest flex items-center gap-1">
                 <span className="material-symbols-outlined text-xs">hourglass_top</span>
-                {t("objSubmittedPending")}
+                {t("pendingReview")}
               </span>
             )}
             {!isSubmitted && (
@@ -160,7 +160,7 @@ function ObjectiveCard({
             {obj.title}
           </h3>
           {isRejected && obj.managerNote && (
-            <p className="text-xs text-error/80 italic mt-1">"{obj.managerNote}"</p>
+            <p className="text-xs text-error/80 italic mt-1">&ldquo;{obj.managerNote}&rdquo;</p>
           )}
         </div>
         <div className="flex flex-col items-end gap-2 flex-shrink-0">
@@ -178,14 +178,24 @@ function ObjectiveCard({
           {isPendingReview && (
             <span className="material-symbols-outlined text-primary">hourglass_top</span>
           )}
-          {/* Show submit button if completed but not yet submitted (or rejected — allow resubmit) */}
-          {(!isSubmitted || isRejected) && (
+          {/* Show "Enviar a revisión" if COMPLETED but not yet submitted */}
+          {!isSubmitted && (
             <button
               onClick={onSubmit}
               disabled={isSubmitting}
-              className="px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary font-bold rounded-md hover:bg-primary/30 transition-all active:scale-95 uppercase text-[10px] tracking-widest disabled:opacity-50"
+              className="px-3 py-1.5 bg-transparent border border-secondary/40 text-secondary font-bold rounded-md hover:bg-secondary/10 transition-all active:scale-95 uppercase text-[10px] tracking-widest disabled:opacity-50"
             >
-              {isSubmitting ? "..." : t("objSubmitForReview")}
+              {isSubmitting ? "..." : t("submitForReview")}
+            </button>
+          )}
+          {/* Show "Re-enviar" if rejected */}
+          {isRejected && (
+            <button
+              onClick={onSubmit}
+              disabled={isSubmitting}
+              className="px-3 py-1.5 bg-transparent border border-error/40 text-error font-bold rounded-md hover:bg-error/10 transition-all active:scale-95 uppercase text-[10px] tracking-widest disabled:opacity-50"
+            >
+              {isSubmitting ? "..." : t("resubmit")}
             </button>
           )}
         </div>
@@ -280,19 +290,8 @@ export default function DetallesMision({
   const t = useTranslations("detallesMision")
   const [completingObj, setCompletingObj] = useState<string | null>(null)
   const [submittingObj, setSubmittingObj] = useState<string | null>(null)
-  const [completingProject, setCompletingProject] = useState(false)
-  const [completeError, setCompleteError] = useState<string | null>(null)
 
   const accent = ACCENT_MAP[accentColor] ?? ACCENT_MAP.primary
-
-  const allDone = objectivesTotal > 0 && objectivesCompleted >= objectivesTotal
-
-  const canCompleteProject =
-    allDone &&
-    status !== "COMPLETED" &&
-    status !== "ARCHIVED"
-
-  const isRejected = approvalStatus === "REJECTED"
 
   const handleCompleteObjective = async (objectiveId: string) => {
     setCompletingObj(objectiveId)
@@ -321,26 +320,6 @@ export default function DetallesMision({
       }
     } finally {
       setSubmittingObj(null)
-    }
-  }
-
-  const handleCompleteProject = async () => {
-    setCompletingProject(true)
-    setCompleteError(null)
-    try {
-      const res = await fetch(`/api/misiones/${missionId}/completar`, {
-        method: "POST",
-      })
-      if (res.ok) {
-        router.refresh()
-      } else {
-        const body = await res.json().catch(() => ({}))
-        setCompleteError(body?.error ?? `Error ${res.status}`)
-      }
-    } catch {
-      setCompleteError("Error de conexión")
-    } finally {
-      setCompletingProject(false)
     }
   }
 
@@ -517,27 +496,35 @@ export default function DetallesMision({
                   </div>
                 </div>
 
-                {/* Complete project action */}
+                {/* Action / Status card */}
                 <div className="p-6 wood-bezel rounded-xl flex flex-col gap-4">
                   <h4 className="text-xs font-bold uppercase tracking-widest text-outline">
-                    {canCompleteProject
-                      ? t("actionAllDone")
-                      : status === "COMPLETED" && approvalStatus === "APPROVED"
-                        ? t("actionApproved")
-                        : status === "COMPLETED"
-                          ? t("actionSentForApproval")
-                          : t("actionCompleteMissions")}
+                    {status === "COMPLETED" && approvalStatus === "APPROVED"
+                      ? t("actionApproved")
+                      : status === "COMPLETED"
+                        ? t("actionSentForApproval")
+                        : t("actionCompleteMissions")}
                   </h4>
                   <p className="text-sm font-medium text-on-surface leading-snug">
-                    {canCompleteProject
-                      ? t("descAllDone")
-                      : status === "COMPLETED" && approvalStatus === "APPROVED"
-                        ? t("descApproved")
-                        : status === "COMPLETED"
-                          ? t("descSentForApproval")
-                          : t("descRemaining", { count: objectivesTotal - objectivesCompleted })}
+                    {status === "COMPLETED" && approvalStatus === "APPROVED"
+                      ? t("descApproved")
+                      : status === "COMPLETED"
+                        ? t("descSentForApproval")
+                        : t("descRemaining", { count: objectivesTotal - objectivesCompleted })}
                   </p>
-                  {status === "COMPLETED" && approvalStatus !== "APPROVED" && (
+
+                  {/* Completion banner — shown when UserMission.status === "COMPLETED" */}
+                  {status === "COMPLETED" && (
+                    <div className="flex items-center gap-3 p-4 bg-secondary/20 border border-secondary/20 rounded-lg">
+                      <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>emoji_events</span>
+                      <div>
+                        <p className="text-xs font-bold text-secondary uppercase tracking-widest">{t("objectiveCompleted")}</p>
+                        <p className="text-xs text-outline">{t("objectiveCompletedNote")}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {status === "COMPLETED" && approvalStatus !== "APPROVED" && approvalStatus !== "REJECTED" && (
                     <div className="flex items-center gap-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
                       <span className="material-symbols-outlined text-primary text-lg">hourglass_top</span>
                       <p className="text-xs text-primary font-medium">
@@ -545,7 +532,8 @@ export default function DetallesMision({
                       </p>
                     </div>
                   )}
-                  {isRejected && (
+
+                  {approvalStatus === "REJECTED" && (
                     <div className="flex items-start gap-3 p-4 bg-error/10 border border-error/20 rounded-lg">
                       <span
                         className="material-symbols-outlined text-error text-xl flex-shrink-0 mt-0.5"
@@ -568,34 +556,11 @@ export default function DetallesMision({
                       </div>
                     </div>
                   )}
-                  {canCompleteProject ? (
-                    <>
-                      <button
-                        onClick={handleCompleteProject}
-                        disabled={completingProject}
-                        className="mt-2 w-full py-4 bg-gradient-to-r from-secondary to-secondary-container text-on-secondary font-black text-xs uppercase tracking-[0.2em] rounded-md shadow-lg active:scale-95 transition-all disabled:opacity-50"
-                      >
-                        {completingProject
-                          ? t("sendingButton")
-                          : isRejected ? t("resubmitButton") : t("completeProjectButton")}
-                      </button>
-                      {completeError && (
-                        <p className="text-error text-xs font-medium text-center mt-2">{completeError}</p>
-                      )}
-                    </>
-                  ) : status === "COMPLETED" && approvalStatus === "APPROVED" ? (
+
+                  {status === "COMPLETED" && approvalStatus === "APPROVED" && (
                     <div className="mt-2 w-full py-4 bg-secondary/20 text-secondary font-black text-xs uppercase tracking-[0.2em] rounded-md text-center flex items-center justify-center gap-2">
                       <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                       {t("completedBadge")}
-                    </div>
-                  ) : status === "COMPLETED" ? (
-                    <div className="mt-2 w-full py-4 bg-primary/20 text-primary font-black text-xs uppercase tracking-[0.2em] rounded-md text-center flex items-center justify-center gap-2">
-                      <span className="material-symbols-outlined text-sm">hourglass_top</span>
-                      {t("pendingBadge")}
-                    </div>
-                  ) : (
-                    <div className="mt-2 w-full py-4 bg-surface-variant text-outline font-black text-xs uppercase tracking-[0.2em] rounded-md text-center cursor-not-allowed">
-                      {t("completeProjectButton")}
                     </div>
                   )}
                 </div>

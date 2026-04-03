@@ -211,7 +211,14 @@
     "objRejected": "Rechazada",
     "allMissionsRequired": "Todas las misiones deben estar aprobadas antes de aprobar el objetivo",
     "rejectedSection": "Rechazadas recientemente",
-    "rejectedNote": "El empleado puede re-enviar para revisión"
+    "rejectedNote": "El empleado puede re-enviar para revisión",
+    "pendingObjectivesTitle": "Misiones pendientes de verificación",
+    "allOrgsToggle": "Ver todas las empresas",
+    "currentOrgToggle": "Solo empresa actual",
+    "noObjectivesPending": "No hay misiones pendientes de revisión",
+    "companyBadge": "Empresa",
+    "sortByUrgency": "Por urgencia",
+    "sortByCompany": "Por empresa"
   },
   "proyectos": {
     "title": "Objetivos & Misiones",
@@ -534,6 +541,7 @@
     "fieldModule": "Modulo",
     "fieldPriority": "Prioridad",
     "fieldXpReward": "XP Reward",
+    "kreditsReward": "Recompensa en Kredits",
     "points": "puntos",
     "iconSection": "Icono del Objetivo",
     "iconFiltro": "Filtro",
@@ -668,7 +676,14 @@
     "resubmitButton": "RE-ENVIAR A REVISIÓN",
     "rejectedTitle": "Misión rechazada",
     "rejectedNote": "Revisa el motivo del rechazo y vuelve a enviar cuando estés listo",
-    "rejectedBy": "Rechazada por {name}"
+    "rejectedBy": "Rechazada por {name}",
+    "submitForReview": "Enviar a revisión",
+    "resubmit": "Re-enviar",
+    "pendingReview": "En revisión",
+    "objectiveApproved": "Aprobada",
+    "objectiveRejected": "Rechazada",
+    "objectiveCompleted": "¡Objetivo completado!",
+    "objectiveCompletedNote": "Todas las misiones han sido verificadas"
   },
   "empresasSwitcher": {
     "pendingInvitations": "Invitaciones Pendientes",
@@ -698,6 +713,20 @@
   "onboarding": {
     "preparing": "Preparando tu cuenta",
     "moment": "Esto solo tarda un momento"
+  },
+  "aprobacionObjetivo": {
+    "title": "Revisión de Misión",
+    "approveBtn": "Aprobar Misión",
+    "rejectBtn": "Rechazar",
+    "rejectPlaceholder": "Motivo del rechazo...",
+    "alreadyApproved": "Misión aprobada",
+    "alreadyRejected": "Misión rechazada",
+    "noteRequired": "Debes indicar un motivo",
+    "progressContext": "Progreso del objetivo",
+    "employee": "Empleado",
+    "currentObjective": "Esta misión",
+    "backToApprovals": "Volver a aprobaciones",
+    "unknownError": "Error desconocido"
   },
   "levelUp": {
     "title": "¡Subiste de nivel!",

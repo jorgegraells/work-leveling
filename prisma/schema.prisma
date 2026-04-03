@@ -188,7 +188,8 @@ model Mission {
   description String?
   module      MissionModule
   icon        String         // nombre de Material Symbol, ej: "filter_alt"
-  xpReward    Int            @default(500)
+  xpReward      Int            @default(500)
+  kreditsReward Int            @default(0)
   priority    String         @default("NORMAL") // "ALTA", "NORMAL", "BAJA"
   isGlobal    Boolean        @default(false)   // true = disponible para todas las orgs
 

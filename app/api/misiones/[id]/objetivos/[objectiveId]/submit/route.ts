@@ -39,12 +39,20 @@ export async function POST(
     return NextResponse.json({ error: "Objective not found for this mission" }, { status: 404 })
   }
 
-  if (userObjective.status === "LOCKED") {
+  if (userObjective.status === "LOCKED" && userObjective.managerApproved !== false) {
     return NextResponse.json({ error: "Objective is locked" }, { status: 403 })
   }
 
   if (userObjective.submittedAt) {
-    return NextResponse.json({ error: "Objective already submitted" }, { status: 409 })
+    if (userObjective.managerApproved === null) {
+      // Still pending review — can't re-submit yet
+      return NextResponse.json({ error: "Objective is pending review" }, { status: 409 })
+    }
+    if (userObjective.managerApproved === true) {
+      // Already approved
+      return NextResponse.json({ error: "Objective already approved" }, { status: 409 })
+    }
+    // managerApproved === false (rejected) → allow re-submission, reset review data
   }
 
   // Mark as submitted and completed

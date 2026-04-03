@@ -117,6 +117,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
   )
   const [icon, setIcon] = useState(mission?.icon ?? "task_alt")
   const [xpReward, setXpReward] = useState(mission?.xpReward ?? 500)
+  const [kreditsReward, setKreditsReward] = useState(mission?.kreditsReward ?? 0)
   const [priority, setPriority] = useState(mission?.priority ?? "NORMAL")
   const [objectives, setObjectives] = useState<ObjetivoLocal[]>(
     mission?.objectives.map((o) => ({
@@ -241,6 +242,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
       module,
       icon: missionType === "DAILY" ? "today" : icon,
       xpReward,
+      kreditsReward,
       priority,
       organizationId: selectedOrgId,
       objectives: missionType === "DAILY" ? [] : objectives.map((o, i) => ({ ...o, order: i })),
@@ -478,6 +480,24 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
                   onChange={(e) => setXpReward(parseInt(e.target.value) || 0)}
                   min={0}
                   className="w-32 bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-primary font-bold border border-outline-variant/30 focus:outline-none focus:border-primary"
+                />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-outline">{t("points")}</span>
+              </div>
+            </div>
+
+            {/* Kredits Reward */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                {t("kreditsReward")}
+              </label>
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-secondary text-lg">toll</span>
+                <input
+                  type="number"
+                  value={kreditsReward}
+                  onChange={(e) => setKreditsReward(parseInt(e.target.value) || 0)}
+                  min={0}
+                  className="w-32 bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-secondary font-bold border border-outline-variant/30 focus:outline-none focus:border-secondary"
                 />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-outline">{t("points")}</span>
               </div>

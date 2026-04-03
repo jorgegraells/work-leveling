@@ -211,7 +211,14 @@
     "objRejected": "Rejected",
     "allMissionsRequired": "All missions must be approved before approving the objective",
     "rejectedSection": "Recently Rejected",
-    "rejectedNote": "Employee can re-submit for review"
+    "rejectedNote": "Employee can re-submit for review",
+    "pendingObjectivesTitle": "Missions Pending Verification",
+    "allOrgsToggle": "View All Companies",
+    "currentOrgToggle": "Current Company Only",
+    "noObjectivesPending": "No missions pending review",
+    "companyBadge": "Company",
+    "sortByUrgency": "By Urgency",
+    "sortByCompany": "By Company"
   },
   "proyectos": {
     "title": "Objectives & Missions",
@@ -533,6 +540,7 @@
     "fieldModule": "Module",
     "fieldPriority": "Priority",
     "fieldXpReward": "XP Reward",
+    "kreditsReward": "Kredits Reward",
     "points": "points",
     "iconSection": "Objective Icon",
     "iconFiltro": "Filter",
@@ -667,7 +675,14 @@
     "resubmitButton": "RE-SUBMIT FOR REVIEW",
     "rejectedTitle": "Mission Rejected",
     "rejectedNote": "Review the rejection reason and re-submit when ready",
-    "rejectedBy": "Rejected by {name}"
+    "rejectedBy": "Rejected by {name}",
+    "submitForReview": "Submit for Review",
+    "resubmit": "Re-submit",
+    "pendingReview": "Under Review",
+    "objectiveApproved": "Approved",
+    "objectiveRejected": "Rejected",
+    "objectiveCompleted": "Objective Completed!",
+    "objectiveCompletedNote": "All missions have been verified"
   },
   "empresasSwitcher": {
     "pendingInvitations": "Pending Invitations",
@@ -697,6 +712,20 @@
   "onboarding": {
     "preparing": "Setting up your account",
     "moment": "This will only take a moment"
+  },
+  "aprobacionObjetivo": {
+    "title": "Mission Review",
+    "approveBtn": "Approve Mission",
+    "rejectBtn": "Reject",
+    "rejectPlaceholder": "Rejection reason...",
+    "alreadyApproved": "Mission approved",
+    "alreadyRejected": "Mission rejected",
+    "noteRequired": "A reason is required",
+    "progressContext": "Objective Progress",
+    "employee": "Employee",
+    "currentObjective": "This mission",
+    "backToApprovals": "Back to approvals",
+    "unknownError": "Unknown error"
   },
   "levelUp": {
     "title": "You leveled up!",
