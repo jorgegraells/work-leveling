@@ -279,6 +279,7 @@ export default function DetallesMision({
   const [completingObj, setCompletingObj] = useState<string | null>(null)
   const [submittingObj, setSubmittingObj] = useState<string | null>(null)
   const [completingProject, setCompletingProject] = useState(false)
+  const [completeError, setCompleteError] = useState<string | null>(null)
 
   const accent = ACCENT_MAP[accentColor] ?? ACCENT_MAP.primary
 
@@ -321,13 +322,19 @@ export default function DetallesMision({
 
   const handleCompleteProject = async () => {
     setCompletingProject(true)
+    setCompleteError(null)
     try {
       const res = await fetch(`/api/misiones/${missionId}/completar`, {
         method: "POST",
       })
       if (res.ok) {
         router.refresh()
+      } else {
+        const body = await res.json().catch(() => ({}))
+        setCompleteError(body?.error ?? `Error ${res.status}`)
       }
+    } catch {
+      setCompleteError("Error de conexión")
     } finally {
       setCompletingProject(false)
     }
@@ -535,15 +542,20 @@ export default function DetallesMision({
                     </div>
                   )}
                   {canCompleteProject ? (
-                    <button
-                      onClick={handleCompleteProject}
-                      disabled={completingProject}
-                      className="mt-2 w-full py-4 bg-gradient-to-r from-secondary to-secondary-container text-on-secondary font-black text-xs uppercase tracking-[0.2em] rounded-md shadow-lg active:scale-95 transition-all disabled:opacity-50"
-                    >
-                      {completingProject
-                        ? t("sendingButton")
-                        : t("completeProjectButton")}
-                    </button>
+                    <>
+                      <button
+                        onClick={handleCompleteProject}
+                        disabled={completingProject}
+                        className="mt-2 w-full py-4 bg-gradient-to-r from-secondary to-secondary-container text-on-secondary font-black text-xs uppercase tracking-[0.2em] rounded-md shadow-lg active:scale-95 transition-all disabled:opacity-50"
+                      >
+                        {completingProject
+                          ? t("sendingButton")
+                          : t("completeProjectButton")}
+                      </button>
+                      {completeError && (
+                        <p className="text-error text-xs font-medium text-center mt-2">{completeError}</p>
+                      )}
+                    </>
                   ) : status === "COMPLETED" && approvalStatus === "APPROVED" ? (
                     <div className="mt-2 w-full py-4 bg-secondary/20 text-secondary font-black text-xs uppercase tracking-[0.2em] rounded-md text-center flex items-center justify-center gap-2">
                       <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>

@@ -81,14 +81,14 @@ export async function POST(
     },
   })
 
-  // Notify admins of the mission's org (or all super admins)
+  // Notify admins of the mission's org — fire and forget, don't fail the request
   if (missionOrgId) {
-    await notifyOrgAdmins(
+    notifyOrgAdmins(
       missionOrgId,
       "MISSION_COMPLETED",
       "Misión completada pendiente de aprobación",
       `${user.name} ha completado la misión: ${userMission.mission.title}`
-    )
+    ).catch(() => {/* ignore notification errors */})
   }
 
   return NextResponse.json({ approval })
