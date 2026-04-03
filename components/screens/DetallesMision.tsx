@@ -284,15 +284,8 @@ export default function DetallesMision({
 
   const allDone = objectivesTotal > 0 && objectivesCompleted >= objectivesTotal
 
-  // All submitted objectives must be manager-approved before project can be submitted
-  const completedObjectives = objectives.filter((o) => o.status === "COMPLETED")
-  const allObjectivesManagerApproved =
-    completedObjectives.length === 0 ||
-    completedObjectives.every((o) => o.managerApproved === true)
-
   const canCompleteProject =
     allDone &&
-    allObjectivesManagerApproved &&
     status !== "COMPLETED" &&
     status !== "ARCHIVED"
 
@@ -538,15 +531,6 @@ export default function DetallesMision({
                       <span className="material-symbols-outlined text-primary text-lg">hourglass_top</span>
                       <p className="text-xs text-primary font-medium">
                         {t("pendingReviewNote")}
-                      </p>
-                    </div>
-                  )}
-                  {/* Warning: not all objectives approved yet */}
-                  {allDone && !allObjectivesManagerApproved && status !== "COMPLETED" && (
-                    <div className="flex items-center gap-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
-                      <span className="material-symbols-outlined text-primary text-lg">warning</span>
-                      <p className="text-xs text-primary font-medium">
-                        {t("allMissionsRequired")}
                       </p>
                     </div>
                   )}
