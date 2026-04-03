@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireCurrentUser, canApproveInOrg } from "@/lib/auth-helpers"
-import { createNotification } from "@/lib/notifications"
 import { prisma } from "@/lib/prisma"
 import { calcSkillLevel } from "@/lib/skills"
 
@@ -81,7 +80,9 @@ export async function POST(
   const note = body.note ?? null
   const mission = approval.userMission.mission
 
-  const result = await prisma.$transaction(async (tx) => {
+  let result: Awaited<ReturnType<typeof prisma.$transaction>>
+  try {
+    result = await prisma.$transaction(async (tx) => {
     // 1. Update MissionApproval
     const updatedApproval = await tx.missionApproval.update({
       where: { id },
@@ -243,8 +244,13 @@ export async function POST(
       })
     }
 
-    return { approval: updatedApproval, xpGain, newLevel }
-  })
+      return { approval: updatedApproval, xpGain, newLevel }
+    })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error("[aprobar] transaction failed:", msg)
+    return NextResponse.json({ error: msg }, { status: 500 })
+  }
 
   return NextResponse.json(result)
 }
