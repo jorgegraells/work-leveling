@@ -346,15 +346,22 @@ export default function DetallesMision({
                   className={`px-3 py-1 text-[10px] font-bold uppercase rounded-full tracking-widest border flex items-center gap-1.5 ${
                     status === "COMPLETED" && approvalStatus === "APPROVED"
                       ? "bg-secondary/20 border-secondary/20 text-secondary"
-                      : status === "COMPLETED"
+                      : status === "COMPLETED" && approvalStatus === "PENDING"
                         ? "bg-primary/20 border-primary/20 text-primary"
-                        : `${accent.bg} ${accent.border} ${accent.text}`
+                        : status === "COMPLETED"
+                          ? "bg-primary/20 border-primary/20 text-primary"
+                          : `${accent.bg} ${accent.border} ${accent.text}`
                   }`}
                 >
                   {status === "COMPLETED" && approvalStatus === "APPROVED" ? (
                     <>
                       <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                       {t("statusCompleted")}
+                    </>
+                  ) : status === "COMPLETED" && approvalStatus === "PENDING" ? (
+                    <>
+                      <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>
+                      {t("pendingScoring")}
                     </>
                   ) : status === "COMPLETED" ? (
                     <>
@@ -501,16 +508,20 @@ export default function DetallesMision({
                   <h4 className="text-xs font-bold uppercase tracking-widest text-outline">
                     {status === "COMPLETED" && approvalStatus === "APPROVED"
                       ? t("actionApproved")
-                      : status === "COMPLETED"
-                        ? t("actionSentForApproval")
-                        : t("actionCompleteMissions")}
+                      : status === "COMPLETED" && approvalStatus === "PENDING"
+                        ? t("pendingScoring")
+                        : status === "COMPLETED"
+                          ? t("actionSentForApproval")
+                          : t("actionCompleteMissions")}
                   </h4>
                   <p className="text-sm font-medium text-on-surface leading-snug">
                     {status === "COMPLETED" && approvalStatus === "APPROVED"
                       ? t("descApproved")
-                      : status === "COMPLETED"
-                        ? t("descSentForApproval")
-                        : t("descRemaining", { count: objectivesTotal - objectivesCompleted })}
+                      : status === "COMPLETED" && approvalStatus === "PENDING"
+                        ? t("pendingScoringNote")
+                        : status === "COMPLETED"
+                          ? t("descSentForApproval")
+                          : t("descRemaining", { count: objectivesTotal - objectivesCompleted })}
                   </p>
 
                   {/* Completion banner — shown when UserMission.status === "COMPLETED" */}
@@ -524,7 +535,28 @@ export default function DetallesMision({
                     </div>
                   )}
 
-                  {status === "COMPLETED" && approvalStatus !== "APPROVED" && approvalStatus !== "REJECTED" && (
+                  {/* Pending scoring state — all missions verified, admin needs to score */}
+                  {status === "COMPLETED" && approvalStatus === "PENDING" && (
+                    <div className="flex items-start gap-3 p-4 bg-primary/10 border border-primary/20 rounded-lg">
+                      <span
+                        className="material-symbols-outlined text-primary text-xl flex-shrink-0 mt-0.5"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      >
+                        stars
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-primary uppercase tracking-widest mb-1">
+                          {t("pendingScoring")}
+                        </p>
+                        <p className="text-xs text-primary/80 leading-snug">
+                          {t("pendingScoringNote")}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Generic pending review — submitted but not yet a MissionApproval */}
+                  {status === "COMPLETED" && approvalStatus !== "APPROVED" && approvalStatus !== "REJECTED" && approvalStatus !== "PENDING" && (
                     <div className="flex items-center gap-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
                       <span className="material-symbols-outlined text-primary text-lg">hourglass_top</span>
                       <p className="text-xs text-primary font-medium">

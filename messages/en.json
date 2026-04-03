@@ -682,7 +682,9 @@
     "objectiveApproved": "Approved",
     "objectiveRejected": "Rejected",
     "objectiveCompleted": "Objective Completed!",
-    "objectiveCompletedNote": "All missions have been verified"
+    "objectiveCompletedNote": "All missions have been verified",
+    "pendingScoring": "Pending final scoring",
+    "pendingScoringNote": "All your missions have been verified. The administrator will score your performance soon."
   },
   "empresasSwitcher": {
     "pendingInvitations": "Pending Invitations",

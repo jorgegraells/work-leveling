@@ -683,7 +683,9 @@
     "objectiveApproved": "Aprobada",
     "objectiveRejected": "Rechazada",
     "objectiveCompleted": "¡Objetivo completado!",
-    "objectiveCompletedNote": "Todas las misiones han sido verificadas"
+    "objectiveCompletedNote": "Todas las misiones han sido verificadas",
+    "pendingScoring": "Pendiente de puntuación",
+    "pendingScoringNote": "Todas tus misiones han sido verificadas. El administrador puntuará tu desempeño próximamente."
   },
   "empresasSwitcher": {
     "pendingInvitations": "Invitaciones Pendientes",

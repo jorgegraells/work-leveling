@@ -165,8 +165,10 @@ export default function AprobacionDetail({
         body: JSON.stringify({ ...scores, note: note || undefined }),
       })
       if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || t("errorApproving"))
+        const text = await res.text()
+        let errMsg = t("unknownError")
+        try { errMsg = (JSON.parse(text) as { error?: string }).error ?? errMsg } catch {}
+        throw new Error(errMsg)
       }
       router.push("/admin/aprobaciones")
       router.refresh()
@@ -191,8 +193,10 @@ export default function AprobacionDetail({
         body: JSON.stringify({ note }),
       })
       if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || t("errorRejecting"))
+        const text = await res.text()
+        let errMsg = t("unknownError")
+        try { errMsg = (JSON.parse(text) as { error?: string }).error ?? errMsg } catch {}
+        throw new Error(errMsg)
       }
       router.push("/admin/aprobaciones")
       router.refresh()
@@ -209,8 +213,10 @@ export default function AprobacionDetail({
     try {
       const res = await fetch(`/api/aprobaciones/${approval.id}/reabrir`, { method: "POST" })
       if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || t("unknownError"))
+        const text = await res.text()
+        let errMsg = t("unknownError")
+        try { errMsg = (JSON.parse(text) as { error?: string }).error ?? errMsg } catch {}
+        throw new Error(errMsg)
       }
       router.push("/admin/aprobaciones")
       router.refresh()
@@ -236,22 +242,28 @@ export default function AprobacionDetail({
         body: JSON.stringify({ action, note: note || undefined }),
       })
       if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || t("unknownError"))
+        const text = await res.text()
+        let errMsg = t("unknownError")
+        try { errMsg = (JSON.parse(text) as { error?: string }).error ?? errMsg } catch {}
+        throw new Error(errMsg)
       }
-      const updated = await res.json()
-      setLocalObjectives((prev) =>
-        prev.map((o) =>
-          o.id === objId
-            ? {
-                ...o,
-                managerApproved: updated.managerApproved,
-                managerNote: updated.managerNote,
-                managerApprovedAt: updated.managerApprovedAt,
-              }
-            : o
+      try {
+        const updated = await res.json()
+        setLocalObjectives((prev) =>
+          prev.map((o) =>
+            o.id === objId
+              ? {
+                  ...o,
+                  managerApproved: updated.managerApproved,
+                  managerNote: updated.managerNote,
+                  managerApprovedAt: updated.managerApprovedAt,
+                }
+              : o
+          )
         )
-      )
+      } catch {
+        router.refresh()
+      }
     } catch (err) {
       setObjErrors((prev) => ({
         ...prev,
