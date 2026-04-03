@@ -37,6 +37,7 @@ export interface DetallesMisionProps {
   progress: number
   status: string // PENDING | IN_PROGRESS | COMPLETED | ARCHIVED
   approvalStatus?: string // "PENDING" | "APPROVED" | "REJECTED" | undefined
+  approvalNote?: string | null
   objectives: ObjectiveData[]
   objectivesCompleted: number
   objectivesTotal: number
@@ -270,6 +271,7 @@ export default function DetallesMision({
   progress,
   status,
   approvalStatus,
+  approvalNote,
   objectives,
   objectivesCompleted,
   objectivesTotal,
@@ -289,6 +291,8 @@ export default function DetallesMision({
     allDone &&
     status !== "COMPLETED" &&
     status !== "ARCHIVED"
+
+  const isRejected = approvalStatus === "REJECTED"
 
   const handleCompleteObjective = async (objectiveId: string) => {
     setCompletingObj(objectiveId)
@@ -541,6 +545,29 @@ export default function DetallesMision({
                       </p>
                     </div>
                   )}
+                  {isRejected && (
+                    <div className="flex items-start gap-3 p-4 bg-error/10 border border-error/20 rounded-lg">
+                      <span
+                        className="material-symbols-outlined text-error text-xl flex-shrink-0 mt-0.5"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      >
+                        cancel
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-error uppercase tracking-widest mb-1">
+                          {t("rejectedTitle")}
+                        </p>
+                        <p className="text-xs text-error/80 leading-snug">
+                          {t("rejectedNote")}
+                        </p>
+                        {approvalNote && (
+                          <p className="text-xs text-error/70 italic mt-2 border-t border-error/20 pt-2">
+                            &ldquo;{approvalNote}&rdquo;
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
                   {canCompleteProject ? (
                     <>
                       <button
@@ -550,7 +577,7 @@ export default function DetallesMision({
                       >
                         {completingProject
                           ? t("sendingButton")
-                          : t("completeProjectButton")}
+                          : isRejected ? t("resubmitButton") : t("completeProjectButton")}
                       </button>
                       {completeError && (
                         <p className="text-error text-xs font-medium text-center mt-2">{completeError}</p>

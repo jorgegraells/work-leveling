@@ -21,23 +21,17 @@ export async function POST(
     return NextResponse.json({ error: "Mission not assigned to user" }, { status: 404 })
   }
 
-  if (userMission.status === "COMPLETED" || userMission.status === "ARCHIVED") {
-    return NextResponse.json({ error: "Mission already completed or archived" }, { status: 409 })
+  if (userMission.status === "ARCHIVED") {
+    return NextResponse.json({ error: "Mission already archived" }, { status: 409 })
   }
 
-  if (userMission.approval) {
-    return NextResponse.json({ error: "Approval already exists" }, { status: 409 })
+  if (userMission.approval?.status === "APPROVED") {
+    return NextResponse.json({ error: "Mission already approved" }, { status: 409 })
   }
 
-  // Mark as completed (pending review)
-  const updated = await prisma.userMission.update({
-    where: { id: userMission.id },
-    data: {
-      status: "COMPLETED",
-      progress: 100,
-      completedAt: new Date(),
-    },
-  })
+  if (userMission.approval?.status === "PENDING") {
+    return NextResponse.json({ error: "Approval already submitted, waiting for review" }, { status: 409 })
+  }
 
   // Find an approver: first look for ORG_ADMIN in the mission's org, then any super admin
   const missionOrgId = userMission.mission.organizationId
@@ -73,13 +67,61 @@ export async function POST(
     return NextResponse.json({ error: "No se encontró un aprobador válido" }, { status: 400 })
   }
 
-  const approval = await prisma.missionApproval.create({
-    data: {
-      userMissionId: updated.id,
-      approverId,
-      status: "PENDING",
-    },
-  })
+  let approval: { id: string; status: string; userMissionId: string; approverId: string }
+
+  if (userMission.approval?.status === "REJECTED") {
+    // Re-submission after rejection: reset the existing approval and UserMission in a transaction
+    const result = await prisma.$transaction(async (tx) => {
+      const updatedMission = await tx.userMission.update({
+        where: { id: userMission.id },
+        data: {
+          status: "COMPLETED",
+          progress: 100,
+          completedAt: new Date(),
+        },
+      })
+
+      const updatedApproval = await tx.missionApproval.update({
+        where: { id: userMission.approval!.id },
+        data: {
+          status: "PENDING",
+          note: null,
+          reviewedAt: null,
+          approverId,
+          scoreLogica: null,
+          scoreCreatividad: null,
+          scoreLiderazgo: null,
+          scoreNegociacion: null,
+          scoreEstrategia: null,
+          scoreAnalisis: null,
+          scoreComunicacion: null,
+          scoreAdaptabilidad: null,
+        },
+      })
+
+      return { updatedMission, updatedApproval }
+    })
+
+    approval = result.updatedApproval
+  } else {
+    // No approval exists — mark as completed and create a new approval
+    const updated = await prisma.userMission.update({
+      where: { id: userMission.id },
+      data: {
+        status: "COMPLETED",
+        progress: 100,
+        completedAt: new Date(),
+      },
+    })
+
+    approval = await prisma.missionApproval.create({
+      data: {
+        userMissionId: updated.id,
+        approverId,
+        status: "PENDING",
+      },
+    })
+  }
 
   // Notify admins of the mission's org — fire and forget, don't fail the request
   if (missionOrgId) {

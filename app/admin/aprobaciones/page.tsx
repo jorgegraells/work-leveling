@@ -22,37 +22,50 @@ export default async function AprobacionesPage() {
     }
   }
 
+  const approvalInclude = {
+    userMission: {
+      select: {
+        id: true,
+        completedAt: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            level: true,
+            avatarUrl: true,
+          },
+        },
+        mission: {
+          select: {
+            id: true,
+            title: true,
+            module: true,
+            icon: true,
+            xpReward: true,
+          },
+        },
+      },
+    },
+  }
+
   const approvals = await prisma.missionApproval.findMany({
     where: {
       status: "PENDING",
       ...orgFilter,
     },
-    include: {
-      userMission: {
-        select: {
-          id: true,
-          completedAt: true,
-          user: {
-            select: {
-              id: true,
-              name: true,
-              level: true,
-              avatarUrl: true,
-            },
-          },
-          mission: {
-            select: {
-              id: true,
-              title: true,
-              module: true,
-              icon: true,
-              xpReward: true,
-            },
-          },
-        },
-      },
-    },
+    include: approvalInclude,
     orderBy: { createdAt: "desc" },
+  })
+
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  const rejectedApprovals = await prisma.missionApproval.findMany({
+    where: {
+      status: "REJECTED",
+      reviewedAt: { gte: sevenDaysAgo },
+      ...orgFilter,
+    },
+    include: approvalInclude,
+    orderBy: { reviewedAt: "desc" },
   })
 
   return (
@@ -74,7 +87,10 @@ export default async function AprobacionesPage() {
               {t("pendingSubtitle")}
             </p>
           </div>
-          <AprobacionesList approvals={JSON.parse(JSON.stringify(approvals))} />
+          <AprobacionesList
+            approvals={JSON.parse(JSON.stringify(approvals))}
+            rejectedApprovals={JSON.parse(JSON.stringify(rejectedApprovals))}
+          />
         </div>
         <div className="h-6 w-full bg-surface-variant wood-bezel-shadow relative z-10 flex-shrink-0" />
       </div>

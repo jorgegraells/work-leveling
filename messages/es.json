@@ -208,7 +208,9 @@
     "objPendingReview": "Enviada · Pendiente revisión",
     "objApproved": "Aprobada",
     "objRejected": "Rechazada",
-    "allMissionsRequired": "Todas las misiones deben estar aprobadas antes de aprobar el objetivo"
+    "allMissionsRequired": "Todas las misiones deben estar aprobadas antes de aprobar el objetivo",
+    "rejectedSection": "Rechazadas recientemente",
+    "rejectedNote": "El empleado puede re-enviar para revisión"
   },
   "proyectos": {
     "title": "Objetivos & Misiones",
@@ -661,7 +663,11 @@
     "objManagerRejected": "RECHAZADA",
     "objSubmittedPending": "EN REVISIÓN",
     "objSubmitForReview": "ENVIAR A REVISIÓN",
-    "allMissionsRequired": "Todas las misiones deben estar aprobadas antes de finalizar el objetivo"
+    "allMissionsRequired": "Todas las misiones deben estar aprobadas antes de finalizar el objetivo",
+    "resubmitButton": "RE-ENVIAR A REVISIÓN",
+    "rejectedTitle": "Misión rechazada",
+    "rejectedNote": "Revisa el motivo del rechazo y vuelve a enviar cuando estés listo",
+    "rejectedBy": "Rechazada por {name}"
   },
   "empresasSwitcher": {
     "pendingInvitations": "Invitaciones Pendientes",

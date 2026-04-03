@@ -60,12 +60,13 @@ export async function POST(
       },
     })
 
-    // 2. Reset UserMission to IN_PROGRESS with 80% progress
+    // 2. Reset UserMission to IN_PROGRESS — keep progress at 100 so the employee
+    //    only needs to re-submit (not redo their work). Clear completedAt.
     await tx.userMission.update({
       where: { id: approval.userMissionId },
       data: {
         status: "IN_PROGRESS",
-        progress: 80,
+        progress: 100,
         completedAt: null,
       },
     })

@@ -208,7 +208,9 @@
     "objPendingReview": "Submitted · Pending review",
     "objApproved": "Approved",
     "objRejected": "Rejected",
-    "allMissionsRequired": "All missions must be approved before approving the objective"
+    "allMissionsRequired": "All missions must be approved before approving the objective",
+    "rejectedSection": "Recently Rejected",
+    "rejectedNote": "Employee can re-submit for review"
   },
   "proyectos": {
     "title": "Objectives & Missions",
@@ -660,7 +662,11 @@
     "objManagerRejected": "REJECTED",
     "objSubmittedPending": "UNDER REVIEW",
     "objSubmitForReview": "SUBMIT FOR REVIEW",
-    "allMissionsRequired": "All missions must be approved before finishing the objective"
+    "allMissionsRequired": "All missions must be approved before finishing the objective",
+    "resubmitButton": "RE-SUBMIT FOR REVIEW",
+    "rejectedTitle": "Mission Rejected",
+    "rejectedNote": "Review the rejection reason and re-submit when ready",
+    "rejectedBy": "Rejected by {name}"
   },
   "empresasSwitcher": {
     "pendingInvitations": "Pending Invitations",
