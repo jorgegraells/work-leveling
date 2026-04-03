@@ -218,7 +218,8 @@
     "noObjectivesPending": "No missions pending review",
     "companyBadge": "Company",
     "sortByUrgency": "By Urgency",
-    "sortByCompany": "By Company"
+    "sortByCompany": "By Company",
+    "selfApprovalForbidden": "You cannot approve your own missions"
   },
   "proyectos": {
     "title": "Objectives & Missions",

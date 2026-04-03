@@ -9,10 +9,10 @@ const ATTRIBUTES = [
   { key: "creatividad",   label: "Creatividad",    color: "tertiary",              side: "left"  },
   { key: "liderazgo",     label: "Liderazgo",      color: "secondary",             side: "left"  },
   { key: "negociacion",   label: "Negociación",    color: "on-tertiary-container", side: "left"  },
-  { key: "estrategia",    label: "Estrategia",     color: "primary",               side: "right" },
+  { key: "estrategia",    label: "Estrategia",     color: "outline",               side: "right" },
   { key: "analisis",      label: "Análisis",       color: "tertiary",              side: "right" },
   { key: "comunicacion",  label: "Comunicación",   color: "secondary",             side: "right" },
-  { key: "adaptabilidad", label: "Adaptabilidad",  color: "on-tertiary-container", side: "right" },
+  { key: "adaptabilidad", label: "Adaptabilidad",  color: "primary",               side: "right" },
 ]
 
 // Demo values matching the Stitch screens

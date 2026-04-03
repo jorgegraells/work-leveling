@@ -120,8 +120,11 @@ export async function canApproveInOrg(userId: string, organizationId: string) {
   if (!user) return false
   if (user.isSuperAdmin) return true
 
-  const orgRole = await getUserOrgRole(userId, organizationId)
-  if (!orgRole) return false
+  const orgRole = await prisma.userOrganizationRole.findUnique({
+    where: { userId_organizationId: { userId, organizationId } },
+    include: { organization: true, department: true },
+  })
+  if (!orgRole || !orgRole.confirmed) return false
 
   return ROLE_RANK[orgRole.role] >= ROLE_RANK["MANAGER"]
 }

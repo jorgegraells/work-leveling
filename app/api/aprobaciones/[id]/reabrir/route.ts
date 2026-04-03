@@ -36,6 +36,10 @@ export async function POST(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
+  if (currentUser.id === employee.id) {
+    return NextResponse.json({ error: "No puedes aprobar tus propias misiones" }, { status: 403 })
+  }
+
   await prisma.$transaction(async (tx) => {
     await tx.missionApproval.update({
       where: { id },

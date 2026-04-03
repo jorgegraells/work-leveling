@@ -70,6 +70,10 @@ export async function POST(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
+  if (currentUser.id === employee.id) {
+    return NextResponse.json({ error: "No puedes aprobar tus propias misiones" }, { status: 403 })
+  }
+
   const body = await req.json()
   const action: "approve" | "reject" = body.action
   const note: string | undefined = body.note

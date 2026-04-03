@@ -39,7 +39,7 @@ export async function POST(
 
   if (missionOrgId) {
     const orgAdmin = await prisma.userOrganizationRole.findFirst({
-      where: { organizationId: missionOrgId, role: { in: ["ORG_ADMIN", "MANAGER"] }, confirmed: true },
+      where: { organizationId: missionOrgId, role: { in: ["ORG_ADMIN", "MANAGER"] }, confirmed: true, userId: { not: user.id } },
       orderBy: { createdAt: "asc" },
     })
     if (orgAdmin) approverId = orgAdmin.userId
@@ -48,7 +48,7 @@ export async function POST(
   // Fallback: any super admin
   if (!approverId) {
     const superAdmin = await prisma.user.findFirst({
-      where: { isSuperAdmin: true },
+      where: { isSuperAdmin: true, id: { not: user.id } },
       select: { id: true },
     })
     if (superAdmin) approverId = superAdmin.id
@@ -57,7 +57,7 @@ export async function POST(
   // Last fallback: the user's own org admin
   if (!approverId) {
     const ownOrgAdmin = await prisma.userOrganizationRole.findFirst({
-      where: { organizationId: user.organizationId ?? undefined, role: "ORG_ADMIN" },
+      where: { organizationId: user.organizationId ?? undefined, role: "ORG_ADMIN", userId: { not: user.id } },
       orderBy: { createdAt: "asc" },
     })
     if (ownOrgAdmin) approverId = ownOrgAdmin.userId
