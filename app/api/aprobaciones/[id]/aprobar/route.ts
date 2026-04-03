@@ -245,7 +245,7 @@ export async function POST(
     }
 
       return { approval: updatedApproval, xpGain, newLevel }
-    })
+    }, { timeout: 30000, maxWait: 35000 })
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error("[aprobar] transaction failed:", msg)
