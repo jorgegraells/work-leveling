@@ -55,25 +55,16 @@ export default function ProyectosList({ missions }: ProyectosListProps) {
   return (
     <div className="p-6 md:p-10 space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
-            {t("adminLabel")}
-          </p>
-          <h1 className="font-headline text-2xl font-bold text-on-surface mt-0.5">
-            {t("title")}
-          </h1>
-          <p className="text-[11px] text-on-surface-variant mt-1">
-            {t("subtitle")}
-          </p>
-        </div>
-        <Link
-          href="/admin/objetivos/nuevo"
-          className="flex items-center gap-2 px-4 py-2.5 rounded-md bg-gradient-to-r from-primary to-primary-fixed-dim text-on-primary text-[10px] font-bold uppercase tracking-widest active:scale-[0.98] transition-transform shadow-[0px_20px_40px_rgba(0,0,0,0.4)]"
-        >
-          <span className="material-symbols-outlined text-base">add</span>
-          {t("newProject")}
-        </Link>
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-outline">
+          {t("adminLabel")}
+        </p>
+        <h1 className="font-headline text-2xl font-bold text-on-surface mt-0.5">
+          {t("title")}
+        </h1>
+        <p className="text-[11px] text-on-surface-variant mt-1">
+          {t("subtitle")}
+        </p>
       </div>
 
       {localMissions.length === 0 ? (

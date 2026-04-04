@@ -118,6 +118,8 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
   const [icon, setIcon] = useState(mission?.icon ?? "task_alt")
   const [xpReward, setXpReward] = useState(mission?.xpReward ?? 500)
   const [kreditsReward, setKreditsReward] = useState(mission?.kreditsReward ?? 0)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [customReward, setCustomReward] = useState((mission as any)?.customReward ?? "")
   const [priority, setPriority] = useState(mission?.priority ?? "NORMAL")
   const [objectives, setObjectives] = useState<ObjetivoLocal[]>(
     mission?.objectives.map((o) => ({
@@ -243,6 +245,7 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
       icon: missionType === "DAILY" ? "today" : icon,
       xpReward,
       kreditsReward,
+      customReward: customReward || null,
       priority,
       organizationId: selectedOrgId,
       objectives: missionType === "DAILY" ? [] : objectives.map((o, i) => ({ ...o, order: i })),
@@ -502,6 +505,20 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
                 <span className="text-[10px] font-bold uppercase tracking-widest text-outline">{t("points")}</span>
               </div>
             </div>
+
+            {/* Custom Reward */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                {t("customReward")}
+              </label>
+              <input
+                type="text"
+                value={customReward}
+                onChange={(e) => setCustomReward(e.target.value)}
+                placeholder={t("customRewardPlaceholder")}
+                className="w-full bg-surface-container-lowest rounded-lg px-3 py-2.5 text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:border-primary placeholder:text-outline"
+              />
+            </div>
           </div>
         </div>
 
@@ -555,9 +572,6 @@ export default function ProyectoForm({ mission, orgs, defaultOrgId, skills, init
                 {icon && (
                   <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-surface-container-lowest">
                     <span className={`material-symbols-outlined text-lg ${selectedModuleColor}`}>
-                      {icon}
-                    </span>
-                    <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
                       {icon}
                     </span>
                   </div>

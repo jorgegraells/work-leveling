@@ -593,7 +593,9 @@
     "priorityBaja": "Low",
     "missionTypeLabel": "Objective type",
     "complexObjective": "Objective with missions",
-    "dailyMission": "Daily mission"
+    "dailyMission": "Daily mission",
+    "customReward": "Custom reward",
+    "customRewardPlaceholder": "E.g.: 1 day remote work, Pizza for the team..."
   },
   "objetivoRow": {
     "titlePlaceholder": "Mission name",
@@ -651,6 +653,7 @@
     "noMissions": "No missions defined for this objective.",
     "rewardsTitle": "Objective Rewards",
     "xpLabel": "Experience Points",
+    "customRewardLabel": "Special Reward",
     "actionAllDone": "All missions completed",
     "actionApproved": "Objective approved",
     "actionSentForApproval": "Objective sent for approval",

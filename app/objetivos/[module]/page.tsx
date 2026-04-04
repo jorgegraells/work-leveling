@@ -95,6 +95,8 @@ export default async function DetallesObjetivoPage({ params }: Props) {
       accentColor={MODULE_COLOR[userMission.mission.module]}
       icon={userMission.mission.icon}
       xpReward={userMission.mission.xpReward}
+      kreditsReward={userMission.mission.kreditsReward ?? undefined}
+      customReward={userMission.mission.customReward}
       priority={userMission.mission.priority}
       progress={userMission.progress}
       status={userMission.status}

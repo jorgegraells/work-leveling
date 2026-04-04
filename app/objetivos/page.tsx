@@ -57,6 +57,8 @@ export default async function ObjetivosPage() {
       accentColor: MODULE_COLOR[um.mission.module],
       icon: um.mission.icon,
       xpReward: um.mission.xpReward,
+      kreditsReward: um.mission.kreditsReward,
+      customReward: um.mission.customReward ?? null,
       priority: um.mission.priority,
       progress: um.progress,
       status: um.status,

@@ -21,6 +21,8 @@ export interface ProjectCard {
   accentColor: string
   icon: string
   xpReward: number
+  kreditsReward?: number
+  customReward?: string | null
   priority: string
   progress: number
   status: string // PENDING, IN_PROGRESS, COMPLETED, ARCHIVED
@@ -226,6 +228,18 @@ export default function PanelCorporativoGamificado({
                           <span className="bg-primary/20 text-primary px-2 py-0.5 rounded text-[10px] font-bold">
                             +{currentProject.xpReward} XP
                           </span>
+                          {(currentProject.kreditsReward ?? 0) > 0 && (
+                            <span className="bg-secondary/20 text-secondary px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-0.5">
+                              <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>toll</span>
+                              +{currentProject.kreditsReward} K
+                            </span>
+                          )}
+                          {currentProject.customReward && (
+                            <span className="bg-outline/10 text-outline px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-0.5 max-w-[140px]">
+                              <span className="material-symbols-outlined text-[12px]">card_giftcard</span>
+                              <span className="truncate">{currentProject.customReward.slice(0, 20)}</span>
+                            </span>
+                          )}
                         </div>
                         <div className="flex items-center gap-2 mt-2 text-primary/80">
                           <span className="text-[10px] font-bold uppercase tracking-widest">
@@ -445,9 +459,26 @@ export default function PanelCorporativoGamificado({
                               {p.icon}
                             </span>
                           </div>
-                          <h3 className="text-sm font-semibold text-on-surface mb-auto px-2">
+                          <h3 className="text-sm font-semibold text-on-surface mb-2 px-2">
                             {p.title}
                           </h3>
+                          <div className="flex flex-wrap items-center justify-center gap-1.5 mb-auto">
+                            <span className="bg-primary/20 text-primary px-2 py-0.5 rounded text-[10px] font-bold">
+                              +{p.xpReward} XP
+                            </span>
+                            {(p.kreditsReward ?? 0) > 0 && (
+                              <span className="bg-secondary/20 text-secondary px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-0.5">
+                                <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>toll</span>
+                                +{p.kreditsReward} K
+                              </span>
+                            )}
+                            {p.customReward && (
+                              <span className="bg-outline/10 text-outline px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-0.5 max-w-[140px]">
+                                <span className="material-symbols-outlined text-[12px]">card_giftcard</span>
+                                <span className="truncate">{p.customReward.slice(0, 20)}</span>
+                              </span>
+                            )}
+                          </div>
                           <div className="w-full mt-6 md:mt-8 mb-4">
                             <div className="flex justify-between items-center mb-2">
                               <span className="text-[10px] font-bold text-outline uppercase">

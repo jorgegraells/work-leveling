@@ -33,6 +33,8 @@ export interface DetallesMisionProps {
   accentColor: string
   icon: string
   xpReward: number
+  kreditsReward?: number
+  customReward?: string | null
   priority: string
   progress: number
   status: string // PENDING | IN_PROGRESS | COMPLETED | ARCHIVED
@@ -277,6 +279,8 @@ export default function DetallesMision({
   accentColor,
   icon,
   xpReward,
+  kreditsReward,
+  customReward,
   priority,
   progress,
   status,
@@ -500,6 +504,40 @@ export default function DetallesMision({
                         {xpReward.toLocaleString()} XP
                       </span>
                     </div>
+                    {kreditsReward && kreditsReward > 0 ? (
+                      <div className="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center">
+                            <span className="material-symbols-outlined text-secondary">
+                              toll
+                            </span>
+                          </div>
+                          <span className="text-sm font-bold text-on-surface">
+                            Kredits
+                          </span>
+                        </div>
+                        <span className="text-lg font-headline font-black text-secondary">
+                          {kreditsReward.toLocaleString()} Kredits
+                        </span>
+                      </div>
+                    ) : null}
+                    {customReward ? (
+                      <div className="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                            <span className="material-symbols-outlined text-primary">
+                              card_giftcard
+                            </span>
+                          </div>
+                          <span className="text-sm font-bold text-on-surface">
+                            {t("customRewardLabel")}
+                          </span>
+                        </div>
+                        <span className="text-sm font-headline font-black text-primary text-right max-w-[55%]">
+                          {customReward}
+                        </span>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
 
