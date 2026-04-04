@@ -70,7 +70,7 @@ export async function PATCH(
   if (!canManage) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const body = await req.json()
-  const { title, description, module, icon, xpReward, priority, objectives, startDate, dueDate, customReward } = body
+  const { title, description, module, icon, xpReward, kreditsReward, priority, objectives, startDate, dueDate, customReward } = body
 
   const result = await prisma.$transaction(async (tx) => {
     // Update mission fields
@@ -82,6 +82,7 @@ export async function PATCH(
         ...(module !== undefined && { module }),
         ...(icon !== undefined && { icon }),
         ...(xpReward !== undefined && { xpReward }),
+        ...(kreditsReward !== undefined && { kreditsReward }),
         ...(customReward !== undefined && { customReward: customReward ?? null }),
         ...(priority !== undefined && { priority }),
         ...(startDate !== undefined && { startDate: startDate ? new Date(startDate) : null }),

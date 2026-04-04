@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { title, description, module, icon, xpReward, priority, organizationId, objectives, startDate, dueDate, missionType, customReward } = body
+  const { title, description, module, icon, xpReward, kreditsReward, priority, organizationId, objectives, startDate, dueDate, missionType, customReward } = body
 
   if (!title || !module || !icon || !organizationId) {
     return NextResponse.json(
@@ -91,6 +91,7 @@ export async function POST(req: NextRequest) {
       module,
       icon,
       xpReward: xpReward ?? 500,
+      kreditsReward: kreditsReward ?? 0,
       customReward: customReward ?? null,
       priority: priority ?? "NORMAL",
       isGlobal: false,
